@@ -41,7 +41,7 @@ Las propuestas no se presentan como logros realizados. Los estados de transparen
 
 ## Seguridad
 
-Las cabeceras HTTP y la CSP para Cloudflare Pages están definidas en `_headers`. Las pautas de protección XSS, autenticación SSH de GitHub y ajustes recomendados del repositorio se documentan en [SECURITY.md](SECURITY.md). La validación automática de seguridad se ejecuta mediante `scripts/check-security.mjs` en GitHub Actions.
+Las cabeceras HTTP y la CSP para Cloudflare Pages están definidas en `_headers`. Las pautas de protección XSS y los ajustes recomendados de seguridad de la cuenta y del repositorio se documentan en [SECURITY.md](SECURITY.md). La validación automática se ejecuta mediante `scripts/check-security.mjs` en GitHub Actions.
 
 ## Tecnología
 
