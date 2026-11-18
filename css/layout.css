@@ -1034,3 +1034,45 @@ main li{font-size:15px;line-height:1.75}
     font-size: 12px !important;
   }
 }
+
+
+/* CEE 2027 · Segunda mejora de legibilidad en escritorio
+   Refuerzo perceptible para lectura, tarjetas y controles sin alterar móvil. */
+@media (min-width: 761px) {
+  body { font-size: 18px; }
+  main p:not(.eyebrow) {
+    font-size: clamp(18px, 1.3vw, 20px) !important;
+    line-height: 1.82;
+  }
+  main li { font-size: 17.5px; line-height: 1.82; }
+  .hero-content .hero-lead {
+    font-size: clamp(18px, 1.5vw, 20px) !important;
+  }
+  .page-hero p:not(.eyebrow):not(.breadcrumb) {
+    font-size: clamp(18px, 1.45vw, 20px) !important;
+  }
+  .intro-copy p, .closing-grid p { font-size: 18px !important; }
+  .pillar-card p, .team-card p, .initiative p,
+  .faq-item p, .news-empty-card p, .news-sidebar p:not(.eyebrow),
+  .gallery-category p, .gallery-footnote p,
+  .quick-access-card p, .work-method-card p, .public-info-card p {
+    font-size: 17px !important;
+    line-height: 1.8;
+  }
+  .initiative h3 { font-size: 17px !important; }
+  .axis-card > p { font-size: 18px !important; }
+  .agenda-event p, .agenda-note p, .transparency-alert p {
+    font-size: 17px !important;
+    line-height: 1.8;
+  }
+  .status-item strong, .faq-item summary { font-size: 17.5px !important; }
+  .filter-label, .filter-chip, .filter-result { font-size: 14px !important; }
+  .footer-group a, .footer-links a { font-size: 14px !important; line-height: 1.75; }
+  .nav-item-title { font-size: 14px !important; }
+  .nav-item-description { font-size: 13px !important; }
+  .tag, .status, .status-pill, .news-status,
+  .agenda-kicker, .agenda-date span, .agenda-date small {
+    font-size: 13px !important;
+  }
+  .button, .text-link, .arrow-link { font-size: 14px !important; }
+}
