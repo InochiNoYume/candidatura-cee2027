@@ -12,7 +12,7 @@
   const groups = [
     { id:"candidatura", label:"La candidatura", icon:"✦", description:"Conoce al equipo y su propuesta.", items:[
       item("lista.html","Nuestra lista","Integrantes, cargos y responsabilidades.","01"),
-      item("proyecto.html","Proyecto y ejes","Las iniciativas y los cuatro ejes de trabajo.","02"),
+      item("proyecto.html","Proyecto y ejes","Las iniciativas y los cinco ejes de trabajo.","02"),
       item("agenda.html","Agenda y calendario","Fechas y actividades confirmadas.","03")
     ]},
     { id:"gestion", label:"Gestión y transparencia", icon:"▤", description:"Consulta acuerdos, avances y registros.", items:[
