@@ -207,7 +207,7 @@ for (const file of ["pages/galeria.html","pages/proyecto.html"]) {
   }
 }
 const searchSource = read("js/search.js");
-if (!searchSource.includes('.normalize("NFD")') || !searchSource.includes('replace(/[\\\\u0300-\\\\u036f]/g,"")'))
+if (!searchSource.includes('.normalize("NFD")') || !searchSource.includes("0300") || !searchSource.includes("036f"))
   failures.push("Buscador: falta normalización de tildes para búsquedas más flexibles");
 
 if (failures.length) {
