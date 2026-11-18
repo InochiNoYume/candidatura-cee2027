@@ -153,7 +153,7 @@
       });
       let visible = 0;
       items.forEach(item => {
-        const categories = (item.getAttribute("data-category") || "").split(/\\s+/);
+        const categories = (item.getAttribute("data-category") || "").split(/\s+/);
         const show = name === "news" ? value === "all" : value === "all" || categories.includes(value);
         item.hidden = !show;
         if (show) visible++;
