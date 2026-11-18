@@ -1,15 +1,13 @@
-# Configuración del asistente CEE 2027
+# Asistente CEE 2027
 
-1. En Cloudflare Dashboard → Workers & Pages → candidatura-cee2027 → Settings → Variables and Secrets.
-2. Añade **GEMINI_API_KEY** como secret (no como variable pública).
-3. Opcionalmente, define **GEMINI_MODEL** como variable de texto; el valor predeterminado del código es `gemini-3.8-flash`.
-4. Ejecuta un nuevo despliegue de Pages.
-5. Comprueba que `POST /api/asistente` responde con JSON y prueba preguntas dentro y fuera del ámbito.
+1. En Cloudflare Pages → Settings → Variables and Secrets, añade **GROQ_API_KEY** como secret.
+2. Opcional: define **GROQ_MODEL**. Predeterminado: \`openai/gpt-oss-20b\`.
+3. Despliega y prueba \`POST /api/asistente\`.
 
-La Function llama a Gemini desde el servidor mediante la cabecera `x-goog-api-key`. La clave nunca debe incluirse en HTML, JavaScript del navegador, commits, issues ni mensajes. No compartas la clave en el chat.
+La clave se usa solo en el servidor mediante \`Authorization: Bearer\`. Nunca la incluyas en HTML, JavaScript, commits o mensajes.
 
-El asistente clasifica cada pregunta como `in_scope` o `out_of_scope` mediante salida JSON estructurada. Si es ajena al sitio, el servidor devuelve un mensaje fijo; no se utiliza la respuesta libre del modelo para esa situación. El modelo solo puede contestar con el contexto oficial incluido en la Function.
+Para ahorrar tokens: solo se envía la pregunta actual (sin historial), el contexto está resumido, las respuestas tienen un máximo de 55 palabras, el máximo de finalización es 120 tokens y el razonamiento se limita a nivel bajo. Las preguntas fuera de tema reciben una respuesta fija del servidor.
 
-La limitación actual de diez consultas por hora se mantiene en memoria por instancia y es solo una barrera básica; no representa un límite global fiable. Para imponer cuotas globales, configura una regla de Rate Limiting de Cloudflare antes de abrir el asistente al público. Las preguntas no se persisten en la web.
+El límite de diez preguntas por hora es por instancia y no equivale a un límite global. Añade Rate Limiting global en Cloudflare antes de publicar ampliamente.
 
-Importante: en el nivel gratuito de Gemini API, Google indica que el contenido puede utilizarse para mejorar sus productos. No se deben enviar datos personales, académicos privados, confidenciales ni sensibles. Revisa las condiciones y el nivel de uso aplicable antes de activar el servicio.
+Groq indica que las solicitudes normales de inferencia no se conservan por defecto; puede registrar temporalmente entradas y salidas por fiabilidad o abuso hasta 30 días. Declara que no utiliza datos de clientes para entrenar modelos. No enviar datos personales, privados ni sensibles. Más información: https://console.groq.com/docs/your-data
