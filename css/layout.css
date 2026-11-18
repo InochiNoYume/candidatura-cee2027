@@ -1076,3 +1076,138 @@ main li{font-size:15px;line-height:1.75}
   }
   .button, .text-link, .arrow-link { font-size: 14px !important; }
 }
+
+/* CEE 2027 · Imágenes adaptables a computadora, tablet y celular
+   Las ilustraciones conservan su proporción; las fotografías en tarjetas
+   usan recortes controlados para mantener una composición uniforme. */
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+main img, .site-header img, .site-footer img {
+  max-inline-size: 100%;
+}
+.hero-visual, .hero-emblem, .pillar-card, .axis-visual,
+.listen-visual, .visual-gallery-card, .gallery-grid,
+.visual-gallery {
+  min-width: 0;
+}
+.hero-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hero-emblem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pillar-image {
+  display: block;
+  width: 100%;
+  height: clamp(132px, 15vw, 180px);
+  object-fit: contain;
+  object-position: center;
+}
+.axis-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  object-fit: contain;
+  object-position: center;
+}
+.listen-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.visual-gallery-card img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1.55;
+  object-fit: cover;
+  object-position: center;
+}
+@media (min-width: 761px) and (max-width: 1024px) {
+  .hero-visual {
+    right: 3% !important;
+    width: min(38vw, 430px) !important;
+    max-width: 43% !important;
+    aspect-ratio: 1.45 !important;
+  }
+  .hero-content {
+    max-width: 59% !important;
+  }
+  .hero-emblem {
+    right: 3.5% !important;
+    width: clamp(76px, 8vw, 94px) !important;
+    height: clamp(76px, 8vw, 94px) !important;
+  }
+  .pillar-image {
+    height: clamp(132px, 16vw, 165px);
+  }
+  .visual-gallery-card img {
+    aspect-ratio: 1.4;
+  }
+}
+@media (max-width: 760px) {
+  .hero-visual {
+    width: min(70%, 430px) !important;
+    max-width: calc(100% - 32px) !important;
+  }
+  .pillar-image {
+    height: clamp(150px, 42vw, 210px);
+  }
+  .axis-visual {
+    width: 100%;
+    max-width: 100%;
+  }
+  .axis-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .listen-visual {
+    width: min(100%, 360px);
+    max-width: 100%;
+    height: auto;
+    min-height: 130px;
+    aspect-ratio: 16 / 9;
+  }
+  .visual-gallery-card img {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+}
+@media (max-width: 560px) {
+  .hero-visual {
+    width: min(72%, 390px) !important;
+    max-width: calc(100% - 30px) !important;
+  }
+  .pillar-image {
+    height: clamp(155px, 55vw, 220px);
+  }
+  .visual-gallery-card {
+    min-width: 0;
+  }
+  .visual-gallery-card img {
+    min-width: 0;
+    max-width: 100%;
+    min-height: 118px;
+  }
+  .axis-visual img {
+    max-height: 260px;
+  }
+}
