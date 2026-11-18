@@ -193,7 +193,7 @@
   };
   window.addEventListener("scroll",updateScrollUI,{passive:true});
   window.addEventListener("resize",() => {
-    if (window.innerWidth > 1180) closeMenu();
+    if (window.innerWidth > 1240) closeMenu();
     updateScrollUI();
   },{passive:true});
   backToTop.addEventListener("click",() => window.scrollTo({top:0,behavior:reduceMotion ? "auto" : "smooth"}));
