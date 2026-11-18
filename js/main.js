@@ -1,15 +1,97 @@
-const toggle=document.querySelector('.menu-toggle');const nav=document.querySelector('.site-nav');
-if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú')});nav.addEventListener('click',e=>{if(e.target.closest('a')){nav.classList.remove('open');toggle.setAttribute('aria-expanded','false')}})}
-const revealItems=document.querySelectorAll('.hero-content,.intro-grid>div,.section-heading,.pillar-card,.listen-inner>*,.closing-grid>div,.page-hero .container,.team-card,.axis-card,.initiative,.status-item,.contact-card,.faq-item,.form-panel,.news-empty,.empty-gallery,.impact-item,.quick-access-card');
-revealItems.forEach((el,i)=>{el.classList.add('reveal');el.style.animationDelay=(i%4)*85+'ms'});
-if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}})},{threshold:.12,rootMargin:'0px 0px -35px 0px'});revealItems.forEach(el=>observer.observe(el))}else{revealItems.forEach(el=>el.classList.add('is-visible'))}
-const header=document.querySelector('.site-header');
-const progress=document.createElement('div');progress.className='reading-progress';progress.setAttribute('aria-hidden','true');progress.innerHTML='<span></span>';document.body.appendChild(progress);
-const progressBar=progress.querySelector('span');
-const topButton=document.createElement('button');topButton.className='back-to-top';topButton.type='button';topButton.setAttribute('aria-label','Volver al inicio de la página');topButton.innerHTML='↑';document.body.appendChild(topButton);
-const updateScrollUI=()=>{const max=document.documentElement.scrollHeight-window.innerHeight;const percent=max>0?(window.scrollY/max)*100:0;progressBar.style.width=percent+'%';if(header)header.classList.toggle('is-scrolled',window.scrollY>12);topButton.classList.toggle('visible',window.scrollY>420)};
-window.addEventListener('scroll',updateScrollUI,{passive:true});updateScrollUI();
-topButton.addEventListener('click',()=>window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+/* CEE 2027 · CEAT — interacciones globales */
+(() => {
+  const menuButton = document.querySelector(".menu-toggle");
+  const navigation = document.querySelector(".site-nav");
+  const header = document.querySelector(".site-header");
 
-// Enlaces ampliados: se inyectan en todas las páginas sin duplicar la navegación base.
-(()=>{const inPages=/\/pages\//.test(location.pathname);const prefix=inPages?'':'pages/';const nav=document.querySelector('.site-nav');if(nav&&!nav.querySelector('[data-extra="agenda"]')){const a=document.createElement('a');a.href=prefix+'agenda.html';a.textContent='Agenda';a.dataset.extra='agenda';const anchor=nav.querySelector('a[href$="transparencia.html"]');if(anchor)nav.insertBefore(a,anchor);else nav.appendChild(a)}const footer=document.querySelector('.footer-links');if(footer&&!footer.querySelector('[data-extra="actas"]')){const links=[['Agenda','agenda.html'],['Actas y acuerdos','actas.html'],['Informes de gestión','informes.html'],['Comunidad TP','comunidad-tp.html'],['Memoria de actividades','memoria.html'],['Privacidad','privacidad.html']];links.forEach(([label,path])=>{const a=document.createElement('a');a.href=prefix+path;a.textContent=label;a.dataset.extra=path.replace('.html','');footer.appendChild(a)})}})();
+  const closeMenu = () => {
+    if (!menuButton || !navigation) return;
+    navigation.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Abrir menú");
+  };
+
+  if (menuButton && navigation) {
+    menuButton.addEventListener("click", () => {
+      const isOpen = navigation.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+      menuButton.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+    });
+    navigation.addEventListener("click", event => {
+      if (event.target.closest("a")) closeMenu();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMenu();
+    });
+    document.addEventListener("click", event => {
+      if (!header?.contains(event.target)) closeMenu();
+    });
+  }
+
+  // Indica de forma automática la página activa en todas las navegaciones.
+  const currentPath = window.location.pathname.replace(/\/$/, "/index.html");
+  document.querySelectorAll(".site-nav a[href]").forEach(link => {
+    const targetPath = new URL(link.getAttribute("href"), window.location.href).pathname.replace(/\/$/, "/index.html");
+    const current = targetPath === currentPath;
+    link.classList.toggle("active", current);
+    if (current) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+
+  // Las animaciones son progresivas y respetan la preferencia de movimiento reducido.
+  const revealItems = document.querySelectorAll(
+    ".hero-content,.intro-grid>div,.section-heading,.pillar-card,.listen-inner>*,.closing-grid>div," +
+    ".page-hero .container,.team-card,.axis-card,.initiative,.status-item,.contact-card,.faq-item," +
+    ".form-panel,.news-empty,.empty-gallery,.impact-item,.quick-access-card,.public-info-card,.work-method-card"
+  );
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    revealItems.forEach((element,index) => {
+      element.classList.add("reveal");
+      element.style.animationDelay = `${(index % 4) * 70}ms`;
+    });
+    const observer = new IntersectionObserver((entries,activeObserver) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          activeObserver.unobserve(entry.target);
+        }
+      });
+    },{threshold:.1,rootMargin:"0px 0px -28px 0px"});
+    revealItems.forEach(element => observer.observe(element));
+  } else {
+    revealItems.forEach(element => element.classList.add("is-visible"));
+  }
+
+  // Indicador de lectura y botón para volver arriba.
+  const progress = document.createElement("div");
+  progress.className = "reading-progress";
+  progress.setAttribute("aria-hidden","true");
+  progress.innerHTML = "<span></span>";
+  document.body.appendChild(progress);
+  const progressBar = progress.querySelector("span");
+
+  const backToTop = document.createElement("button");
+  backToTop.className = "back-to-top";
+  backToTop.type = "button";
+  backToTop.setAttribute("aria-label","Volver al inicio de la página");
+  backToTop.innerHTML = "↑";
+  document.body.appendChild(backToTop);
+
+  const updateScrollUI = () => {
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = height > 0 ? Math.min(100,Math.max(0,(window.scrollY / height) * 100)) : 0;
+    progressBar.style.width = percent + "%";
+    header?.classList.toggle("is-scrolled",window.scrollY > 12);
+    backToTop.classList.toggle("visible",window.scrollY > 420);
+  };
+  window.addEventListener("scroll",updateScrollUI,{passive:true});
+  window.addEventListener("resize",() => {
+    if (window.innerWidth > 1040) closeMenu();
+    updateScrollUI();
+  },{passive:true});
+  backToTop.addEventListener("click",() => {
+    window.scrollTo({top:0,behavior:reduceMotion ? "auto" : "smooth"});
+  });
+  updateScrollUI();
+})();
