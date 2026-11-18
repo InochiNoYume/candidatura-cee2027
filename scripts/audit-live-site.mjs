@@ -119,6 +119,27 @@ try {
         });
         for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
 
+        // Comprueba la presencia y accesibilidad básica del asistente global y del canvas de partículas.
+        const assistantChecks = await page.evaluate(() => {
+          const errors = [];
+          const launcher = document.querySelector(".cee-assistant-launcher");
+          const panel = document.querySelector("#cee-assistant-panel");
+          const trail = document.querySelector(".cee-pointer-trail");
+          if (!launcher) errors.push("no aparece el botón del asistente");
+          if (!panel) errors.push("no aparece el panel del asistente");
+          if (!trail) errors.push("no aparece el canvas de partículas");
+          if (launcher && panel) {
+            launcher.click();
+            if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
+            const input = panel.querySelector("#cee-assistant-input");
+            if (!input || Number(input.getAttribute("maxlength")) !== 300) errors.push("el campo del asistente no limita la pregunta a 300 caracteres");
+            panel.querySelector(".cee-assistant-close")?.click();
+            if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
+          }
+          return errors;
+        });
+        for (const error of assistantChecks) failures.push(`${viewport.name} ${route}: asistente/efectos: ${error}`);
+
         // Comprueba que el buscador devuelve páginas reales y gestiona búsquedas sin resultados.
         if (route === "pages/buscar.html") {
           const searchInput = page.locator("#site-search");
