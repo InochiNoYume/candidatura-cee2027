@@ -400,3 +400,17 @@ img, svg, video, iframe { max-width: 100%; }
 @media(min-width:1181px){
   .site-header .menu-toggle{display:none!important}
 }
+
+
+/* CTA de participación: conserva texto blanco sobre el botón rojo.
+   La regla global de contraste del encabezado no debe sobrescribirlo. */
+.site-header .site-nav>a.nav-cta,
+.site-header .site-nav>a.nav-cta:visited,
+.site-header .site-nav>a.nav-cta:hover,
+.site-header .site-nav>a.nav-cta:focus-visible{
+  color:#fff!important;
+}
+.site-header .site-nav>a.nav-cta:hover,
+.site-header .site-nav>a.nav-cta:focus-visible{
+  background:#4e1017!important;
+}
