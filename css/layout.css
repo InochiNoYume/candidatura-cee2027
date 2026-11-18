@@ -477,3 +477,167 @@ body .site-header nav.site-nav > a.nav-cta:focus-visible{background:#4e1017!impo
 .filter-empty{margin:12px 0;padding:17px 20px;border:1px dashed #d9bfc0;border-radius:12px;background:#fff9f8;color:#775e60;font-size:13px;line-height:1.65}
 [hidden]{display:none!important}
 @media(max-width:600px){.quick-filters{align-items:flex-start;gap:9px;padding:13px}.filter-options{width:100%;gap:6px}.filter-chip{padding:8px 11px;font-size:10px}.filter-result{margin-left:0;width:100%}}
+
+
+/* ─────────────────────────────────────────────────────────────
+   CEE 2027 · Renovación visual integral
+   Capas de color, jerarquía editorial y superficies consistentes.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --brand:#821923;
+  --brand-deep:#26090e;
+  --brand-mid:#4a1018;
+  --brand-bright:#a52b37;
+  --brand-pale:#f2e5e4;
+  --surface:#fffdfc;
+  --surface-muted:#f3eeeb;
+  --surface-rose:#eadfdd;
+  --text-main:#241b1c;
+  --text-muted:#685d5e;
+  --border-soft:#e3d7d4;
+  --shadow-card:0 16px 42px rgba(45,12,18,.10);
+}
+body{background:#f7f4f2;color:var(--text-main)}
+.site-header{
+  background:rgba(39,10,15,.97)!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 8px 28px rgba(28,7,11,.18)!important;
+}
+.site-header .brand strong{color:#fff}
+.site-header .brand small{color:#e0bfc1}
+.site-header .brand-mark{
+  border:1px solid rgba(255,255,255,.2)!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.2)!important;
+}
+.site-header .site-nav a:not(.nav-cta){color:#f0e5e5}
+.site-header .site-nav a:not(.nav-cta):hover,
+.site-header .site-nav a:not(.nav-cta).active{color:#fff}
+.site-header .site-nav a:not(.nav-cta):after{background:#e5a9ae}
+.site-header .site-nav>a.nav-cta{
+  background:#f4e7e5!important;color:#541018!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.16)!important;
+}
+.site-header .site-nav>a.nav-cta:hover,
+.site-header .site-nav>a.nav-cta:focus-visible{background:#fff!important;color:#3b0d13!important}
+.site-header .menu-toggle span{background:#fff}
+.site-header .menu-toggle{border:1px solid rgba(255,255,255,.24)}
+.site-header .site-nav .nav-dropdown>summary{color:#f0e5e5}
+.site-header .site-nav .nav-dropdown[open]>summary,
+.site-header .site-nav .nav-dropdown>summary:hover{color:#fff}
+.site-header .nav-dropdown-panel{box-shadow:0 22px 55px rgba(22,5,8,.25)}
+@media(max-width:1040px){
+  .site-header .site-nav{background:#2c0c12!important;border-bottom:1px solid rgba(255,255,255,.13)!important}
+  .site-header .site-nav a:not(.nav-cta){color:#f4e9e8}
+  .site-header .site-nav a:not(.nav-cta):hover{background:rgba(255,255,255,.07)}
+  .site-header .site-nav .nav-dropdown>summary{color:#f4e9e8}
+  .site-header .site-nav .nav-dropdown-panel{background:#3a1017}
+}
+.hero{
+  min-height:720px;
+  background:
+    radial-gradient(ellipse at 76% 44%,rgba(190,76,85,.32),transparent 34%),
+    linear-gradient(120deg,#20070c 0%,#3d0d14 48%,#7d1b27 100%);
+}
+.hero:before{border-color:rgba(255,226,225,.18);box-shadow:0 0 0 38px rgba(255,255,255,.018)}
+.hero:after{border-color:rgba(255,226,225,.13)}
+.hero-grid{opacity:.58}
+.hero h1{max-width:790px;text-wrap:balance}
+.hero h1 em{color:#f0bfc1}
+.hero-lead{color:rgba(255,246,245,.82)}
+.hero-note{color:#f0d7d8}
+.hero-emblem{border-color:rgba(255,255,255,.34);box-shadow:0 0 0 18px rgba(255,255,255,.035),0 22px 65px rgba(0,0,0,.25)}
+.impact-strip{
+  position:relative;z-index:2;
+  background:linear-gradient(105deg,#21080d,#481018 58%,#64151e);
+  color:#fff;border-top:1px solid rgba(255,255,255,.13);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.impact-inner{padding-top:24px!important;padding-bottom:24px!important}
+.impact-number{color:#f0b9bd!important}
+.impact-label strong{color:#fff}
+.impact-label span{color:#e4cacc!important}
+.quick-access{background:#f0e8e5!important;padding:88px 0!important}
+.quick-access-card{
+  background:linear-gradient(150deg,#fffdfc,#f8f1ef)!important;
+  border:1px solid #e4d3d1!important;
+  box-shadow:0 9px 25px rgba(49,15,20,.055);
+}
+.quick-access-card:hover{border-color:#c99a9d!important;box-shadow:0 18px 42px rgba(49,15,20,.12)!important}
+.quick-access-card h3{color:#321116}
+.quick-access-card p{color:#6e5f60}
+.quick-index{color:#96545a!important}
+.intro-section{
+  background:linear-gradient(112deg,#2b0b11 0%,#451018 65%,#58151e 100%);
+  color:#fff;position:relative;overflow:hidden;
+}
+.intro-section:after{
+  content:"";position:absolute;width:440px;height:440px;right:-170px;top:-230px;
+  border:1px solid rgba(255,255,255,.13);border-radius:50%;
+  box-shadow:0 0 0 38px rgba(255,255,255,.025),0 0 0 78px rgba(255,255,255,.018);
+}
+.intro-section .container{position:relative;z-index:1}
+.intro-section h2{color:#fff}
+.intro-section .accent{color:#efb8bc}
+.intro-copy{border-left-color:rgba(255,255,255,.3)!important}
+.intro-copy p{color:rgba(255,255,255,.78)!important}
+.intro-section .arrow-link{color:#f3c7ca}
+.pillars-section{background:linear-gradient(180deg,#f5efed,#eae0dd)!important}
+.pillar-card{
+  background:linear-gradient(160deg,#fff,#fbf5f3)!important;
+  border-color:#e5d7d4!important;box-shadow:0 9px 25px rgba(52,18,23,.055)!important;
+}
+.pillar-card:hover{border-color:#c99a9d!important}
+.pillar-image{background:linear-gradient(145deg,#f6e9e7,#eee0dd)!important}
+.pillar-icon{background:#f3e2e1!important;color:#7e1722!important}
+.work-method{background:#fffdfc!important}
+.work-method-card{background:linear-gradient(155deg,#fff,#f8f2f0)!important;border-color:#e8ddda!important}
+.method-step{color:#96545a!important}
+.method-icon{background:#f2e4e2!important;color:#821923!important}
+.listen-band{
+  background:
+    radial-gradient(circle at 85% 35%,rgba(255,255,255,.11),transparent 25%),
+    linear-gradient(110deg,#26090e,#64151f 68%,#8c202c)!important;
+}
+.public-info-section{background:linear-gradient(180deg,#eee5e2,#f8f4f2)!important}
+.public-info-card{background:linear-gradient(150deg,#fff,#faf4f2)!important;border-color:#e2d3d0!important}
+.public-info-card>span{color:#92535a!important}
+.public-info-card b{color:#7d1722!important}
+.closing-section{background:linear-gradient(115deg,#2a0b10,#451018)!important;color:#fff}
+.closing-section h2{color:#fff}
+.closing-section .accent{color:#efb8bc}
+.closing-section p:not(.eyebrow){color:rgba(255,255,255,.78)}
+.closing-section .eyebrow{color:#e8b7bb}
+.closing-section .arrow-link{color:#f1c6c9}
+.page-hero{
+  background:
+    radial-gradient(ellipse at 84% 25%,rgba(190,76,85,.34),transparent 32%),
+    linear-gradient(118deg,#22080d 0%,#471019 56%,#781b26 100%)!important;
+}
+.content-section,.editorial-section{background:linear-gradient(180deg,#f8f4f2 0%,#fffdfc 100%)}
+.axis-card{background:linear-gradient(145deg,#fff,#faf5f3)!important;border-color:#e6d8d5!important}
+.axis-visual{background:linear-gradient(145deg,#f3e5e2,#e9d9d6)!important}
+.initiative{background:#f8f2f0!important;border-color:#eadbd8!important}
+.status-item,.contact-card,.faq-item{background:#fffdfc!important;border-color:#e6d9d6!important}
+.quick-filters{background:#fffdfc!important;border-color:#e4d5d2!important}
+.filter-chip{background:#fffdfc}
+.filter-chip.is-active{background:#7d1722!important;border-color:#7d1722!important}
+.gallery-feature{box-shadow:0 22px 55px rgba(60,13,21,.22)}
+.news-sidebar{background:linear-gradient(145deg,#270a10,#56131c)!important}
+.site-footer{background:linear-gradient(115deg,#16070a,#2b0b11 62%,#411018)!important}
+.back-to-top{box-shadow:0 10px 28px rgba(34,7,12,.32)}
+@media(max-width:760px){
+  .hero{min-height:680px}
+  .hero-content{padding-top:76px;padding-bottom:78px}
+  .impact-inner{gap:18px}
+  .quick-access{padding:64px 0!important}
+  .intro-section:after{right:-300px;top:-170px}
+  .closing-section{padding-top:66px!important;padding-bottom:66px!important}
+}
+@media(max-width:520px){
+  .hero h1{font-size:clamp(43px,11vw,60px)}
+  .impact-inner{padding-top:18px!important;padding-bottom:18px!important}
+  .intro-copy{padding-left:17px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero:before,.hero:after,.hero-emblem:before{animation:none!important}
+}
