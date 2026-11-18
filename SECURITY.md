@@ -31,7 +31,7 @@ SSH protege la autenticación al operar con GitHub; no es un servicio que deba i
 
 En GitHub → Settings:
 
-- En **Branches**, protege `main): exigir pull requests, exigir que pasen los checks de calidad y auditoría disponibles antes de integrar, bloquear force-push y eliminación de la rama.
+- En **Branches**, protege `main`: exigir pull requests, exigir que pasen los checks de calidad y auditoría disponibles antes de integrar, bloquear force-push y eliminación de la rama.
 - En **Code security and analysis**, mantener activados Secret scanning y Push protection cuando estén disponibles para el repositorio.
 - Mantener los permisos de GitHub Actions en el mínimo necesario. Los workflows actuales declaran `contents: read`.
 
