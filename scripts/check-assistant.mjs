@@ -12,6 +12,8 @@ for (const [label, pattern] of [
   ["validación de origen", /request\.headers\.get\("Origin"\)/],
   ["límite de pregunta", /question\.length\s*>\s*300/],
   ["control de tamaño", /Content-Length/],
+  ["límite del cuerpo leído", /rawBody\.length\s*>\s*2048/],
+  ["mapa de límites acotado", /requestWindows\.size\s*>\s*1000/],
   ["respuestas sin caché", /"Cache-Control":\s*"no-store"/],
   ["contexto editorial oficial", /CONTEXTO OFICIAL/],
   ["respuesta con límite de tokens", /max_tokens:\s*190/]
