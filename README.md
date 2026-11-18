@@ -11,7 +11,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 3. Selecciona la rama `main` y la carpeta `/(root)`.
 4. Guarda los cambios y espera la publicación.
 
-La URL esperada tendrá el formato `https://inochinoyume.github.io/Web-CEE2027/`.
+La URL esperada tendrá el formato `https://candidatura-cee2027.pages.dev/`.
 
 ## Estructura
 
