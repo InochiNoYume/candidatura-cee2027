@@ -56,6 +56,27 @@ const requiredPages = [
   "pages/memoria.html","pages/privacidad.html","pages/buscar.html","404.html"
 ];
 for (const file of requiredPages) if (!fs.existsSync(file)) failures.push(`Falta página requerida: ${file}`);
+
+const navigationSource = read("js/main.js");
+const requiredNavigationPages = [
+  "lista.html","proyecto.html","agenda.html","transparencia.html","actas.html",
+  "informes.html","memoria.html","comunidad-tp.html","noticias.html","galeria.html",
+  "preguntas.html","buscar.html","contacto.html","privacidad.html","escucha.html"
+];
+for (const file of requiredNavigationPages) {
+  if (!fs.existsSync(path.join("pages",file))) failures.push(`Menú: destino inexistente pages/${file}`);
+  if (!navigationSource.includes(file)) failures.push(`Menú: falta el destino ${file} en js/main.js`);
+}
+for (const label of ["La candidatura","Gestión y transparencia","Comunidad estudiantil","Actualidad y recursos"]) {
+  if (!navigationSource.includes(label)) failures.push(`Menú: falta la categoría "${label}"`);
+}
+if (!navigationSource.includes("aria-expanded") || !navigationSource.includes("Escape"))
+  failures.push("Menú: faltan controles básicos de accesibilidad/teclado");
+const layoutSource = read("css/layout.css");
+for (const selector of [".nav-dropdown-panel",".nav-panel-items",".menu-toggle.is-open",".footer-group"]) {
+  if (!layoutSource.includes(selector)) failures.push(`Estilos de navegación: falta ${selector}`);
+}
+
 for (const file of ["css/styles.css","css/layout.css","js/main.js","js/search.js","assets/icons/favicon.svg"])
   if (!fs.existsSync(file)) failures.push(`Falta recurso requerido: ${file}`);
 
