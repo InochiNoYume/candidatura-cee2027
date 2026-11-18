@@ -253,4 +253,143 @@
       window.addEventListener("pageshow",startAnimation);
     } else canvas.remove();
   }
+
+  // Asistente informativo: no guarda conversaciones ni solicita datos personales.
+  const assistantLauncher = document.createElement("button");
+  assistantLauncher.className = "cee-assistant-launcher";
+  assistantLauncher.type = "button";
+  assistantLauncher.setAttribute("aria-expanded","false");
+  assistantLauncher.setAttribute("aria-controls","cee-assistant-panel");
+  assistantLauncher.setAttribute("aria-label","Abrir asistente de ayuda");
+  assistantLauncher.innerHTML = '<span aria-hidden="true">✦</span><span>Ayuda IA</span>';
+  const assistantPanel = document.createElement("section");
+  assistantPanel.className = "cee-assistant-panel";
+  assistantPanel.id = "cee-assistant-panel";
+  assistantPanel.hidden = true;
+  assistantPanel.setAttribute("aria-labelledby","cee-assistant-title");
+  assistantPanel.innerHTML =
+    '<div class="cee-assistant-head"><div><p class="cee-assistant-kicker">CEE 2027 · CEAT</p><h2 id="cee-assistant-title">¿En qué te puedo ayudar?</h2></div>' +
+    '<button class="cee-assistant-close" type="button" aria-label="Cerrar asistente">×</button></div>' +
+    '<p class="cee-assistant-intro">Resuelvo dudas sobre esta web y su propuesta usando información publicada aquí.</p>' +
+    '<div class="cee-assistant-messages" role="log" aria-live="polite" aria-relevant="additions text"><p class="cee-assistant-message assistant">¡Hola! Puedes preguntarme por los ejes, la agenda, la lista o las secciones del sitio.</p></div>' +
+    '<form class="cee-assistant-form"><label class="sr-only" for="cee-assistant-input">Escribe tu pregunta</label>' +
+    '<textarea id="cee-assistant-input" maxlength="300" rows="2" placeholder="Escribe tu pregunta…" required></textarea>' +
+    '<div class="cee-assistant-form-foot"><span>Máximo 300 caracteres</span><button type="submit">Enviar <span aria-hidden="true">↑</span></button></div></form>' +
+    '<p class="cee-assistant-privacy">No compartas datos personales. Las preguntas se envían a Cloudflare para generar la respuesta y no se guardan en este sitio.</p>';
+  document.body.append(assistantLauncher,assistantPanel);
+  const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
+  const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
+  const assistantForm = assistantPanel.querySelector("form");
+  const addAssistantMessage = (text,isUser=false) => {
+    const message = document.createElement("p");
+    message.className = "cee-assistant-message " + (isUser ? "user" : "assistant");
+    message.textContent = text;
+    assistantMessages.appendChild(message);
+    assistantMessages.scrollTop = assistantMessages.scrollHeight;
+    return message;
+  };
+  const setAssistantOpen = opened => {
+    assistantPanel.hidden = !opened;
+    assistantLauncher.setAttribute("aria-expanded",String(opened));
+    assistantLauncher.setAttribute("aria-label",opened ? "Cerrar asistente de ayuda" : "Abrir asistente de ayuda");
+    if (opened) assistantInput.focus();
+    else assistantLauncher.focus();
+  };
+  assistantLauncher.addEventListener("click",() => setAssistantOpen(assistantPanel.hidden));
+  assistantPanel.querySelector(".cee-assistant-close").addEventListener("click",() => setAssistantOpen(false));
+  document.addEventListener("keydown",event => {
+    if (event.key === "Escape" && !assistantPanel.hidden) setAssistantOpen(false);
+  });
+  assistantForm.addEventListener("submit",async event => {
+    event.preventDefault();
+    const question = assistantInput.value.trim();
+    if (!question || question.length > 300) return;
+    addAssistantMessage(question,true);
+    assistantInput.value = "";
+    assistantInput.disabled = true;
+    const sendButton = assistantForm.querySelector('button[type="submit"]');
+    sendButton.disabled = true;
+    const pending = addAssistantMessage("Estoy revisando la información del sitio…");
+    try {
+      const response = await fetch("/api/asistente",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({question})
+      });
+      const payload = await response.json().catch(() => ({}));
+      pending.remove();
+      if (!response.ok) {
+        addAssistantMessage(response.status === 503
+          ? "El asistente todavía no está activado en el servidor. Mientras tanto, puedes consultar Proyecto, Agenda y Preguntas frecuentes."
+          : "No pude procesar la consulta en este momento. Inténtalo más tarde o revisa las secciones del sitio.");
+      } else addAssistantMessage(typeof payload.answer === "string" && payload.answer
+        ? payload.answer
+        : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
+    } catch {
+      pending.remove();
+      addAssistantMessage("No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");
+    } finally {
+      assistantInput.disabled = false;
+      sendButton.disabled = false;
+      assistantInput.focus();
+    }
+  });
+
+  // Rastro de partículas equilibrado para mouse y tacto, en todas las páginas.
+  if (!reduceMotion && "requestAnimationFrame" in window) {
+    const trailCanvas = document.createElement("canvas");
+    trailCanvas.className = "cee-pointer-trail";
+    trailCanvas.setAttribute("aria-hidden","true");
+    document.body.appendChild(trailCanvas);
+    const trailContext = trailCanvas.getContext("2d");
+    if (trailContext) {
+      let trailWidth=0,trailHeight=0,trailFrame=0,trailParticles=[];
+      const resizeTrail=()=>{
+        const dpr=Math.min(window.devicePixelRatio||1,1.5);
+        trailWidth=window.innerWidth;trailHeight=window.innerHeight;
+        trailCanvas.width=Math.round(trailWidth*dpr);
+        trailCanvas.height=Math.round(trailHeight*dpr);
+        trailContext.setTransform(dpr,0,0,dpr,0,0);
+      };
+      const addTrail=(x,y)=>{
+        const mobile=window.matchMedia("(pointer: coarse)").matches;
+        const count=mobile?2:3;
+        for(let i=0;i<count;i++){
+          if(trailParticles.length>=64)trailParticles.shift();
+          trailParticles.push({
+            x:x+(Math.random()-.5)*7,y:y+(Math.random()-.5)*7,
+            vx:(Math.random()-.5)*.75,vy:(Math.random()-.5)*.75,
+            life:1,r:1.1+Math.random()*(mobile?1.1:1.5)
+          });
+        }
+      };
+      let lastPointerAt=0;
+      document.addEventListener("pointermove",event=>{
+        if(event.pointerType==="mouse" || event.pointerType==="pen" || event.pointerType==="touch"){
+          const now=performance.now();
+          if(now-lastPointerAt>10){addTrail(event.clientX,event.clientY);lastPointerAt=now;}
+        }
+      },{passive:true});
+      const drawTrail=()=>{
+        trailContext.clearRect(0,0,trailWidth,trailHeight);
+        trailParticles=trailParticles.filter(p=>p.life>.035);
+        trailParticles.forEach(p=>{
+          p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.027;
+          trailContext.beginPath();
+          trailContext.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
+          trailContext.fillStyle="rgba(128,21,21,"+(.34*p.life)+")";
+          trailContext.fill();
+        });
+        if(trailParticles.length || !document.hidden)trailFrame=requestAnimationFrame(drawTrail);
+      };
+      resizeTrail();trailFrame=requestAnimationFrame(drawTrail);
+      window.addEventListener("resize",resizeTrail,{passive:true});
+      document.addEventListener("visibilitychange",()=>{
+        if(document.hidden){cancelAnimationFrame(trailFrame);trailFrame=0;}
+        else if(!trailFrame)trailFrame=requestAnimationFrame(drawTrail);
+      });
+      window.addEventListener("pagehide",()=>cancelAnimationFrame(trailFrame),{once:true});
+    } else trailCanvas.remove();
+  }
+
 })();
