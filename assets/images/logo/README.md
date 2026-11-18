@@ -1,15 +1,20 @@
 # Logotipos
 
-Guarda aquí los logotipos oficiales del establecimiento y de la candidatura.
+Esta carpeta contiene los logotipos institucionales utilizados por la web y puede alojar otros recursos oficiales cuando sean proporcionados.
 
-## Nombres de archivo
+## Recursos actuales
 
-- `logo-ceat.png` — logotipo institucional que utiliza actualmente la web.
-- `logo-cee-2027.png` — logotipo de la candidatura, si se entrega uno oficial.
-- `logo-ceat-blanco.png` — variante blanca oficial, si existe.
+- `logo-ceat.png`: logotipo institucional del establecimiento utilizado en la marca del encabezado y el pie de página.
+
+## Recursos opcionales pendientes
+
+- `logo-cee-2027.png`: solo si se entrega un logotipo oficial de la candidatura.
+- `logo-ceat-blanco.png`: solo si existe una variante blanca oficial.
 
 ## Reglas
+
 - No reemplaces el logotipo institucional por una recreación.
 - Mantén las proporciones y la transparencia del original.
-- Usa minúsculas y guiones; conserva la extensión real del archivo.
-- Formatos recomendados: `.png` para transparencia y `.svg` para originales vectoriales.
+- Usa PNG para transparencia y SVG para originales vectoriales.
+- Optimiza el peso sin degradar bordes ni transparencia.
+- Conserva los nombres y rutas existentes o actualiza todas las referencias CSS/HTML al cambiar un archivo.

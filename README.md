@@ -4,45 +4,70 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 
 **Eslogan:** Compromiso, Gestión y Acción Estudiantil.
 
-## Sitio publicado
+## Sitio y publicación
 
-La versión pública se encuentra en [https://candidatura-cee2027.pages.dev/](https://candidatura-cee2027.pages.dev/).
-
-El sitio se publica mediante **Cloudflare Pages**, conectado al repositorio GitHub. La rama de producción es `main`; al enviar cambios a esa rama, Pages puede desplegar automáticamente una nueva versión.
-
-### Configuración de publicación
-
-- Proveedor: Cloudflare Pages.
-- Repositorio: `InochiNoYume/candidatura-cee2027`.
+- Sitio público: https://candidatura-cee2027.pages.dev/
+- Repositorio: https://github.com/InochiNoYume/candidatura-cee2027
+- Hosting: Cloudflare Pages.
 - Rama de producción: `main`.
-- Directorio raíz: raíz del repositorio (`.`).
-- Comando de compilación: vacío (sitio estático sin proceso de build).
-- Directorio de salida: `.`.
+- Tipo de proyecto: sitio estático HTML, CSS y JavaScript; no requiere servidor ni compilación.
+- Directorio de salida de Pages: raíz del repositorio (`.`).
 
-## Estructura
+Los cambios enviados a `main` pueden activar el despliegue de producción. Los pull requests generan vistas previas de Cloudflare Pages; una vista previa correcta no significa que el cambio ya esté publicado en producción.
+
+## Estructura del repositorio
 
 - `index.html`: portada.
-- `pages/`: páginas de lista, proyecto, agenda, transparencia, noticias, galería, CEAT Te Escucha y demás secciones informativas.
-- `css/`: estilos y diseño adaptable.
-- `js/`: menú móvil, búsqueda y mejoras de interacción.
-- `assets/`: logotipo, iconos e ilustraciones.
+- `pages/`: páginas informativas de candidatura, proyecto, agenda, transparencia, noticias, galería, participación, preguntas, contacto y documentos.
+- `css/styles.css`: estilos base y componentes visuales.
+- `css/layout.css`: ajustes compartidos de estructura, navegación, tarjetas y diseño responsive.
+- `js/main.js`: genera la navegación global y el pie de página, controla el menú adaptable, estados activos, filtros y efectos de entrada.
+- `js/search.js`: búsqueda interna.
+- `assets/images/logo/`: logotipo institucional.
+- `assets/images/illustrations/`: ilustraciones conceptuales en SVG.
+- `assets/images/actividades/`, `grupo/` e `integrantes/`: espacios reservados para fotografías reales autorizadas.
+- `assets/icons/` y `assets/images/og/`: favicon y recurso de vista previa al compartir.
+- `scripts/`: validaciones automáticas del sitio y de seguridad.
+- `.github/workflows/`: flujos de integración continua.
+- `_headers`: cabeceras HTTP para Cloudflare Pages.
+- `SECURITY.md`: criterios de seguridad web y del repositorio.
+
+## Navegación y diseño adaptable
+
+La barra de navegación y los grupos del pie se construyen desde `js/main.js`; por eso las páginas mantienen una estructura común. En escritorio los grupos se muestran como menús desplegables. En anchos menores se utiliza el botón de menú para evitar comprimir los enlaces. Los estilos responsive se mantienen en `css/layout.css` y `css/styles.css`.
+
+Al modificar los enlaces globales, revisa tanto la navegación como el pie y prueba las páginas desde la portada y desde una URL dentro de `/pages/`.
+
+## Contenido programático
+
+El proyecto conserva los cuatro ejes del documento oficial y un quinto eje complementario para bienestar, apoyo y participación estudiantil. Las propuestas no deben presentarse como logros ya realizados. Fechas, noticias, avances y estados de transparencia solo se actualizan con información confirmada.
 
 ## Pendientes de contenido
 
-- Incorporar fotografías reales del equipo y actividades cuando sean proporcionadas y exista autorización para publicarlas.
-- Añadir el enlace real de Google Forms en CEAT Te Escucha.
-- Añadir o actualizar noticias, agenda y registros solo cuando existan datos confirmados.
+- Incorporar fotografías reales del equipo y de actividades cuando sean entregadas y exista autorización para publicarlas.
+- Conectar el formulario real de CEAT Te Escucha cuando se confirme el enlace.
+- Confirmar los datos de contacto propios de la candidatura y completar la información del equipo cuando corresponda.
 
-El logotipo institucional ya está incorporado.
+Los espacios reservados de fotografías no deben rellenarse con imágenes ficticias o de otras personas.
 
-## Criterios editoriales y privacidad
+## Privacidad y publicación
 
-Las propuestas no se presentan como logros realizados. Los estados de transparencia deben actualizarse únicamente con información verificable. Las fotografías de estudiantes requieren autorización para su publicación. Los canales de participación deben explicar con claridad cómo se reciben y utilizan las respuestas.
+Las fotografías de estudiantes requieren autorización para su difusión. Los formularios deben explicar qué información se recopila y para qué se utiliza. No publicar datos personales innecesarios. Los estados de transparencia deben reflejar únicamente gestiones verificables.
+
+## Integración continua y auditoría
+
+El workflow `.github/workflows/site-checks.yml` ejecuta:
+
+1. Comprobación de sintaxis JavaScript con Node.js.
+2. Validación de estructura HTML y enlaces locales mediante `scripts/check-site.mjs`.
+3. Comprobaciones de cabeceras, renderizado seguro del buscador y ausencia de material de claves privadas versionado mediante `scripts/check-security.mjs`.
+
+Estos checks no sustituyen una revisión visual en navegador. Después de cambios de CSS o navegación, comprueba escritorio, tablet y móvil, además de revisar la vista previa de Cloudflare y los comentarios del pull request.
 
 ## Seguridad
 
-Las cabeceras HTTP y la CSP para Cloudflare Pages están definidas en `_headers`. Las pautas de protección XSS y los ajustes recomendados de seguridad de la cuenta y del repositorio se documentan en [SECURITY.md](SECURITY.md). La validación automática se ejecuta mediante `scripts/check-security.mjs` en GitHub Actions.
+Las cabeceras y la política CSP para Cloudflare Pages están en `_headers`. Las pautas de seguridad se documentan en [SECURITY.md](SECURITY.md). El sitio es estático y no requiere administrar un servidor propio.
 
 ## Tecnología
 
-HTML5, CSS3 y JavaScript sin dependencias de compilación. Sitio estático preparado para Cloudflare Pages.
+HTML5, CSS3, JavaScript y Cloudflare Pages. No hay framework ni proceso de compilación.

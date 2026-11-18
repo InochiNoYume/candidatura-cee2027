@@ -1,18 +1,21 @@
-# Imágenes de los ejes
+# Recursos visuales de los ejes
 
-Esta carpeta está destinada a imágenes de apoyo específicas para los ejes del proyecto (cuatro originales y un eje complementario añadido posteriormente). No contiene fotografías de actividades realizadas.
+Carpeta reservada para imágenes de apoyo específicas de los ejes del proyecto. No debe confundirse con un registro fotográfico de actividades.
 
-## Nombres de archivo
+Las ilustraciones conceptuales que actualmente utiliza la página Proyecto se encuentran en `../illustrations/` y se documentan en `../illustrations/README.md`.
+
+## Convención de nombres
 
 - `eje-01-medio-ambiente.webp`
 - `eje-02-infraestructura-convivencia.webp`
 - `eje-03-deportes-vida-saludable.webp`
 - `eje-04-identidad-vinculacion-tp.webp`
-
-También se pueden usar variantes numeradas, por ejemplo `eje-01-medio-ambiente-02.webp`.
+- `eje-05-bienestar-participacion.webp` (complementario)
 
 ## Reglas
+
 - Minúsculas, sin tildes ni espacios; separar palabras con guiones.
-- Preferir `.webp` para imágenes optimizadas; también se acepta `.jpg`, `.png` o `.svg` según el recurso.
-- Usar imágenes coherentes con el eje indicado y evitar representar propuestas como logros ya realizados.
-- Las ilustraciones SVG generales del sitio se guardan en `../illustrations/`.
+- Preferir WebP optimizado; SVG para ilustraciones vectoriales y PNG solo cuando se requiera transparencia.
+- Mantener la correspondencia entre el recurso y el eje indicado.
+- No representar propuestas como logros ya realizados ni atribuir el eje complementario al documento oficial original.
+- Al incorporar una imagen, actualizar su referencia en la página y verificarla en escritorio y móvil.

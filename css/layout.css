@@ -1288,3 +1288,400 @@ img{max-width:100%;height:auto}
  .contact-social-section .contact-grid{grid-template-columns:1fr}
  .footer-bottom{align-items:flex-start;flex-direction:column;gap:6px}
 }
+
+/* Proyecto: composición de escritorio equilibrada y jerarquía editorial */
+.project-page .page-hero .container{max-width:1160px}
+.project-page .page-hero .breadcrumb{margin-bottom:24px}
+.project-page .page-hero h1{max-width:760px;font-size:clamp(42px,5.2vw,62px);line-height:1.06}
+.project-page .page-hero p:not(.eyebrow):not(.breadcrumb){max-width:760px}
+.project-page .content-section{padding-top:clamp(48px,5.5vw,70px)}
+.project-page .content-section>.container>.content-narrow:first-child{max-width:900px;margin:0 0 54px;padding:28px 34px 30px;border:1px solid #eee4e1;border-left:4px solid var(--brand);border-radius:0 14px 14px 0;background:linear-gradient(115deg,#fbf7f5,#fff)}
+.project-page .content-section>.container>.content-narrow:first-child .eyebrow{margin-bottom:10px}
+.project-page .content-section>.container>.content-narrow:first-child .lead-copy{margin:0;font-size:clamp(17px,1.35vw,19px);line-height:1.8}
+.project-page .subheading{margin:0 0 12px;font-size:clamp(27px,3vw,34px)}
+.project-page .content-section>.container>p.lead-copy.content-narrow{max-width:900px;margin:0 0 30px;color:#655c5c;font-size:clamp(16px,1.15vw,18px);line-height:1.8}
+.project-page .axis-list{display:grid;gap:26px}
+.project-page .axis-card{grid-template-columns:minmax(220px,.68fr) minmax(0,1.32fr);grid-template-rows:auto auto auto;column-gap:clamp(24px,3vw,40px);align-items:start;padding:clamp(24px,3vw,38px);border-radius:18px;background:linear-gradient(135deg,#fff 0%,#fdfbfa 100%);box-shadow:0 10px 32px rgba(40,20,20,.055)}
+.project-page .axis-visual{grid-column:1;grid-row:1/span 3;align-self:center;width:100%;height:clamp(230px,25vw,340px);min-height:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid #f0e5e2;border-radius:14px;background:radial-gradient(circle at 50% 48%,#fff 0%,#f8f1ee 72%,#f3eae7 100%)}
+.project-page .axis-visual img{display:block;width:100%;height:100%;min-height:0;max-height:none;padding:clamp(14px,2vw,24px);object-fit:contain;object-position:center}
+.project-page .axis-visual span{position:absolute;left:12px;bottom:10px;padding:5px 8px;border:1px solid rgba(232,220,216,.9);border-radius:6px;background:rgba(255,255,255,.88);color:#796d6b;font-size:10px}
+.project-page .axis-top{grid-column:2;grid-row:1;align-items:flex-start;gap:15px}
+.project-page .axis-num{flex:0 0 auto;font-size:clamp(28px,2.6vw,34px);line-height:1}
+.project-page .axis-top .tag{margin:0 0 5px}
+.project-page .axis-top h2{max-width:720px;font-size:clamp(23px,2.2vw,29px);line-height:1.22}
+.project-page .axis-card>p{grid-column:2;grid-row:2;margin:14px 0 22px;max-width:760px;color:#655d5d;font-size:clamp(16px,1.15vw,18px);line-height:1.8}
+.project-page .initiative-grid{grid-column:2;grid-row:3;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.project-page .initiative{padding:19px 20px;border-color:#ece3df;border-radius:12px;background:#fbf9f8}
+.project-page .initiative h3{font-size:clamp(15px,1.12vw,17px);line-height:1.45}
+.project-page .initiative p{font-size:clamp(14px,1vw,16px);line-height:1.75;color:#625a5a}
+@media(max-width:980px) and (min-width:761px){.project-page .axis-card{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;gap:20px}.project-page .axis-visual{grid-column:1;grid-row:auto;width:100%;height:clamp(220px,32vw,300px)}.project-page .axis-top,.project-page .axis-card>p,.project-page .initiative-grid{grid-column:1;grid-row:auto}.project-page .axis-card>p{margin:0}}
+@media(max-width:760px){.project-page .content-section>.container>.content-narrow:first-child{margin-bottom:38px;padding:22px 20px}.project-page .content-section>.container>p.lead-copy.content-narrow{margin-bottom:24px}.project-page .axis-card{gap:17px;padding:18px}.project-page .axis-visual{height:auto;min-height:0;aspect-ratio:16/9}.project-page .axis-visual img{height:100%;min-height:0;padding:12px}.project-page .axis-visual span{font-size:9px}.project-page .axis-top{gap:12px}.project-page .axis-top h2{font-size:clamp(21px,5.5vw,26px)}.project-page .axis-card>p{font-size:15px;line-height:1.75}.project-page .initiative-grid{grid-template-columns:minmax(0,1fr);gap:10px}.project-page .initiative{padding:16px}}
+@media(max-width:420px){.project-page .axis-card{padding:15px}.project-page .axis-top{gap:9px}.project-page .axis-num{font-size:25px}.project-page .axis-top h2{font-size:21px}}
+
+
+/* Navbar de escritorio: ancho útil, jerarquía y flechas sin duplicados. */
+@media (min-width: 1371px) {
+  .site-header { height: 86px; }
+  .site-header .nav-wrap {
+    width: min(1500px, calc(100% - 64px));
+    max-width: 1500px;
+    gap: clamp(20px, 2vw, 34px);
+    justify-content: space-between;
+  }
+  .site-header .brand { flex: 0 0 auto; gap: 13px; }
+  .site-header .brand-mark { width: 50px; height: 50px; }
+  .site-header .site-nav {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    gap: clamp(5px, .65vw, 11px);
+    min-width: 0;
+  }
+  .site-header .site-nav > a,
+  .site-header .site-nav > .nav-dropdown > summary {
+    min-height: 44px;
+    padding: 9px clamp(6px, .55vw, 10px);
+    font-size: clamp(11px, .76vw, 13px);
+    letter-spacing: 0;
+    gap: 7px;
+  }
+  .site-header .site-nav > .nav-dropdown > summary::after { content: none !important; }
+  .site-header .site-nav > .nav-dropdown > summary .nav-chevron {
+    display: inline-block;
+    margin-left: 2px;
+    font-size: 12px;
+    line-height: 1;
+  }
+  .site-header .site-nav > a.nav-search {
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+  .site-header .site-nav > a.nav-cta {
+    flex: 0 0 auto;
+    min-height: 46px;
+    padding: 11px 16px;
+    margin-left: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .site-header .nav-dropdown-panel { top: calc(100% + 8px); }
+}
+/* En portátiles y ventanas medianas se usa el menú desplegable completo,
+   evitando que las categorías se compriman o queden cortadas. */
+@media (min-width: 1181px) and (max-width: 1370px) {
+  .site-header { height: 76px; }
+  .site-header .nav-wrap { width: calc(100% - 44px); gap: 14px; }
+  .site-header .brand { gap: 9px; }
+  .site-header .brand-mark { width: 43px; height: 43px; }
+  .site-header .brand strong { font-size: 14px; }
+  .site-header .brand small { font-size: 9px; }
+  .site-header .menu-toggle { display: flex !important; }
+  .site-header .site-nav {
+    display: none !important;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: -22px;
+    right: -22px;
+    z-index: 525;
+    max-height: calc(100svh - 76px);
+    overflow-y: auto;
+    padding: 14px 20px 22px;
+    background: rgba(255,255,255,.99);
+    border: 1px solid #eee5e5;
+    border-top: 0;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 22px 38px rgba(35,15,15,.14);
+    align-items: stretch;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .site-header .site-nav.open { display: flex !important; }
+  .site-header .site-nav > a,
+  .site-header .site-nav > .nav-dropdown > summary {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 13px;
+    font-size: 13px;
+  }
+  .site-header .nav-dropdown { width: 100%; }
+  .site-header .nav-dropdown > summary .nav-chevron { margin-left: auto; }
+  .site-header .nav-dropdown > summary::after { content: none !important; }
+  .site-header .nav-dropdown-panel {
+    position: static;
+    transform: none;
+    width: 100%;
+    padding: 0 10px 10px;
+    border: 0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: none;
+    animation: none;
+  }
+  .site-header .nav-panel-items { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 1180px) {
+  .site-header .nav-dropdown > summary::after { content: none !important; }
+}
+
+
+/* CEE 2027 · Ajuste integral de navegación y pie de página
+   Las categorías se mantienen legibles en escritorio y pasan a menú
+   desplegable antes de que el encabezado pierda espacio horizontal. */
+@media (min-width: 1181px) {
+  .site-header { height: 84px; }
+  .site-header .nav-wrap {
+    position: relative;
+    width: min(1500px, calc(100% - 56px));
+    max-width: 1500px;
+    gap: clamp(14px, 1.4vw, 24px);
+    justify-content: space-between;
+  }
+  .site-header .brand { flex: 0 0 auto; min-width: 205px; gap: 12px; }
+  .site-header .brand-mark { width: 48px; height: 48px; flex-basis: 48px; }
+  .site-header .menu-toggle { display: none !important; }
+  .site-header .site-nav {
+    display: flex !important;
+    position: static;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(4px, .48vw, 9px);
+    overflow: visible;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .site-header .site-nav > .nav-home,
+  .site-header .site-nav > .nav-dropdown > summary,
+  .site-header .site-nav > .nav-search,
+  .site-header .site-nav > .nav-cta {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 9px clamp(6px, .55vw, 10px);
+    border-radius: 7px;
+    color: #514849;
+    font-size: clamp(11px, .78vw, 12.5px);
+    font-weight: 750;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .site-header .site-nav > .nav-home:hover,
+  .site-header .site-nav > .nav-dropdown > summary:hover {
+    color: var(--brand);
+    background: #f8f1f0;
+  }
+  .site-header .site-nav > .nav-home.active {
+    color: var(--brand);
+    background: #f8f1f0;
+  }
+  .site-header .nav-home-icon,
+  .site-header .nav-summary-icon { font-size: 14px; line-height: 1; }
+  .site-header .nav-dropdown {
+    position: relative;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .site-header .nav-dropdown > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+  }
+  .site-header .nav-dropdown > summary::-webkit-details-marker { display: none; }
+  .site-header .nav-dropdown > summary::marker { content: ""; }
+  .site-header .nav-dropdown > summary .nav-chevron {
+    display: inline-block;
+    margin-left: 1px;
+    color: #887b7b;
+    font-size: 13px;
+    line-height: 1;
+    transition: transform .18s ease;
+  }
+  .site-header .nav-dropdown[open] > summary .nav-chevron { transform: rotate(180deg); }
+  .site-header .nav-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    z-index: 80;
+    width: min(430px, calc(100vw - 48px));
+    max-height: min(70vh, 620px);
+    overflow-y: auto;
+    padding: 18px;
+    transform: translateX(-50%);
+    border: 1px solid #eadfdd;
+    border-radius: 13px;
+    background: rgba(255,255,255,.99);
+    box-shadow: 0 20px 48px rgba(35,15,18,.16);
+  }
+  .site-header .nav-panel-heading { display: grid; gap: 4px; padding: 2px 3px 14px; }
+  .site-header .nav-panel-heading strong {
+    color: #2b2021;
+    font: 800 15px/1.3 Manrope, sans-serif;
+  }
+  .site-header .nav-panel-heading > span { color: #716666; font-size: 12px; line-height: 1.5; }
+  .site-header .nav-panel-items { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 7px; }
+  .site-header .nav-item {
+    display: grid;
+    grid-template-columns: 26px minmax(0,1fr) 12px;
+    align-items: start;
+    gap: 8px;
+    min-width: 0;
+    padding: 10px 9px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: #3e3535;
+    white-space: normal;
+    text-decoration: none;
+  }
+  .site-header .nav-item:hover,
+  .site-header .nav-item.active { border-color: #eadcda; background: #faf5f4; color: var(--brand); }
+  .site-header .nav-item-icon {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 7px;
+    background: #f4e9e8;
+    color: var(--brand);
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .site-header .nav-item-copy { display: grid; min-width: 0; gap: 3px; }
+  .site-header .nav-item-title { color: inherit; font-size: 12px; font-weight: 800; line-height: 1.35; }
+  .site-header .nav-item-description { color: #766d6d; font-size: 10.5px; font-weight: 500; line-height: 1.45; }
+  .site-header .nav-item-arrow { color: #9a8585; font-size: 12px; }
+  .site-header .site-nav > .nav-search {
+    flex: 0 0 38px;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid #e9dfdd;
+    border-radius: 50%;
+    font-size: 19px;
+  }
+  .site-header .site-nav > .nav-search:hover { background: #f8f1f0; color: var(--brand); }
+  .site-header .site-nav > .nav-cta {
+    flex: 0 0 auto;
+    min-height: 44px;
+    margin-left: 2px;
+    padding: 11px 14px;
+    border-radius: 7px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 11.5px;
+    box-shadow: 0 5px 15px rgba(120,21,29,.17);
+  }
+  .site-header .site-nav > .nav-cta:hover { background: var(--brand-deep); color: #fff; }
+}
+@media (max-width: 1180px) {
+  .site-header { height: 76px; }
+  .site-header .nav-wrap { position: relative; width: calc(100% - 44px); gap: 14px; }
+  .site-header .brand { min-width: 0; flex: 0 1 auto; gap: 10px; }
+  .site-header .brand-mark { width: 45px; height: 45px; flex-basis: 45px; }
+  .site-header .menu-toggle {
+    display: flex !important;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e8dedd;
+    border-radius: 9px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .site-header .site-nav {
+    display: none !important;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: -22px;
+    right: -22px;
+    z-index: 525;
+    max-height: calc(100svh - 76px);
+    overflow-y: auto;
+    padding: 14px 20px 22px;
+    border: 1px solid #eee5e5;
+    border-top: 0;
+    border-radius: 0 0 15px 15px;
+    background: rgba(255,255,255,.99);
+    box-shadow: 0 22px 38px rgba(35,15,15,.14);
+    align-items: stretch;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .site-header .site-nav.open { display: flex !important; }
+  .site-header .site-nav > .nav-home,
+  .site-header .site-nav > .nav-dropdown > summary,
+  .site-header .site-nav > .nav-search,
+  .site-header .site-nav > .nav-cta {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 13px;
+    justify-content: flex-start;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: normal;
+  }
+  .site-header .nav-dropdown { width: 100%; }
+  .site-header .nav-dropdown > summary .nav-chevron { margin-left: auto; }
+  .site-header .nav-dropdown-panel {
+    position: static;
+    width: 100%;
+    max-height: none;
+    padding: 8px 10px 12px;
+    transform: none;
+    border: 0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: none;
+    background: #faf7f6;
+  }
+  .site-header .nav-panel-items { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .site-header .site-nav > .nav-search { width: 100%; height: 44px; border-radius: 8px; }
+  .site-header .site-nav > .nav-cta { justify-content: center; margin-top: 5px; }
+}
+@media (max-width: 560px) {
+  .site-header .nav-wrap { width: calc(100% - 32px); }
+  .site-header .site-nav { left: -16px; right: -16px; padding: 12px 16px 18px; }
+  .site-header .nav-panel-items { grid-template-columns: minmax(0,1fr); }
+}
+
+/* Pie de página: grupos alineados en columnas reales y con ritmo consistente. */
+.site-footer .footer-main { display: flex; align-items: flex-start; gap: clamp(28px,4vw,64px); }
+.site-footer .footer-brand { flex: 0 0 220px; min-width: 0; }
+.site-footer .footer-links {
+  display: grid;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: none;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  justify-content: stretch;
+  align-items: start;
+  gap: 24px clamp(18px,2.4vw,34px);
+}
+.site-footer .footer-group { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 8px; }
+.site-footer .footer-group h2 {
+  margin: 0 0 5px;
+  color: #fff;
+  font: 800 11px/1.35 Manrope,sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.site-footer .footer-group a { font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+@media (max-width: 980px) {
+  .site-footer .footer-main { flex-direction: column; gap: 28px; }
+  .site-footer .footer-links { grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; }
+}
+@media (max-width: 560px) {
+  .site-footer .footer-links { grid-template-columns: minmax(0,1fr); gap: 22px; }
+}
