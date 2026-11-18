@@ -414,3 +414,29 @@ img, svg, video, iframe { max-width: 100%; }
 .site-header .site-nav>a.nav-cta:focus-visible{
   background:#4e1017!important;
 }
+
+
+/* Contraste reforzado del botón CEAT Te Escucha, también en sus nodos internos. */
+body .site-header nav.site-nav > a.nav-cta,
+body .site-header nav.site-nav > a.nav-cta:link,
+body .site-header nav.site-nav > a.nav-cta:visited,
+body .site-header nav.site-nav > a.nav-cta:hover,
+body .site-header nav.site-nav > a.nav-cta:focus-visible,
+body .site-header nav.site-nav > a.nav-cta *{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  opacity:1!important;
+}
+body .site-header nav.site-nav > a.nav-cta{background:#8b2029!important}
+body .site-header nav.site-nav > a.nav-cta:hover,
+body .site-header nav.site-nav > a.nav-cta:focus-visible{background:#4e1017!important}
+
+/* Estado vacío de galería: sin fotografías de muestra ni tarjetas ficticias. */
+.empty-gallery{max-width:820px;margin:0 auto}
+.empty-gallery .gallery-status{display:inline-flex;margin-top:12px;padding:9px 13px;border-radius:7px;background:#f7eaea;color:#78151d;font-size:11px;font-weight:800;letter-spacing:.035em}
+.team-responsibilities{margin-top:14px;padding-top:11px;border-top:1px solid #eee5e5}
+.team-responsibilities summary{color:#78151d;font-size:11px;font-weight:800;cursor:pointer;list-style:none}
+.team-responsibilities summary::-webkit-details-marker{display:none}
+.team-responsibilities summary:after{content:"+";float:right;font-size:15px;line-height:1}
+.team-responsibilities[open] summary:after{content:"−"}
+.team-responsibilities p{margin:10px 0 0;color:#62595a;font-size:11px;line-height:1.7}
