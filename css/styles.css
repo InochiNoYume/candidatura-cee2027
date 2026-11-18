@@ -340,10 +340,10 @@ body {
 }
 
 
-/* Asistente CEE · identidad visual y posición coordinada con Volver arriba */
+/* Asistente CEE · mascota gatito y controles flotantes apilados */
 .cee-assistant-launcher {
   right: max(24px, env(safe-area-inset-right));
-  bottom: max(86px, calc(env(safe-area-inset-bottom) + 78px));
+  bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px));
   min-height: 52px;
   padding: 0 18px 0 12px;
   gap: 10px;
@@ -353,7 +353,7 @@ body {
   box-shadow: 0 12px 30px rgba(57,10,18,.28), inset 0 1px 0 rgba(255,255,255,.16);
   letter-spacing: .01em;
 }
-.cee-assistant-launcher:hover { transform: translateY(-3px); }
+.cee-assistant-launcher:hover { transform: translateY(-2px); }
 .cee-assistant-launcher:focus-visible,
 .cee-assistant-close:focus-visible,
 .cee-assistant-form button:focus-visible {
@@ -362,18 +362,29 @@ body {
 }
 .cee-assistant-launcher-icon {
   display: grid;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
   place-items: center;
   border: 1px solid rgba(255,255,255,.32);
-  border-radius: 10px 10px 10px 3px;
+  border-radius: 11px 11px 11px 4px;
   background: rgba(255,255,255,.13);
   color: #fff;
-  font-size: 17px;
+}
+.cee-assistant-launcher-icon svg {
+  display: block;
+  width: 25px;
+  height: 25px;
+  animation: cee-cat-float 3.2s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes cee-cat-float {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
 }
 .cee-assistant-panel {
   right: max(24px, env(safe-area-inset-right));
-  bottom: max(148px, calc(env(safe-area-inset-bottom) + 140px));
+  bottom: max(88px, calc(env(safe-area-inset-bottom) + 80px));
   border: 1px solid rgba(128,21,21,.18);
   border-radius: 20px 20px 20px 7px;
   box-shadow: 0 26px 76px rgba(42,9,16,.25), 0 4px 18px rgba(128,21,21,.08);
@@ -391,19 +402,24 @@ body {
   width:7px; height:7px; border-radius:50%; background:#9b4548;
   box-shadow:0 0 0 3px rgba(155,69,72,.12);
 }
+.back-to-top { bottom: 92px; }
+@media (max-width: 760px) {
+  .back-to-top { right: 15px; bottom: 78px; }
+}
 @media (max-width: 560px) {
   .cee-assistant-launcher {
     right: max(15px, env(safe-area-inset-right));
-    bottom: max(68px, calc(env(safe-area-inset-bottom) + 62px));
+    bottom: max(14px, env(safe-area-inset-bottom));
     min-height: 48px;
     padding: 0 15px 0 10px;
   }
   .cee-assistant-panel {
     right: max(12px, env(safe-area-inset-right));
-    bottom: max(124px, calc(env(safe-area-inset-bottom) + 116px));
+    bottom: max(78px, calc(env(safe-area-inset-bottom) + 68px));
     width: calc(100vw - 24px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .cee-assistant-launcher { transition: none; }
+  .cee-assistant-launcher-icon svg { animation: none; }
 }

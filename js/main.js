@@ -261,7 +261,7 @@
   assistantLauncher.setAttribute("aria-expanded","false");
   assistantLauncher.setAttribute("aria-controls","cee-assistant-panel");
   assistantLauncher.setAttribute("aria-label","Abrir Asistente CEE");
-  assistantLauncher.innerHTML = '<span class="cee-assistant-launcher-icon" aria-hidden="true">✦</span><span>Asistente CEE</span>';
+  assistantLauncher.innerHTML = '<span class="cee-assistant-launcher-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M6.5 13.2 6 5.8l7 4.1a12 12 0 0 1 6 0l7-4.1-.5 7.4a10.5 10.5 0 1 1-19 0Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17h.1M20 17h.1M13 21c1.8 1.6 4.2 1.6 6 0M16 18.5l-1 1h2l-1-1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Asistente CEE</span>';
   const assistantPanel = document.createElement("section");
   assistantPanel.className = "cee-assistant-panel";
   assistantPanel.id = "cee-assistant-panel";
