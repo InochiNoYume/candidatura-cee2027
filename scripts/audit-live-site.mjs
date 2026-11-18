@@ -42,6 +42,45 @@ try {
         const axe = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
           .analyze();
+        // Prueba funcional de cada filtro: compara lo visible con sus categorías reales.
+        const filterChecks = await page.evaluate(() => {
+          const groups = [...document.querySelectorAll("[data-filter-group]")];
+          return groups.map(group => {
+            const name = group.getAttribute("data-filter-group");
+            const buttons = [...group.querySelectorAll("[data-filter]")];
+            const items = [...document.querySelectorAll('[data-filter-item="' + name + '"]')];
+            const errors = [];
+            for (const button of buttons) {
+              const value = button.getAttribute("data-filter");
+              button.click();
+              const visible = items.filter(item => !item.hidden);
+              const expected = items.filter(item => {
+                if (name === "news") return value === "all";
+                const categories = (item.getAttribute("data-category") || "").trim().split(/\\s+/).filter(Boolean);
+                return value === "all" || categories.includes(value);
+              });
+              if (visible.length !== expected.length) {
+                errors.push('"' + value + '": visibles ' + visible.length + ', esperados ' + expected.length);
+              }
+              if (visible.some(item => !expected.includes(item)) || expected.some(item => !visible.includes(item))) {
+                errors.push('"' + value + '": los elementos visibles no coinciden con las categorías');
+              }
+              if (button.getAttribute("aria-pressed") !== "true") errors.push('"' + value + '": aria-pressed no se actualizó');
+              if (buttons.some(other => other !== button && other.getAttribute("aria-pressed") === "true")) {
+                errors.push('"' + value + '": hay más de un filtro marcado como activo');
+              }
+              const empty = document.querySelector('[data-filter-empty="' + name + '"]');
+              if (empty && name !== "news" && empty.hidden !== (expected.length > 0)) {
+                errors.push('"' + value + '": el mensaje de estado vacío no coincide');
+              }
+            }
+            buttons.find(button => button.getAttribute("data-filter") === "all")?.click();
+            return { name, errors };
+          });
+        });
+        for (const check of filterChecks) {
+          if (check.errors.length) failures.push(`${viewport.name} ${route}: filtro ${check.name}: ${check.errors.join("; ")}`);
+        }
         const item = {
           route, viewport: viewport.name, status: response?.status() ?? null,
           ...layout, pageErrors,
