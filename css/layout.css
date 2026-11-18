@@ -309,3 +309,49 @@ img, svg, video, iframe { max-width: 100%; }
 .footer-group a{font-size:11px;line-height:1.5}
 @media(max-width:820px){.footer-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 18px}}
 @media(max-width:560px){.footer-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px}.footer-group h3{font-size:9px}.footer-group a{font-size:11px}}
+
+
+/* Corrección de visibilidad del menú: neutraliza reglas heredadas y asegura contraste. */
+.site-header{overflow:visible!important;z-index:500!important}
+.site-header .nav-wrap{overflow:visible!important}
+.site-header .site-nav{position:relative;z-index:510;color:#51484a}
+.site-header .site-nav>a,
+.site-header .site-nav>.nav-dropdown>summary{
+  color:#51484a!important;
+  opacity:1!important;
+  visibility:visible!important;
+  font-weight:800;
+}
+.site-header .site-nav>.nav-dropdown{display:block;visibility:visible;opacity:1}
+.site-header .site-nav>.nav-dropdown>summary{
+  cursor:pointer;
+  list-style:none;
+  min-width:max-content;
+}
+.site-header .site-nav>.nav-dropdown>summary::-webkit-details-marker{display:none}
+.site-header .nav-dropdown-panel{
+  color:#302729!important;
+  visibility:visible;
+  opacity:1;
+}
+.site-header .nav-panel-heading strong,
+.site-header .nav-item-title{color:#302729!important}
+.site-header .nav-panel-heading>span,
+.site-header .nav-item-description{color:#74696a!important}
+.site-header .nav-item{color:#3c3334!important}
+.site-header .nav-item:hover,
+.site-header .nav-item.active{color:#78151d!important}
+.site-header .nav-item-icon{color:#78151d!important}
+.site-header .menu-toggle{position:relative;z-index:520;background:#fff!important}
+@media(max-width:1180px){
+  .site-header .nav-wrap{position:relative}
+  .site-header .site-nav{position:absolute!important;display:none!important}
+  .site-header .site-nav.open{display:flex!important;visibility:visible!important;opacity:1!important}
+  .site-header .site-nav>.nav-dropdown{width:100%;display:block}
+  .site-header .site-nav>.nav-dropdown>summary{width:100%;min-width:0}
+  .site-header .nav-dropdown-panel{display:block}
+}
+@media(min-width:1181px){
+  .site-header .site-nav{position:relative!important;display:flex!important;visibility:visible!important;opacity:1!important}
+  .site-header .menu-toggle{display:none!important}
+}
