@@ -220,8 +220,9 @@
         canvas.style.width=width+"px";canvas.style.height=height+"px";ctx.setTransform(dpr,0,0,dpr,0,0);
         particles=makeParticles();
       };
+      let animationRunning=false;
       const draw=()=>{
-        if(document.hidden){frame=requestAnimationFrame(draw);return}
+        if(document.hidden){frame=0;animationRunning=false;return}
         ctx.clearRect(0,0,width,height);
         particles.forEach(p=>{
           p.x+=p.vx;p.y+=p.vy;p.phase+=.008;
@@ -232,10 +233,24 @@
         });
         frame=requestAnimationFrame(draw);
       };
-      resize();draw();
+      const startAnimation=()=>{
+        if(animationRunning||document.hidden)return;
+        animationRunning=true;
+        frame=requestAnimationFrame(draw);
+      };
+      const stopAnimation=()=>{
+        if(frame)cancelAnimationFrame(frame);
+        frame=0;
+        animationRunning=false;
+      };
+      resize();startAnimation();
       window.addEventListener("resize",resize,{passive:true});
-      document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!frame)draw()});
-      window.addEventListener("pagehide",()=>{cancelAnimationFrame(frame);frame=0},{once:true});
+      document.addEventListener("visibilitychange",()=>{
+        if(document.hidden)stopAnimation();
+        else startAnimation();
+      });
+      window.addEventListener("pagehide",stopAnimation);
+      window.addEventListener("pageshow",startAnimation);
     } else canvas.remove();
   }
 })();
