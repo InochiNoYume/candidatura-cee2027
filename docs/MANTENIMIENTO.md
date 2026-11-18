@@ -58,3 +58,14 @@ La auditoría recorrió 34 combinaciones de página y dispositivo, registró cer
 - El menú horizontal se reserva para pantallas de más de 1240 px; hasta 1240 px se utiliza el menú desplegable para evitar que los grupos se compriman.
 - Cada grupo del menú debe mostrar una sola flecha, proporcionada por el elemento `.nav-chevron` generado en `js/main.js`; no añadir una segunda flecha mediante pseudo-elementos.
 - La auditoría responsive cubre 390, 768, 1024, 1240, 1280 y 1440 px. Revisar especialmente el salto entre 1240 y 1280 px.
+
+ 
+## Asistente informativo y efectos visuales
+
+- El asistente del sitio utiliza una Pages Function en `functions/api/asistente.js` y el binding de Cloudflare Workers AI llamado `AI`.
+- En Cloudflare Pages: Settings → Functions → Workers AI bindings → Add binding; nombre de variable `AI`; guardar y volver a desplegar.
+- El modelo se invoca únicamente desde el servidor. No colocar claves API ni credenciales en JavaScript del navegador.
+- El asistente responde con contexto oficial curado, limita cada pregunta a 300 caracteres y no persiste el historial. La limitación temporal en memoria de la Function es orientativa por instancia, no un rate limit global; para límites estrictos, configurar una regla de rate limiting de Cloudflare.
+- Antes de publicar, confirmar el binding `AI` y probar `POST /api/asistente`. Sin binding, la interfaz informa que el servicio todavía no está activado.
+- El rastro de partículas se comparte entre páginas, usa pointer events para mouse y tacto, limita la cantidad de partículas y se desactiva con `prefers-reduced-motion`.
+- Los degradados y controles visuales usan CSS local; no se incorporan librerías de terceros.
