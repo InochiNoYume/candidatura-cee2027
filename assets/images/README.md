@@ -1,19 +1,23 @@
-# Imágenes del sitio CEE 2027 · CEAT
+# Recursos de imagen · CEE 2027
 
-Esta carpeta reúne las imágenes utilizadas por la web. Mantén los nombres en minúsculas, sin espacios ni tildes, y usa extensiones reales: .png, .jpg o .webp.
+Esta carpeta organiza los recursos gráficos utilizados por el sitio. Mantén los nombres en minúsculas, sin espacios ni tildes, y conserva siempre la extensión real del archivo.
 
 ## Carpetas
-- `logo/`: logotipos institucionales y de la candidatura.
-- `integrantes/`: fotografías individuales autorizadas.
+
+- `logo/`: logotipo institucional y, si se entrega, identidad gráfica oficial de la candidatura.
+- `illustrations/`: ilustraciones conceptuales SVG utilizadas en la portada y los ejes.
+- `ejes/`: espacio para recursos gráficos específicos de cada eje.
+- `integrantes/`: retratos individuales autorizados.
 - `grupo/`: fotografías grupales autorizadas.
-- `actividades/`: fotografías de actividades y eventos.
-- `ejes/`: imágenes ilustrativas de los ejes programáticos.
+- `actividades/`: fotografías de actividades reales autorizadas.
+- `og/`: imagen de vista previa para redes y mensajería.
 
-## Nombres sugeridos
-- `logo/logo-ceat.png`
-- `integrantes/foto-presidenta.png`
-- `integrantes/foto-vicepresidenta.png`
-- `integrantes/foto-secretario-ejecutivo.png`
-- `grupo/foto-lista-completa.jpg`
+## Reglas generales
 
-Si una imagen es JPG, conserva la extensión `.jpg`; no basta con cambiarle el nombre a `.png`. Antes de publicar fotografías de estudiantes, confirma que exista autorización para su uso en el sitio.
+- Usa nombres descriptivos en minúsculas, sin espacios, tildes ni caracteres especiales; separa palabras con guiones.
+- Conserva la extensión auténtica: no cambies un JPG a PNG solo renombrando el archivo.
+- Para fotografías, prefiere WebP o JPEG optimizado; conserva PNG cuando necesites transparencia.
+- Para ilustraciones vectoriales, usa SVG limpio y accesible.
+- No publiques fotografías de estudiantes sin autorización.
+- No uses imágenes de muestra como evidencia de actividades realizadas.
+- Al cambiar el nombre o la ubicación de un recurso, actualiza todas sus referencias HTML/CSS y verifica que no queden enlaces rotos.
