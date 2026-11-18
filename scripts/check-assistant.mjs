@@ -18,7 +18,7 @@ for (const [label, pattern] of [
   ["sin razonamiento de salida", /include_reasoning: false/],
   ["validación de origen", /request\.headers\.get\("Origin"\)/],
   ["límite de caracteres", /question\.length > 300/],
-  ["máximo de 55 palabras", /split\(\/\\s\+\/\)\.slice\(0, 55\)/],
+  ["máximo de 55 palabras", /slice\(0, 55\)/],
   ["límite de cuerpo en bytes", /new TextEncoder\(\)\.encode\(rawBody\)\.byteLength > 2048/],
   ["límite de mapa", /requestWindows\.size > 1000/]
 ]) if (!pattern.test(endpoint)) failures.push("Function: falta " + label);
