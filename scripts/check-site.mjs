@@ -64,7 +64,7 @@ for (const file of htmlFiles) {
     }
     if (!/<button\b[^>]*class=["'][^"']*\bmenu-toggle\b/i.test(html)) failures.push(`${file}: falta botón del menú móvil`);
     if (!/<nav\b[^>]*id=["']site-nav["']/i.test(html)) failures.push(`${file}: falta navegación #site-nav`);
-    if (!/<script\b(?=[^>]*\bsrc=["'][^"']*js\/main\.js["'])(?=[^>]*\bdefer\b)[^>]*>/i.test(html)) failures.push(`${file}: main.js debe cargarse con defer`);
+    if (!/<script(?=[^>]*src=["'][^"']*main[.]js["'])(?=[^>]*defer)[^>]*>/i.test(html)) failures.push(`${file}: main.js debe cargarse con defer`);
   }
   const tagStack = [];
   for (const match of html.matchAll(/<!--[\s\S]*?-->|<![^>]*>|<\/?([a-z][\w:-]*)\b[^>]*>/gi)) {
