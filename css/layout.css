@@ -121,3 +121,76 @@ img{max-width:100%}a,button{-webkit-tap-highlight-color:transparent}
  .footer-bottom{gap:8px;flex-direction:column}.quick-access-card,.public-info-card{min-height:0}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+/* =========================================================
+   Ajustes de estructura global y comportamiento responsive
+   ========================================================= */
+
+/* Sticky footer real: permanece al final del viewport en páginas cortas,
+   pero sigue el flujo normal y nunca tapa el contenido. */
+html, body { min-height: 100%; }
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.site-header { flex: 0 0 auto; }
+#contenido, main {
+  flex: 1 0 auto;
+  width: 100%;
+}
+.site-footer {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* En pantallas intermedias la navegación también pasa al menú desplegable.
+   Evita que los enlaces se monten sobre el logo o se salgan del encabezado. */
+@media (max-width: 1180px) {
+  .menu-toggle { display: flex !important; }
+  .site-nav {
+    display: none !important;
+    position: absolute;
+    top: 74px;
+    left: 0;
+    right: 0;
+    z-index: 80;
+    padding: 12px 24px 22px;
+    background: rgba(255,255,255,.99);
+    border-bottom: 1px solid var(--border-soft);
+    box-shadow: 0 18px 35px rgba(35,15,15,.11);
+    align-items: stretch;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .site-nav.open { display: flex !important; }
+  .site-nav a { padding: 12px 5px; font-size: 13px; }
+  .site-nav a.active:not(.nav-cta)::after { display: none; }
+  .site-nav .nav-cta { margin-top: 8px; text-align: center; }
+}
+@media (min-width: 1181px) {
+  .menu-toggle { display: none !important; }
+  .site-nav { display: flex !important; }
+}
+@media (max-width: 560px) {
+  .site-nav { top: 70px; padding: 10px 18px 20px; }
+}
+
+/* Protección frente a desbordamientos horizontales y elementos largos. */
+body { overflow-x: clip; }
+main, section, .container, .footer-main, .footer-links { min-width: 0; }
+img, svg, video, iframe { max-width: 100%; }
+.footer-links a, .brand, .page-hero h1, .team-card h3 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 560px) {
+  .footer-main { gap: 26px; }
+  .footer-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; width: 100%; }
+  .footer-links a { font-size: 12px; }
+  .footer-bottom { align-items: flex-start; }
+}
