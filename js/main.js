@@ -137,6 +137,41 @@
     revealItems.forEach(element => observer.observe(element));
   } else revealItems.forEach(element=>element.classList.add("is-visible"));
 
+
+  // Filtros rápidos de agenda, galería, noticias y transparencia.
+  document.querySelectorAll("[data-filter-group]").forEach(group => {
+    const name = group.getAttribute("data-filter-group");
+    const buttons = Array.from(group.querySelectorAll("[data-filter]"));
+    const items = Array.from(document.querySelectorAll('[data-filter-item="'+name+'"]'));
+    const empty = document.querySelector('[data-filter-empty="'+name+'"]');
+    const result = group.querySelector(".filter-result");
+    const update = value => {
+      buttons.forEach(button => {
+        const active = button.getAttribute("data-filter") === value;
+        button.classList.toggle("is-active",active);
+        button.setAttribute("aria-pressed",String(active));
+      });
+      let visible = 0;
+      items.forEach(item => {
+        const categories = (item.getAttribute("data-category") || "").split(/\\s+/);
+        const show = name === "news" ? value === "all" : value === "all" || categories.includes(value);
+        item.hidden = !show;
+        if (show) visible++;
+      });
+      if (empty) {
+        if (name === "news") {
+          empty.hidden = false;
+          empty.textContent = value === "all"
+            ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
+            : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
+        } else empty.hidden = visible > 0;
+      }
+      if (result) result.textContent = visible + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : " estados");
+    };
+    buttons.forEach(button => button.addEventListener("click",() => update(button.getAttribute("data-filter"))));
+    update("all");
+  });
+
   const progress = document.createElement("div");
   progress.className = "reading-progress";
   progress.setAttribute("aria-hidden","true");
