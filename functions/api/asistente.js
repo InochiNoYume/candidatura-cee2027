@@ -96,8 +96,14 @@ export async function onRequestPost({ request, env }) {
       })
     });
     if (!response.ok) {
+      const providerError = await response.json().catch(() => ({}));
+      const providerCode = providerError?.error?.code || providerError?.error?.type || "unknown";
+      console.error("Groq API request failed", { status: response.status, code: String(providerCode).slice(0, 80) });
       if (response.status === 429) return json({ error: "El asistente alcanzó temporalmente su cuota. Inténtalo más tarde." }, 429);
-      return json({ error: "El servicio de IA no está disponible." }, 502);
+      if (response.status === 401 || response.status === 403) {
+        return json({ error: "Groq no aceptó la clave configurada. Comprueba GROQ_API_KEY en el entorno de Cloudflare que estás probando y vuelve a desplegar." }, 502);
+      }
+      return json({ error: "Groq no pudo completar la solicitud. Revisa los registros de la Function en Cloudflare." }, 502);
     }
     const payload = await response.json();
     const rawAnswer = payload?.choices?.[0]?.message?.content || "";
