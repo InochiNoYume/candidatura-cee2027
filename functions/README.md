@@ -1,10 +1,10 @@
 # Asistente CEE 2027
 
 1. En Cloudflare Pages → Settings → Variables and Secrets, añade **GROQ_API_KEY** como secret.
-2. Opcional: define **GROQ_MODEL**. Predeterminado: \`openai/gpt-oss-20b\`.
-3. Despliega y prueba \`POST /api/asistente\`.
+2. Opcional: define **GROQ_MODEL**. Predeterminado: `openai/gpt-oss-20b`.
+3. Despliega y prueba `POST /api/asistente`.
 
-La clave se usa solo en el servidor mediante \`Authorization: Bearer\`. Nunca la incluyas en HTML, JavaScript, commits o mensajes.
+La clave se usa solo en el servidor mediante `Authorization: Bearer`. Nunca la incluyas en HTML, JavaScript, commits o mensajes.
 
 Para ahorrar tokens: solo se envía la pregunta actual (sin historial), el contexto está resumido, las respuestas tienen un máximo de 55 palabras, el máximo de finalización es 120 tokens y el razonamiento se limita a nivel bajo. Las preguntas fuera de tema reciben una respuesta fija del servidor.
 
