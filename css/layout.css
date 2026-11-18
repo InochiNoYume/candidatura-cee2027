@@ -988,3 +988,49 @@ main li{font-size:15px;line-height:1.75}
   main p:not(.eyebrow){font-size:14.5px!important}
   .hero-content .hero-lead{font-size:15px!important}
 }
+
+
+/* CEE 2027 · Legibilidad reforzada en escritorio
+   Se aplica solo a pantallas amplias para conservar el ritmo móvil ya auditado. */
+@media (min-width: 761px) {
+  body { font-size: 17px; }
+  main p:not(.eyebrow) {
+    font-size: clamp(16px, 1.15vw, 18px) !important;
+    line-height: 1.82;
+  }
+  main li {
+    font-size: 16.5px;
+    line-height: 1.8;
+  }
+  .hero-content .hero-lead {
+    font-size: clamp(17px, 1.45vw, 19px) !important;
+    line-height: 1.8;
+  }
+  .page-hero p:not(.eyebrow):not(.breadcrumb) {
+    font-size: clamp(16px, 1.45vw, 18px) !important;
+    line-height: 1.8;
+  }
+  .intro-copy p, .closing-grid p { font-size: 17px !important; }
+  .pillar-card p, .team-card p, .initiative p,
+  .faq-item p, .news-empty-card p, .news-sidebar p:not(.eyebrow),
+  .gallery-category p, .gallery-footnote p,
+  .quick-access-card p, .work-method-card p, .public-info-card p {
+    font-size: 15.5px !important;
+    line-height: 1.78;
+  }
+  .initiative h3 { font-size: 16px !important; }
+  .axis-card > p { font-size: 16.5px !important; }
+  .agenda-event p, .agenda-note p, .transparency-alert p {
+    font-size: 15.5px !important;
+    line-height: 1.78;
+  }
+  .status-item strong, .faq-item summary { font-size: 16.5px !important; }
+  .filter-label, .filter-chip, .filter-result { font-size: 13px !important; }
+  .footer-group a, .footer-links a { font-size: 13px !important; line-height: 1.7; }
+  .nav-item-title { font-size: 13px !important; }
+  .nav-item-description { font-size: 12px !important; line-height: 1.55; }
+  .tag, .status, .status-pill, .news-status,
+  .agenda-kicker, .agenda-date span, .agenda-date small {
+    font-size: 12px !important;
+  }
+}
