@@ -125,16 +125,26 @@ try {
           const launcher = document.querySelector(".cee-assistant-launcher");
           const panel = document.querySelector("#cee-assistant-panel");
           const trail = document.querySelector(".cee-pointer-trail");
-          if (!launcher) errors.push("no aparece el botón del asistente");
-          if (!panel) errors.push("no aparece el panel del asistente");
+          if (!launcher) errors.push("no aparece el botón del Asistente CEE");
+          if (!panel) errors.push("no aparece el panel del Asistente CEE");
           if (!trail) errors.push("no aparece el canvas de partículas");
+          if (launcher && !/Asistente CEE/.test(launcher.textContent)) errors.push("el botón no muestra el nombre Asistente CEE");
+          if (panel && !/Asistente CEE/.test(panel.querySelector("#cee-assistant-title")?.textContent || "")) errors.push("el panel no muestra el título Asistente CEE");
           if (launcher && panel) {
+            window.scrollTo(0, 650);
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
             const input = panel.querySelector("#cee-assistant-input");
             if (!input || Number(input.getAttribute("maxlength")) !== 300) errors.push("el campo del asistente no limita la pregunta a 300 caracteres");
             panel.querySelector(".cee-assistant-close")?.click();
             if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
+            const topButton = document.querySelector(".back-to-top");
+            if (topButton && getComputedStyle(topButton).visibility === "visible") {
+              const a = launcher.getBoundingClientRect(), b = topButton.getBoundingClientRect();
+              if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
+                errors.push("el botón Asistente CEE se superpone con Volver arriba");
+              }
+            }
           }
           return errors;
         });
