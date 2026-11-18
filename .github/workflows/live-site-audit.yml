@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Allow GitHub Pages deployment to finish
+      - name: Allow Cloudflare Pages deployment to finish
         if: github.event_name == 'push'
         run: sleep 75
       - name: Set up Node.js
