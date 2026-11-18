@@ -7,8 +7,8 @@ const OUT_OF_SCOPE = "¡Hola! Soy el Asistente CEE y estoy especializado exclusi
 
 const SITE_TERMS = [
   "cee", "ceat", "liceo", "web", "pagina", "sitio", "candidatura", "lista",
-  "proyecto", "propuesta", "eje", "agenda", "fecha", "votacion", "votar",
-  "eleccion", "inscripcion", "difusion", "presentacion", "traspaso",
+  "proyecto", "propuesta", "eje", "agenda", "fecha", "dia", "dias", "horario", "noviembre", "diciembre", "votacion", "votar", "vota", "voto", "elecciones",
+  "eleccion", "inscripcion", "inscrib", "difusion", "presentacion", "presenta", "traspaso",
   "transparencia", "noticia", "galeria", "foto", "imagen", "escucha",
   "formulario", "pregunta", "contacto", "acta", "informe", "comunidad",
   "memoria", "privacidad", "estudiante", "alumnado", "alumno", "alumna",
