@@ -65,7 +65,7 @@ export async function onRequestPost({ request, env }) {
         },
         { role: "user", content: question }
       ],
-      max_tokens: 190,
+      max_completion_tokens: 190,
       temperature: 0.2
     });
     const answer = typeof result?.response === "string" ? result.response.trim() : "";
