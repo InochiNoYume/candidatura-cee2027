@@ -15,9 +15,9 @@ El sitio se publica mediante **Cloudflare Pages**, conectado al repositorio GitH
 - Proveedor: Cloudflare Pages.
 - Repositorio: `InochiNoYume/candidatura-cee2027`.
 - Rama de producción: `main`.
-- Directorio raíz: `/`.
+- Directorio raíz: raíz del repositorio (`.`).
 - Comando de compilación: vacío (sitio estático sin proceso de build).
-- Directorio de salida: `/`.
+- Directorio de salida: `.`.
 
 ## Estructura
 
