@@ -140,8 +140,8 @@ if (!/\.site-header \.menu-toggle span\s*\{[^}]*margin:\s*0\s*!important/s.test(
   failures.push("Menú móvil: falta neutralizar los márgenes heredados de las barras del icono");
 if (!/\.site-header \.menu-toggle span\s*\{[^}]*flex:\s*0 0 2px\s*!important/s.test(layoutSource))
   failures.push("Menú móvil: las tres barras no tienen altura fija");
-if (!/@media\s*\(max-width:\s*1180px\)[\s\S]*?\.site-header \.menu-toggle\s*\{[^}]*display:\s*flex\s*!important/s.test(layoutSource))
-  failures.push("Menú móvil: falta mostrar el botón bajo 1180px");
+if (!/@media\s*\(max-width:\s*1240px\)[\s\S]*?\.menu-toggle\s*\{[^}]*display:\s*flex\s*!important/s.test(layoutSource))
+  failures.push("Menú móvil: falta mostrar el botón bajo 1240px");
 
 for (const file of ["css/styles.css","css/layout.css"]) {
   const source = read(file);

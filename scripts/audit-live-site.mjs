@@ -12,7 +12,11 @@ const routes = [
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
-  { name: "desktop", width: 1440, height: 900, isMobile: false, hasTouch: false }
+  { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
+  { name: "small-laptop", width: 1024, height: 900, isMobile: false, hasTouch: false },
+  { name: "nav-breakpoint", width: 1240, height: 900, isMobile: false, hasTouch: false },
+  { name: "desktop", width: 1280, height: 900, isMobile: false, hasTouch: false },
+  { name: "wide-desktop", width: 1440, height: 900, isMobile: false, hasTouch: false }
 ];
 const browser = await chromium.launch({ headless: true });
 const results = [];
@@ -88,12 +92,18 @@ try {
           const nav = document.querySelector(".site-nav");
           const menuButton = document.querySelector(".menu-toggle");
           const dropdown = nav?.querySelector("details.nav-dropdown");
+          if (window.matchMedia("(min-width: 1241px)").matches && nav && nav.scrollWidth > nav.clientWidth + 2) {
+            errors.push("la navegación horizontal desborda su espacio disponible");
+          }
           if (dropdown) {
+            const summary = dropdown.querySelector("summary");
+            const pseudoArrow = summary ? getComputedStyle(summary, "::after").content : "none";
+            if (pseudoArrow !== "none" && pseudoArrow !== "normal") errors.push("el desplegable muestra una flecha CSS duplicada");
             dropdown.open = false;
             dropdown.querySelector("summary")?.click();
             if (!dropdown.open) errors.push("el desplegable no se abre");
           }
-          if (window.matchMedia("(max-width: 1180px)").matches && menuButton && nav) {
+          if (window.matchMedia("(max-width: 1240px)").matches && menuButton && nav) {
             if (!nav.classList.contains("open")) menuButton.click();
             if (!nav.classList.contains("open") || menuButton.getAttribute("aria-expanded") !== "true") {
               errors.push("el menú móvil no actualiza su estado abierto");
@@ -101,7 +111,7 @@ try {
           }
           document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
           if (dropdown?.open) errors.push("Escape no cierra el desplegable");
-          if (window.matchMedia("(max-width: 1180px)").matches && nav &&
+          if (window.matchMedia("(max-width: 1240px)").matches && nav &&
               (nav.classList.contains("open") || menuButton?.getAttribute("aria-expanded") !== "false")) {
             errors.push("Escape no cierra el menú móvil o no actualiza aria-expanded");
           }
