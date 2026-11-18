@@ -1,5 +1,42 @@
 /* CEE 2027 · CEAT — interacciones globales */
 (() => {
+  // Navegación y enlaces del pie unificados para todas las páginas.
+  const inPages = /\/pages\//.test(window.location.pathname);
+  const pageBase = inPages ? "" : "pages/";
+  const homeHref = inPages ? "../index.html" : "index.html";
+  const nav = document.querySelector(".site-nav");
+  const footerLinks = document.querySelector(".footer-links");
+  const link = (href,label) => '<a href="' + href + '">' + label + '</a>';
+  if (nav) nav.innerHTML =
+    link(homeHref,"Inicio") +
+    link(pageBase+"lista.html","Nuestra lista") +
+    link(pageBase+"proyecto.html","Proyecto") +
+    link(pageBase+"agenda.html","Agenda") +
+    link(pageBase+"noticias.html","Noticias") +
+    link(pageBase+"galeria.html","Galería") +
+    '<details class="nav-dropdown"><summary>Gestión</summary><div class="nav-dropdown-panel">' +
+    link(pageBase+"transparencia.html","Transparencia") +
+    link(pageBase+"actas.html","Actas y acuerdos") +
+    link(pageBase+"informes.html","Informes de gestión") +
+    link(pageBase+"memoria.html","Memoria de actividades") +
+    '</div></details>' +
+    '<details class="nav-dropdown"><summary>Comunidad</summary><div class="nav-dropdown-panel">' +
+    link(pageBase+"comunidad-tp.html","Comunidad TP") +
+    link(pageBase+"preguntas.html","Preguntas frecuentes") +
+    link(pageBase+"contacto.html","Contacto") +
+    link(pageBase+"privacidad.html","Privacidad y participación") +
+    '</div></details>' +
+    link(pageBase+"buscar.html","Buscar") +
+    '<a class="nav-cta" href="'+pageBase+'escucha.html">CEAT Te Escucha</a>';
+  if (footerLinks) footerLinks.innerHTML = [
+    ["lista.html","Nuestra lista"],["proyecto.html","Proyecto"],["agenda.html","Agenda"],
+    ["transparencia.html","Transparencia"],["noticias.html","Noticias"],["galeria.html","Galería"],
+    ["actas.html","Actas y acuerdos"],["informes.html","Informes de gestión"],
+    ["comunidad-tp.html","Comunidad TP"],["memoria.html","Memoria de actividades"],
+    ["preguntas.html","Preguntas frecuentes"],["contacto.html","Contacto"],
+    ["privacidad.html","Privacidad"],["buscar.html","Buscar"],["escucha.html","CEAT Te Escucha"]
+  ].map(([file,label]) => link(pageBase+file,label)).join("");
+
   const menuButton = document.querySelector(".menu-toggle");
   const navigation = document.querySelector(".site-nav");
   const header = document.querySelector(".site-header");
@@ -21,7 +58,7 @@
       if (event.target.closest("a")) closeMenu();
     });
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeMenu();
+      if (event.key === "Escape") { closeMenu(); document.querySelectorAll(".nav-dropdown[open]").forEach(item => item.removeAttribute("open")); }
     });
     document.addEventListener("click", event => {
       if (!header?.contains(event.target)) closeMenu();
@@ -34,7 +71,7 @@
     const targetPath = new URL(link.getAttribute("href"), window.location.href).pathname.replace(/\/$/, "/index.html");
     const current = targetPath === currentPath;
     link.classList.toggle("active", current);
-    if (current) link.setAttribute("aria-current", "page");
+    if (current) { link.setAttribute("aria-current", "page"); link.closest("details.nav-dropdown")?.setAttribute("open", ""); }
     else link.removeAttribute("aria-current");
   });
 
@@ -87,7 +124,7 @@
   };
   window.addEventListener("scroll",updateScrollUI,{passive:true});
   window.addEventListener("resize",() => {
-    if (window.innerWidth > 1040) closeMenu();
+    if (window.innerWidth > 1180) closeMenu();
     updateScrollUI();
   },{passive:true});
   backToTop.addEventListener("click",() => {

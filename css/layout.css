@@ -194,3 +194,34 @@ img, svg, video, iframe { max-width: 100%; }
   .footer-links a { font-size: 12px; }
   .footer-bottom { align-items: flex-start; }
 }
+
+
+/* Navegación agrupada, coherente en todas las páginas. */
+.site-nav { gap:clamp(8px,1vw,15px); }
+.site-nav > a,.nav-dropdown > summary { font-size:11px;font-weight:700;color:#555;white-space:nowrap;cursor:pointer; }
+.nav-dropdown { position:relative; }
+.nav-dropdown > summary { list-style:none;padding:10px 2px; }
+.nav-dropdown > summary::-webkit-details-marker { display:none; }
+.nav-dropdown > summary::after { content:"⌄";margin-left:5px;color:var(--red); }
+.nav-dropdown[open] > summary,.nav-dropdown:has(a.active) > summary { color:var(--red); }
+.nav-dropdown-panel { position:absolute;top:calc(100% + 12px);left:-14px;z-index:100;min-width:225px;display:grid;gap:2px;padding:9px;background:#fff;border:1px solid var(--border-soft);border-radius:10px;box-shadow:0 18px 40px rgba(35,15,15,.14); }
+.nav-dropdown-panel a { display:block;padding:10px 12px;border-radius:6px;color:#555;font-size:12px; }
+.nav-dropdown-panel a:hover,.nav-dropdown-panel a.active { color:var(--red);background:#fbf4f4; }
+.site-nav a:focus-visible,.nav-dropdown summary:focus-visible,.menu-toggle:focus-visible,.footer-links a:focus-visible { outline:3px solid #bd7378;outline-offset:4px;border-radius:4px; }
+@media(max-width:1180px) {
+ .site-nav { gap:0;max-height:calc(100svh - 74px);overflow-y:auto; }
+ .nav-dropdown > summary { display:block;padding:12px 5px;font-size:13px;border-top:1px solid #f0eaea; }
+ .nav-dropdown-panel { position:static;min-width:0;border:0;border-radius:0;box-shadow:none;padding:0 0 8px 14px;background:#faf8f8; }
+ .nav-dropdown-panel a { padding:10px 12px; }
+ .nav-dropdown[open] > summary::after { content:"⌃"; }
+ .site-nav > a { display:block; }
+}
+@media(min-width:1181px) { .nav-dropdown-panel { min-width:235px; } }
+@media print {
+ .site-header,.site-footer,.menu-toggle,.back-to-top,.reading-progress,.hero-actions { display:none!important; }
+ body { display:block;color:#111;background:#fff; }
+ .page-hero { color:#111;background:#fff;padding:20px 0; }
+ .page-hero p,.page-hero .breadcrumb { color:#333!important; }
+ .content-section,.section { padding:20px 0; }
+ .team-card,.axis-card,.initiative,.status-item { break-inside:avoid;box-shadow:none; }
+}
