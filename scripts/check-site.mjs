@@ -59,7 +59,7 @@ for (const file of htmlFiles) {
   if ((html.match(/<main\b/gi) || []).length !== 1) failures.push(`${file}: debe contener exactamente un <main>`);
   if (file !== "404.html") {
     for (const tag of ["header", "footer"]) {
-      if ((html.match(new RegExp("<" + tag + "\\b", "gi")) || []).length !== 1)
+      if ((html.match(new RegExp("<" + tag + "\b", "gi")) || []).length !== 1)
         failures.push(`${file}: debe contener exactamente un <${tag}>`);
     }
     if (!/<button\b[^>]*class=["'][^"']*\bmenu-toggle\b/i.test(html)) failures.push(`${file}: falta botón del menú móvil`);
@@ -201,9 +201,9 @@ for (const match of navigationSource.matchAll(/item\(["']([^"']+)["']/g)) {
 /* Rendimiento de imágenes y búsqueda tolerante a tildes. */
 for (const file of ["pages/galeria.html","pages/proyecto.html"]) {
   const html = read(file);
-  for (const image of html.matchAll(/<img\\b([^>]*)>/gi)) {
-    if (!/\\bloading=["']lazy["']/i.test(image[1])) failures.push(`${file}: imagen de contenido sin loading="lazy"`);
-    if (!/\\bdecoding=["']async["']/i.test(image[1])) failures.push(`${file}: imagen de contenido sin decoding="async"`);
+  for (const image of html.matchAll(/<img\b([^>]*)>/gi)) {
+    if (!/\bloading=["']lazy["']/i.test(image[1])) failures.push(`${file}: imagen de contenido sin loading="lazy"`);
+    if (!/\bdecoding=["']async["']/i.test(image[1])) failures.push(`${file}: imagen de contenido sin decoding="async"`);
   }
 }
 const searchSource = read("js/search.js");
