@@ -66,7 +66,7 @@ Estos checks no sustituyen una revisión visual en navegador. Después de cambio
 
 ## Seguridad
 
-Las cabeceras y la política CSP para Cloudflare Pages están en `_headers`. Las pautas de seguridad se documentan en [SECURITY.md](SECURITY.md). El sitio es estático y no requiere un servidor SSH.
+Las cabeceras y la política CSP para Cloudflare Pages están en `_headers`. Las pautas de seguridad se documentan en [SECURITY.md](SECURITY.md). El sitio es estático y no requiere administrar un servidor propio.
 
 ## Tecnología
 
