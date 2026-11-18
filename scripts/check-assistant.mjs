@@ -4,6 +4,7 @@ const failures = [];
 const endpoint = fs.readFileSync("functions/api/asistente.js", "utf8");
 const client = fs.readFileSync("js/main.js", "utf8");
 const styles = fs.readFileSync("css/styles.css", "utf8");
+const privacy = fs.readFileSync("pages/privacidad.html", "utf8");
 
 for (const [label, pattern] of [
   ["binding de Workers AI", /env\.AI\.run\s*\(/],
@@ -11,7 +12,7 @@ for (const [label, pattern] of [
   ["validación de origen", /request\.headers\.get\("Origin"\)/],
   ["límite de pregunta", /question\.length\s*>\s*300/],
   ["control de tamaño", /Content-Length/],
-  ["respuestas sin caché", /Cache-Control:\s*"no-store"/],
+  ["respuestas sin caché", /"Cache-Control":\s*"no-store"/],
   ["contexto editorial oficial", /CONTEXTO OFICIAL/],
   ["respuesta con límite de tokens", /max_tokens:\s*190/]
 ]) if (!pattern.test(endpoint)) failures.push("Function: falta " + label);
@@ -31,6 +32,7 @@ for (const [label, pattern] of [
   ["canvas sin capturar eventos", /\.cee-pointer-trail\s*\{[^}]*pointer-events:\s*none/s]
 ]) if (!pattern.test(styles)) failures.push("CSS: falta " + label);
 
+if (!/Cloudflare Workers AI/.test(privacy) || !/dirección IP/.test(privacy) || !/datos personales/.test(privacy)) failures.push("Privacidad: falta explicar el tratamiento de preguntas, IP y datos personales.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("Cliente: el asistente no debe persistir preguntas ni conversaciones.");
 if (failures.length) {
   console.error("ASSISTANT CHECKS FAILED");
