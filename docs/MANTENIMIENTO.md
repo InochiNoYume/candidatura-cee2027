@@ -17,7 +17,7 @@
 Cada cambio en `main` ejecuta:
 
 1. **Site quality checks**: sintaxis JavaScript, estructura HTML, enlaces y anclas locales, recursos CSS, metadatos, navegación y requisitos básicos de accesibilidad.
-2. **Live accessibility and performance audit**: 17 rutas en móvil y escritorio, filtros, navegación, buscador, accesibilidad automatizada y Lighthouse en cuatro páginas clave.
+2. **Live accessibility and performance audit**: 17 rutas en seis anchos de pantalla (móvil, tablet, portátil y escritorio), filtros, navegación, buscador, accesibilidad automatizada y Lighthouse en cuatro páginas clave.
 3. **GitHub Pages deployment**: construcción y publicación.
 
 No considerar un cambio terminado hasta que los tres flujos del commit correspondiente finalicen correctamente.
@@ -51,3 +51,10 @@ La auditoría recorrió 34 combinaciones de página y dispositivo, registró cer
 - El logotipo institucional PNG ocupa aproximadamente 462 KB. Reducirlo únicamente a partir del archivo original y comparar transparencia, nitidez y colores antes de sustituirlo.
 - Los estilos tienen capas y selectores repetidos por los sucesivos refinamientos visuales. Consolidarlos en una tarea aislada con capturas de referencia y auditoría responsive; no hacer una limpieza masiva junto con cambios funcionales.
 - Mantener la vista previa social y revisar compatibilidad de imágenes Open Graph en las plataformas donde se comparta el sitio.
+
+
+## Navbar y puntos de corte
+
+- El menú horizontal se reserva para pantallas de más de 1240 px; hasta 1240 px se utiliza el menú desplegable para evitar que los grupos se compriman.
+- Cada grupo del menú debe mostrar una sola flecha, proporcionada por el elemento `.nav-chevron` generado en `js/main.js`; no añadir una segunda flecha mediante pseudo-elementos.
+- La auditoría responsive cubre 390, 768, 1024, 1240, 1280 y 1440 px. Revisar especialmente el salto entre 1240 y 1280 px.
