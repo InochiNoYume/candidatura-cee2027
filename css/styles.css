@@ -338,3 +338,72 @@ body {
   .cee-pointer-trail { display:none; }
   .cee-assistant-launcher { transition:none; }
 }
+
+
+/* Asistente CEE · identidad visual y posición coordinada con Volver arriba */
+.cee-assistant-launcher {
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(86px, calc(env(safe-area-inset-bottom) + 78px));
+  min-height: 52px;
+  padding: 0 18px 0 12px;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,.42);
+  border-radius: 16px 16px 16px 5px;
+  background: linear-gradient(135deg,#a33340 0%,#741724 52%,#3e0d17 100%);
+  box-shadow: 0 12px 30px rgba(57,10,18,.28), inset 0 1px 0 rgba(255,255,255,.16);
+  letter-spacing: .01em;
+}
+.cee-assistant-launcher:hover { transform: translateY(-3px); }
+.cee-assistant-launcher:focus-visible,
+.cee-assistant-close:focus-visible,
+.cee-assistant-form button:focus-visible {
+  outline: 3px solid #d79aa0;
+  outline-offset: 3px;
+}
+.cee-assistant-launcher-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 10px 10px 10px 3px;
+  background: rgba(255,255,255,.13);
+  color: #fff;
+  font-size: 17px;
+}
+.cee-assistant-panel {
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(148px, calc(env(safe-area-inset-bottom) + 140px));
+  border: 1px solid rgba(128,21,21,.18);
+  border-radius: 20px 20px 20px 7px;
+  box-shadow: 0 26px 76px rgba(42,9,16,.25), 0 4px 18px rgba(128,21,21,.08);
+}
+.cee-assistant-head {
+  padding: 20px 20px 13px;
+  background: radial-gradient(circle at 92% 8%,rgba(180,76,87,.14),transparent 38%),linear-gradient(135deg,#fff,#fbf0ef);
+}
+.cee-assistant-head h2 { font-size: 20px; letter-spacing: -.025em; }
+.cee-assistant-status {
+  display:flex; align-items:center; gap:7px; margin:7px 0 0;
+  color:#80676a; font-size:10px; font-weight:700;
+}
+.cee-assistant-status span {
+  width:7px; height:7px; border-radius:50%; background:#9b4548;
+  box-shadow:0 0 0 3px rgba(155,69,72,.12);
+}
+@media (max-width: 560px) {
+  .cee-assistant-launcher {
+    right: max(15px, env(safe-area-inset-right));
+    bottom: max(68px, calc(env(safe-area-inset-bottom) + 62px));
+    min-height: 48px;
+    padding: 0 15px 0 10px;
+  }
+  .cee-assistant-panel {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(124px, calc(env(safe-area-inset-bottom) + 116px));
+    width: calc(100vw - 24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cee-assistant-launcher { transition: none; }
+}
