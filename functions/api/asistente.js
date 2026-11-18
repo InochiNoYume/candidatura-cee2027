@@ -36,8 +36,11 @@ export async function onRequestPost({ request, env }) {
   }
   const declaredLength = Number(request.headers.get("Content-Length") || 0);
   if (declaredLength > 2048) return json({ error: "Solicitud demasiado grande." }, 413);
+  let rawBody;
+  try { rawBody = await request.text(); } catch { return json({ error: "Solicitud no válida." }, 400); }
+  if (rawBody.length > 2048) return json({ error: "Solicitud demasiado grande." }, 413);
   let body;
-  try { body = await request.json(); } catch { return json({ error: "JSON no válido." }, 400); }
+  try { body = JSON.parse(rawBody); } catch { return json({ error: "JSON no válido." }, 400); }
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 300) return json({ error: "La pregunta debe tener entre 1 y 300 caracteres." }, 400);
 
@@ -51,6 +54,7 @@ export async function onRequestPost({ request, env }) {
   if (now - state.startedAt >= WINDOW_MS) { state.startedAt = now; state.count = 0; }
   state.count += 1;
   requestWindows.set(address, state);
+  while (requestWindows.size > 1000) requestWindows.delete(requestWindows.keys().next().value);
 
   try {
     const result = await env.AI.run(MODEL, {
