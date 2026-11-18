@@ -114,8 +114,8 @@ const requiredPages = [
 for (const file of requiredPages) if (!fs.existsSync(file)) failures.push(`Falta página requerida: ${file}`);
 
 const navigationSource = read("js/main.js");
-if (!navigationSource.includes(String.raw`split(/\\s+/)`))
-  failures.push("Filtros: la separación de categorías debe usar espacios en blanco correctamente (split(/\\s+/))");
+if (!navigationSource.includes("split(/" + String.fromCharCode(92) + "s+/)"))
+  failures.push("Filtros: la separación de categorías debe usar espacios en blanco correctamente.");
 const requiredNavigationPages = [
   "lista.html","proyecto.html","agenda.html","transparencia.html","actas.html",
   "informes.html","memoria.html","comunidad-tp.html","noticias.html","galeria.html",
