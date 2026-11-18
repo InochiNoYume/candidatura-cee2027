@@ -18,7 +18,7 @@ const SITE_TERMS = [
   "reconocimiento", "presidente de curso", "profesor"
 ];
 function mayRelateToSite(question) {
-  const normalized = question.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+  const normalized = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   return SITE_TERMS.some(term => normalized.includes(term));
 }
 const INSTRUCTIONS = \`Eres el asistente del sitio CEE 2027 · CEAT. Responde solo sobre esta web y la candidatura.
