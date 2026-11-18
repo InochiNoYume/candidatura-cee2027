@@ -64,7 +64,7 @@ La auditoría recorrió 34 combinaciones de página y dispositivo, registró cer
 
 - El asistente del sitio utiliza una Pages Function en `functions/api/asistente.js` y el binding de Cloudflare Workers AI llamado `AI`.
 - En Cloudflare Pages: Settings → Functions → Workers AI bindings → Add binding; nombre de variable `AI`; guardar y volver a desplegar.
-- El modelo se invoca únicamente desde el servidor. No colocar claves API ni credenciales en JavaScript del navegador.
+- El modelo Gemma 4 26B A4B se invoca únicamente desde el servidor. No colocar claves API ni credenciales en JavaScript del navegador.
 - El asistente responde con contexto oficial curado, limita cada pregunta a 300 caracteres y no persiste el historial. La limitación temporal en memoria de la Function es orientativa por instancia, no un rate limit global; para límites estrictos, configurar una regla de rate limiting de Cloudflare.
 - Antes de publicar, confirmar el binding `AI` y probar `POST /api/asistente`. Sin binding, la interfaz informa que el servicio todavía no está activado.
 - El rastro de partículas se comparte entre páginas, usa pointer events para mouse y tacto, limita la cantidad de partículas y se desactiva con `prefers-reduced-motion`.
