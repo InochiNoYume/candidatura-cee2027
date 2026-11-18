@@ -23,6 +23,7 @@ Los cambios enviados a `main` pueden activar el despliegue de producción. Los p
 - `css/layout.css`: ajustes compartidos de estructura, navegación, tarjetas y diseño responsive.
 - `js/main.js`: genera la navegación global y el pie de página, controla el menú adaptable, estados activos, filtros y efectos de entrada.
 - `js/search.js`: búsqueda interna.
+- `functions/api/asistente.js`: endpoint privado de servidor para el asistente con Workers AI.
 - `assets/images/logo/`: logotipo institucional.
 - `assets/images/illustrations/`: ilustraciones conceptuales en SVG.
 - `assets/images/actividades/`, `grupo/` e `integrantes/`: espacios reservados para fotografías reales autorizadas.
@@ -63,6 +64,10 @@ El workflow `.github/workflows/site-checks.yml` ejecuta:
 3. Comprobaciones de cabeceras, renderizado seguro del buscador y ausencia de material de claves privadas versionado mediante `scripts/check-security.mjs`.
 
 Estos checks no sustituyen una revisión visual en navegador. Después de cambios de CSS o navegación, comprueba escritorio, tablet y móvil, además de revisar la vista previa de Cloudflare y los comentarios del pull request.
+
+## Asistente IA
+
+El asistente informativo utiliza Cloudflare Workers AI desde una Pages Function. En Cloudflare Pages configura el binding **Workers AI** con nombre **AI** en Settings → Functions → Workers AI bindings y vuelve a desplegar. El modelo se ejecuta en el servidor; no se requiere exponer claves en el navegador. Sin el binding, el asistente muestra un aviso de servicio no activado. No se guarda el historial de preguntas; evita introducir datos personales.
 
 ## Seguridad
 
