@@ -53,16 +53,18 @@ try {
             details: axe.violations.map(violation => ({
               id: violation.id, impact: violation.impact, description: violation.description,
               help: violation.help, nodes: violation.nodes.length,
-              selectors: violation.nodes.slice(0, 5).map(node => node.target)
+              nodes: violation.nodes.map(node => ({ target: node.target, html: node.html, failureSummary: node.failureSummary }))
             }))
           }
         };
         results.push(item);
-        const expectedStatus = route === "404.html" ? 404 : 200;
+        const expectedStatus = 200;
         if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
+        if (route === "404.html" && !/Página no encontrada/i.test(layout.title)) failures.push(`${viewport.name} 404.html: el título no identifica la página no encontrada`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
+        if (axe.violations.length) failures.push(`${viewport.name} ${route}: ${axe.violations.length} violaciones de accesibilidad (${axe.violations.map(v => v.id).join(", ")})`);
       } catch (error) {
         failures.push(`${viewport.name} ${route}: ${error.message}`);
         results.push({ route, viewport: viewport.name, error: error.message });
@@ -71,6 +73,14 @@ try {
     }
     await context.close();
   }
+  const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
+  const missingTitle = await missingPage.title();
+  const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
+  if (missingResponse?.status() !== 404) failures.push(`Ruta inexistente: se esperaba HTTP 404 y se recibió ${missingResponse?.status()}`);
+  if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: GitHub Pages no mostró la página 404 personalizada");
+  results.push({ route: "__cee_audit_missing_route__", viewport: "desktop", status: missingResponse?.status() ?? null, title: missingTitle, heading: missingHeading });
+  await missingPage.close();
 } finally {
   await browser.close();
 }
@@ -79,7 +89,8 @@ fs.mkdirSync("audit-results", { recursive: true });
 fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
   generatedAt: new Date().toISOString(), base, routes: routes.length, viewports: viewports.map(v => v.name),
   summary: {
-    pagesTested: results.length,
+    pagesTested: results.length - 1,
+    missingRouteStatus: results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? null,
     accessibilityViolations: results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0),
     pagesWithAccessibilityIssues: results.filter(item => (item.accessibility?.violations || 0) > 0).length,
     failures

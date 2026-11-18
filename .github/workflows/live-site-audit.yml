@@ -3,9 +3,6 @@ name: Live accessibility and performance audit
 on:
   push:
     branches: [main]
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -17,7 +14,6 @@ concurrency:
 
 jobs:
   audit:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -39,6 +35,8 @@ jobs:
       - name: Run Lighthouse on key pages
         run: |
           mkdir -p audit-results/lighthouse
+          export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
+          echo "Lighthouse Chrome: $CHROME_PATH"
           for page in "" "pages/lista.html" "pages/proyecto.html" "pages/escucha.html"; do
             name=$(printf '%s' "${page:-home}" | tr '/.' '--')
             npx lighthouse "https://inochinoyume.github.io/Web-CEE2027/${page}" \

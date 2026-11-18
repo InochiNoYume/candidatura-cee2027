@@ -55,11 +55,11 @@
   }
   if (footerLinks) {
     footerLinks.innerHTML = groups.map(group =>
-      '<section class="footer-group"><h3>'+group.label+'</h3>'+group.items.map(entry =>
+      '<section class="footer-group"><h2>'+group.label+'</h2>'+group.items.map(entry =>
         '<a href="'+escapeAttr(entry.href)+'">'+entry.label+'</a>'
       ).join("")+'</section>'
     ).join("") +
-    '<section class="footer-group"><h3>Participación</h3><a href="'+pageBase+'escucha.html">CEAT Te Escucha</a></section>';
+    '<section class="footer-group"><h2>Participación</h2><a href="'+pageBase+'escucha.html">CEAT Te Escucha</a></section>';
   }
 
   const menuButton = document.querySelector(".menu-toggle");
