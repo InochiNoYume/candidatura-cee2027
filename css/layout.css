@@ -940,3 +940,51 @@ body{background:#f7f4f2;color:var(--text-main)}
   .filter-chip{font-size:12px!important}
   .nav-item-description{font-size:11px!important}
 }
+
+
+/* CEE 2027 · Legibilidad tipográfica global
+   Aumenta moderadamente textos de lectura y metadatos en escritorio y móvil. */
+body{font-size:16px}
+main p:not(.eyebrow){
+  font-size:clamp(14px,1.05vw,16px)!important;
+  line-height:1.78;
+}
+main li{font-size:15px;line-height:1.75}
+.eyebrow,.breadcrumb{font-size:11px!important}
+.hero-content .hero-lead{font-size:clamp(15px,1.35vw,17px)!important;line-height:1.8}
+.page-hero p:not(.eyebrow):not(.breadcrumb){font-size:clamp(15px,1.5vw,17px)!important}
+.intro-copy p,.closing-grid p{font-size:16px!important}
+.pillar-card h3{font-size:18px!important;line-height:1.4}
+.pillar-card p,.team-card p,.initiative p{font-size:14px!important;line-height:1.75}
+.team-card .role,.team-card .course{font-size:11px!important}
+.initiative h3{font-size:15px!important}
+.axis-card>p{font-size:15px!important}
+.axis-top h2{font-size:clamp(22px,2.4vw,29px)}
+.status-item strong,.faq-item summary{font-size:15px!important}
+.faq-item p{font-size:14px!important;line-height:1.75}
+.agenda-event h3{font-size:clamp(18px,2vw,22px)!important}
+.agenda-event p,.agenda-note p,.transparency-alert p{font-size:14px!important}
+.agenda-kicker,.agenda-date span,.agenda-date small{font-size:11px!important}
+.news-empty-card h3{font-size:23px!important}
+.news-empty-card p,.news-sidebar p:not(.eyebrow){font-size:14px!important}
+.gallery-category h3{font-size:17px!important}
+.gallery-category p,.gallery-footnote p{font-size:14px!important}
+.quick-access-card h3,.work-method-card h3,.public-info-card h3{font-size:19px!important}
+.quick-access-card p,.work-method-card p,.public-info-card p{font-size:14px!important;line-height:1.75}
+.footer-group h2,.footer-group h3{font-size:11px!important}
+.footer-group a,.footer-links a{font-size:12px!important;line-height:1.65}
+.nav-item-title{font-size:12px!important}
+.nav-item-description{font-size:11px!important;line-height:1.55}
+.filter-label,.filter-chip,.filter-result{font-size:12px!important}
+.status,.status-pill,.tag,.news-status,.public-info-card>span{font-size:11px!important}
+@media(max-width:760px){
+  main p:not(.eyebrow){font-size:15px!important;line-height:1.75}
+  .hero-content .hero-lead{font-size:15px!important}
+  .pillar-card p,.team-card p,.initiative p,.faq-item p{font-size:14px!important}
+  .agenda-event p,.agenda-note p,.transparency-alert p{font-size:14px!important}
+  .footer-group a,.footer-links a{font-size:12px!important}
+}
+@media(max-width:420px){
+  main p:not(.eyebrow){font-size:14.5px!important}
+  .hero-content .hero-lead{font-size:15px!important}
+}
