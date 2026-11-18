@@ -39,7 +39,7 @@ jobs:
           echo "Lighthouse Chrome: $CHROME_PATH"
           for page in "" "pages/lista.html" "pages/proyecto.html" "pages/escucha.html"; do
             name=$(printf '%s' "${page:-home}" | tr '/.' '--')
-            npx lighthouse "https://inochinoyume.github.io/Web-CEE2027/${page}" \
+            npx lighthouse "https://candidatura-cee2027.pages.dev/${page}" \
               --chrome-flags="--headless --no-sandbox" \
               --only-categories=performance,accessibility,best-practices,seo \
               --output=json --output-path="audit-results/lighthouse/${name}.json" \
