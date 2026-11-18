@@ -1,4 +1,4 @@
-const MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const MODEL = "@cf/google/gemma-4-26b-a4b-it";
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQUESTS_PER_INSTANCE = 10;
 const requestWindows = new Map();
