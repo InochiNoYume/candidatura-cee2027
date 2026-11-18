@@ -21,23 +21,14 @@ Los cambios enviados a `main` pueden activar el despliegue de producción. Los p
 - `pages/`: páginas informativas de candidatura, proyecto, agenda, transparencia, noticias, galería, participación, preguntas, contacto y documentos.
 - `css/styles.css`: estilos base y componentes visuales.
 - `css/layout.css`: ajustes compartidos de estructura, navegación, tarjetas y diseño responsive.
-- `js/main.js`: genera la navegación global y el pie de página, controla el menú adaptable, estados activos, filtros y efectos de entrada.
+- `js/main.js`: navegación global, pie de página, menú adaptable, filtros y efectos de entrada.
 - `js/search.js`: búsqueda interna.
-- `functions/api/asistente.js`: endpoint privado de servidor para el asistente con Workers AI.
-- `assets/images/logo/`: logotipo institucional.
-- `assets/images/illustrations/`: ilustraciones conceptuales en SVG.
-- `assets/images/actividades/`, `grupo/` e `integrantes/`: espacios reservados para fotografías reales autorizadas.
-- `assets/icons/` y `assets/images/og/`: favicon y recurso de vista previa al compartir.
+- `functions/api/asistente.js`: endpoint privado del asistente con Gemini API.
+- `assets/`: imágenes, ilustraciones, iconos y recursos gráficos.
 - `scripts/`: validaciones automáticas del sitio y de seguridad.
 - `.github/workflows/`: flujos de integración continua.
 - `_headers`: cabeceras HTTP para Cloudflare Pages.
 - `SECURITY.md`: criterios de seguridad web y del repositorio.
-
-## Navegación y diseño adaptable
-
-La barra de navegación y los grupos del pie se construyen desde `js/main.js`; por eso las páginas mantienen una estructura común. En escritorio los grupos se muestran como menús desplegables. En anchos menores se utiliza el botón de menú para evitar comprimir los enlaces. Los estilos responsive se mantienen en `css/layout.css` y `css/styles.css`.
-
-Al modificar los enlaces globales, revisa tanto la navegación como el pie y prueba las páginas desde la portada y desde una URL dentro de `/pages/`.
 
 ## Contenido programático
 
@@ -57,17 +48,11 @@ Las fotografías de estudiantes requieren autorización para su difusión. Los f
 
 ## Integración continua y auditoría
 
-El workflow `.github/workflows/site-checks.yml` ejecuta:
-
-1. Comprobación de sintaxis JavaScript con Node.js.
-2. Validación de estructura HTML y enlaces locales mediante `scripts/check-site.mjs`.
-3. Comprobaciones de cabeceras, renderizado seguro del buscador y ausencia de material de claves privadas versionado mediante `scripts/check-security.mjs`.
-
-Estos checks no sustituyen una revisión visual en navegador. Después de cambios de CSS o navegación, comprueba escritorio, tablet y móvil, además de revisar la vista previa de Cloudflare y los comentarios del pull request.
+El workflow `.github/workflows/site-checks.yml` ejecuta comprobaciones de sintaxis JavaScript, estructura HTML, enlaces locales, cabeceras, renderizado seguro y validación del asistente. Estos checks no sustituyen una revisión visual en navegador.
 
 ## Asistente IA
 
-El asistente informativo utiliza Cloudflare Workers AI desde una Pages Function. En Cloudflare Pages configura el binding **Workers AI** con nombre **AI** en Settings → Functions → Workers AI bindings y vuelve a desplegar. El modelo se ejecuta en el servidor; no se requiere exponer claves en el navegador. Sin el binding, el asistente muestra un aviso de servicio no activado. No se guarda el historial de preguntas; evita introducir datos personales.
+El asistente utiliza Gemini API desde una Pages Function. Configura `GEMINI_API_KEY` como secret en Cloudflare Pages; nunca la expongas en el navegador ni en el repositorio. El endpoint filtra preguntas fuera del ámbito CEE y responde exclusivamente con el contexto oficial. La configuración y los límites están documentados en [functions/README.md](functions/README.md). No se guarda el historial de preguntas; evita introducir datos personales. En el nivel gratuito, Google indica que el contenido puede utilizarse para mejorar sus productos.
 
 ## Seguridad
 
