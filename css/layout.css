@@ -355,3 +355,48 @@ img, svg, video, iframe { max-width: 100%; }
   .site-header .site-nav{position:relative!important;display:flex!important;visibility:visible!important;opacity:1!important}
   .site-header .menu-toggle{display:none!important}
 }
+
+
+/* Icono hamburguesa: neutraliza los márgenes heredados de styles.css.
+   Los márgenes anteriores consumían la altura del botón y podían comprimir
+   las tres barras hasta hacerlas desaparecer en pantallas móviles. */
+.site-header .menu-toggle{
+  display:flex;
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  min-width:44px;
+  min-height:44px;
+  padding:0!important;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:5px;
+  overflow:visible;
+  background:#fff!important;
+  border:1px solid #eadfe0;
+  border-radius:10px;
+}
+.site-header .menu-toggle span{
+  display:block!important;
+  flex:0 0 2px!important;
+  width:20px!important;
+  height:2px!important;
+  min-height:2px;
+  margin:0!important;
+  padding:0!important;
+  opacity:1;
+  visibility:visible;
+  background:#64151c!important;
+  border-radius:3px;
+  transform-origin:center;
+}
+.site-header .menu-toggle.is-open span:first-child{transform:translateY(7px) rotate(45deg)}
+.site-header .menu-toggle.is-open span:nth-child(2){opacity:0}
+.site-header .menu-toggle.is-open span:last-child{transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:1180px){
+  .site-header .menu-toggle{display:flex!important}
+}
+@media(min-width:1181px){
+  .site-header .menu-toggle{display:none!important}
+}
