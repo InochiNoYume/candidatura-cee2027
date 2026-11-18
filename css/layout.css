@@ -922,3 +922,21 @@ body{background:#f7f4f2;color:var(--text-main)}
  .hero{animation:none!important}.hero-emblem{animation:none!important}
  .hero-particles{display:none!important}
 }
+
+/* Pulido tipográfico final: etiquetas y controles más legibles sin alterar
+   la jerarquía visual ni la identidad cromática de CEE 2027. */
+.brand small{font-size:10px!important}
+.nav-item-description{font-size:11px!important;line-height:1.5}
+.footer-group h2,.footer-group h3{font-size:11px!important}
+.agenda-date span{font-size:10px!important}
+.agenda-kicker,.tag,.news-status,.news-sidebar>span,.status-pill,
+.frame-front small,.gallery-category div>span{font-size:10px!important}
+.progress-summary span,.filter-result{font-size:11px!important}
+.filter-chip{font-size:11px!important}
+.public-info-card>span{font-size:10px!important}
+.hero-content .hero-note{font-size:10px!important}
+.hero-side-label{font-size:10px!important}
+@media(max-width:560px){
+  .filter-chip{font-size:12px!important}
+  .nav-item-description{font-size:11px!important}
+}
