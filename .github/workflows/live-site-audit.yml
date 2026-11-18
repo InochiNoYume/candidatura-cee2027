@@ -1,0 +1,52 @@
+name: Live accessibility and performance audit
+
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-site-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser audit tools
+        run: |
+          npm install --no-save playwright @axe-core/playwright lighthouse
+          npx playwright install --with-deps chromium
+      - name: Test every page on mobile and desktop
+        run: node scripts/audit-live-site.mjs
+      - name: Run Lighthouse on key pages
+        run: |
+          mkdir -p audit-results/lighthouse
+          for page in "" "pages/lista.html" "pages/proyecto.html" "pages/escucha.html"; do
+            name=$(printf '%s' "${page:-home}" | tr '/.' '--')
+            npx lighthouse "https://inochinoyume.github.io/Web-CEE2027/${page}" \
+              --chrome-flags="--headless --no-sandbox" \
+              --only-categories=performance,accessibility,best-practices,seo \
+              --output=json --output-path="audit-results/lighthouse/${name}.json" \
+              --quiet
+          done
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cee-2027-site-audit
+          path: audit-results/
+          if-no-files-found: warn
+          retention-days: 30
