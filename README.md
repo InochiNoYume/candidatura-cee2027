@@ -39,6 +39,10 @@ El logotipo institucional ya está incorporado.
 
 Las propuestas no se presentan como logros realizados. Los estados de transparencia deben actualizarse únicamente con información verificable. Las fotografías de estudiantes requieren autorización para su publicación. Los canales de participación deben explicar con claridad cómo se reciben y utilizan las respuestas.
 
+## Seguridad
+
+Las cabeceras HTTP y la CSP para Cloudflare Pages están definidas en `_headers`. Las pautas de protección XSS, autenticación SSH de GitHub y ajustes recomendados del repositorio se documentan en [SECURITY.md](SECURITY.md). La validación automática de seguridad se ejecuta mediante `scripts/check-security.mjs` en GitHub Actions.
+
 ## Tecnología
 
 HTML5, CSS3 y JavaScript sin dependencias de compilación. Sitio estático preparado para Cloudflare Pages.
