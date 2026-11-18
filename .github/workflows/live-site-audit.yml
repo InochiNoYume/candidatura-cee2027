@@ -1,6 +1,8 @@
 name: Live accessibility and performance audit
 
 on:
+  push:
+    branches: [main]
   workflow_run:
     workflows: ["pages build and deployment"]
     types: [completed]
@@ -15,12 +17,15 @@ concurrency:
 
 jobs:
   audit:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Allow GitHub Pages deployment to finish
+        if: github.event_name == 'push'
+        run: sleep 75
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,6 +47,21 @@ jobs:
               --output=json --output-path="audit-results/lighthouse/${name}.json" \
               --quiet
           done
+      - name: Print Lighthouse score summary
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const dir = 'audit-results/lighthouse';
+          if (!fs.existsSync(dir)) process.exit(0);
+          for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.json'))) {
+            const report = JSON.parse(fs.readFileSync(`${dir}/${file}`, 'utf8'));
+            const scores = Object.entries(report.categories || {})
+              .map(([key, value]) => `${key}=${Math.round((value.score ?? 0) * 100)}`)
+              .join(' | ');
+            console.log(`${file}: ${scores}`);
+          }
+          NODE
       - name: Upload audit reports
         if: always()
         uses: actions/upload-artifact@v4
