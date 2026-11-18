@@ -104,7 +104,7 @@ export async function onRequestPost({ request, env }) {
     let result;
     try { result = JSON.parse(rawAnswer); } catch { return json({ error: "No se pudo interpretar la respuesta. Inténtalo nuevamente." }, 502); }
     if (result?.scope !== "in_scope") return json({ answer: OUT_OF_SCOPE });
-    const answer = typeof result.answer === "string" ? result.answer.trim().split(/\\s+/).slice(0, 55).join(" ").slice(0, 500) : "";
+    const answer = typeof result.answer === "string" ? result.answer.trim().split(/\s+/).slice(0, 55).join(" ").slice(0, 500) : "";
     if (!answer) return json({ error: "No se recibió una respuesta válida." }, 502);
     return json({ answer });
   } catch {
