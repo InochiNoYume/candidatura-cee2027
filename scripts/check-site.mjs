@@ -160,14 +160,14 @@ try {
 /* Auditoría ampliada: metadatos, accesibilidad básica, recursos CSS y rutas del menú dinámico. */
 for (const file of htmlFiles) {
   const html = read(file);
-  if (!/<title>\\s*[^<]+<\\/title>/i.test(html)) failures.push(`${file}: falta un título de página`);
-  if (file !== "404.html" && !/<meta\\b[^>]*name=["']description["'][^>]*content=["'][^"']+["']/i.test(html))
+  if (!/<title>\s*[^<]+<\/title>/i.test(html)) failures.push(`${file}: falta un título de página`);
+  if (file !== "404.html" && !/<meta\b[^>]*name=["']description["'][^>]*content=["'][^"']+["']/i.test(html))
     failures.push(`${file}: falta una meta description`);
-  if (file !== "404.html" && !/<a\\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#contenido["']/i.test(html))
+  if (file !== "404.html" && !/<a\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#contenido["']/i.test(html))
     failures.push(`${file}: falta el enlace para saltar al contenido`);
-  if (file !== "404.html" && !/<button\\b[^>]*class=["'][^"']*menu-toggle[^"']*["'][^>]*aria-controls=["']site-nav["'][^>]*aria-expanded=["']false["']/i.test(html))
+  if (file !== "404.html" && !/<button\b[^>]*class=["'][^"']*menu-toggle[^"']*["'][^>]*aria-controls=["']site-nav["'][^>]*aria-expanded=["']false["']/i.test(html))
     failures.push(`${file}: botón de menú sin estado ARIA inicial o controles`);
-  for (const link of html.matchAll(/<a\\b([^>]*?)>/gi)) {
+  for (const link of html.matchAll(/<a\b([^>]*?)>/gi)) {
     const attrs = link[1];
     if (/target=["']_blank["']/i.test(attrs) && !/rel=["'][^"']*noopener/i.test(attrs))
       failures.push(`${file}: enlace target="_blank" sin rel="noopener"`);
@@ -177,7 +177,7 @@ for (const file of htmlFiles) {
 /* Comprueba también recursos locales referenciados desde CSS. */
 for (const file of ["css/styles.css","css/layout.css"]) {
   const css = read(file);
-  for (const match of css.matchAll(/url\\(\\s*["']?([^"'\\)]+)["']?\\s*\\)/gi)) {
+  for (const match of css.matchAll(/url\(\s*["']?([^"'\)]+)["']?\s*\)/gi)) {
     const raw = match[1].trim();
     if (!raw || /^(?:https?:|data:|#)/i.test(raw)) continue;
     const target = path.resolve(path.dirname(file), raw.split("?")[0]);
@@ -186,14 +186,14 @@ for (const file of ["css/styles.css","css/layout.css"]) {
 }
 
 /* Las rutas que genera JavaScript no aparecen como enlaces estáticos en el HTML. */
-for (const match of navigationSource.matchAll(/item\\(["']([^"']+)["']/g)) {
+for (const match of navigationSource.matchAll(/item\(["']([^"']+)["']/g)) {
   const destination = match[1];
   const [page, fragment] = destination.split("#", 2);
   const target = path.resolve("pages", page);
   if (!fs.existsSync(target)) {
     failures.push(`Menú dinámico: destino inexistente ${destination}`);
   } else if (fragment && target.endsWith(".html")) {
-    const targetIds = new Set([...read(target).matchAll(/\\bid=["']([^"']+)["']/g)].map(item => item[1]));
+    const targetIds = new Set([...read(target).matchAll(/\bid=["']([^"']+)["']/g)].map(item => item[1]));
     if (!targetIds.has(fragment)) failures.push(`Menú dinámico: ancla inexistente ${destination}`);
   }
 }
