@@ -260,15 +260,15 @@
   assistantLauncher.type = "button";
   assistantLauncher.setAttribute("aria-expanded","false");
   assistantLauncher.setAttribute("aria-controls","cee-assistant-panel");
-  assistantLauncher.setAttribute("aria-label","Abrir asistente de ayuda");
-  assistantLauncher.innerHTML = '<span aria-hidden="true">✦</span><span>Ayuda IA</span>';
+  assistantLauncher.setAttribute("aria-label","Abrir Asistente CEE");
+  assistantLauncher.innerHTML = '<span class="cee-assistant-launcher-icon" aria-hidden="true">✦</span><span>Asistente CEE</span>';
   const assistantPanel = document.createElement("section");
   assistantPanel.className = "cee-assistant-panel";
   assistantPanel.id = "cee-assistant-panel";
   assistantPanel.hidden = true;
   assistantPanel.setAttribute("aria-labelledby","cee-assistant-title");
   assistantPanel.innerHTML =
-    '<div class="cee-assistant-head"><div><p class="cee-assistant-kicker">CEE 2027 · CEAT</p><h2 id="cee-assistant-title">¿En qué te puedo ayudar?</h2></div>' +
+    '<div class="cee-assistant-head"><div><p class="cee-assistant-kicker">CEE 2027 · CEAT</p><h2 id="cee-assistant-title">Asistente CEE</h2><p class="cee-assistant-status"><span aria-hidden="true"></span> Ayuda e información del sitio</p></div>' +
     '<button class="cee-assistant-close" type="button" aria-label="Cerrar asistente">×</button></div>' +
     '<p class="cee-assistant-intro">Resuelvo dudas sobre esta web y su propuesta usando información publicada aquí.</p>' +
     '<div class="cee-assistant-messages" role="log" aria-live="polite" aria-relevant="additions text"><p class="cee-assistant-message assistant">¡Hola! Puedes preguntarme por los ejes, la agenda, la lista o las secciones del sitio.</p></div>' +
@@ -291,7 +291,7 @@
   const setAssistantOpen = opened => {
     assistantPanel.hidden = !opened;
     assistantLauncher.setAttribute("aria-expanded",String(opened));
-    assistantLauncher.setAttribute("aria-label",opened ? "Cerrar asistente de ayuda" : "Abrir asistente de ayuda");
+    assistantLauncher.setAttribute("aria-label",opened ? "Cerrar Asistente CEE" : "Abrir Asistente CEE");
     if (opened) assistantInput.focus();
     else assistantLauncher.focus();
   };
