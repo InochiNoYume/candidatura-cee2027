@@ -59,7 +59,7 @@ for (const file of htmlFiles) {
   if ((html.match(/<main\b/gi) || []).length !== 1) failures.push(`${file}: debe contener exactamente un <main>`);
   if (file !== "404.html") {
     for (const tag of ["header", "footer"]) {
-      if ((html.match(new RegExp("<" + tag + "\b", "gi")) || []).length !== 1)
+      if ((html.match(new RegExp("<" + tag + "\\b", "gi")) || []).length !== 1)
         failures.push(`${file}: debe contener exactamente un <${tag}>`);
     }
     if (!/<button\b[^>]*class=["'][^"']*\bmenu-toggle\b/i.test(html)) failures.push(`${file}: falta botón del menú móvil`);
