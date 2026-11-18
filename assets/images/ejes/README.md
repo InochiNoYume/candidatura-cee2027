@@ -1,6 +1,6 @@
 # Imágenes de los ejes
 
-Esta carpeta está destinada a imágenes de apoyo específicas para los cuatro ejes del proyecto. No contiene fotografías de actividades realizadas.
+Esta carpeta está destinada a imágenes de apoyo específicas para los ejes del proyecto (cuatro originales y un eje complementario añadido posteriormente). No contiene fotografías de actividades realizadas.
 
 ## Nombres de archivo
 
