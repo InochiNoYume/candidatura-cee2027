@@ -198,4 +198,44 @@
   },{passive:true});
   backToTop.addEventListener("click",() => window.scrollTo({top:0,behavior:reduceMotion ? "auto" : "smooth"}));
   updateScrollUI();
+
+  // Partículas ambientales ligeras en la portada (sin librerías externas).
+  const hero = document.querySelector(".hero");
+  if (hero && !reduceMotion && "requestAnimationFrame" in window) {
+    const canvas = document.createElement("canvas");
+    canvas.className = "hero-particles";
+    canvas.setAttribute("aria-hidden","true");
+    hero.prepend(canvas);
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      let width=0,height=0,frame=0,particles=[];
+      const makeParticles=()=>Array.from({length:Math.min(58,Math.max(24,Math.round(width/24)))},()=>({
+        x:Math.random()*width,y:Math.random()*height,
+        r:.7+Math.random()*1.8,vx:(Math.random()-.5)*.16,vy:-.12-Math.random()*.28,
+        a:.12+Math.random()*.34,phase:Math.random()*Math.PI*2
+      }));
+      const resize=()=>{
+        const rect=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.5);
+        width=rect.width;height=rect.height;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+        canvas.style.width=width+"px";canvas.style.height=height+"px";ctx.setTransform(dpr,0,0,dpr,0,0);
+        particles=makeParticles();
+      };
+      const draw=()=>{
+        if(document.hidden){frame=requestAnimationFrame(draw);return}
+        ctx.clearRect(0,0,width,height);
+        particles.forEach(p=>{
+          p.x+=p.vx;p.y+=p.vy;p.phase+=.008;
+          if(p.y<-8){p.y=height+8;p.x=Math.random()*width}
+          if(p.x<-8)p.x=width+8;if(p.x>width+8)p.x=-8;
+          ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle="rgba(255,220,220,"+(p.a*(.72+.28*Math.sin(p.phase)))+")";ctx.fill();
+        });
+        frame=requestAnimationFrame(draw);
+      };
+      resize();draw();
+      window.addEventListener("resize",resize,{passive:true});
+      document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!frame)draw()});
+      window.addEventListener("pagehide",()=>{cancelAnimationFrame(frame);frame=0},{once:true});
+    } else canvas.remove();
+  }
 })();
