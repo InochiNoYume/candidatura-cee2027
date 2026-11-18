@@ -81,6 +81,45 @@ try {
         for (const check of filterChecks) {
           if (check.errors.length) failures.push(`${viewport.name} ${route}: filtro ${check.name}: ${check.errors.join("; ")}`);
         }
+
+        // Comprueba el menú responsive, los desplegables y el cierre mediante Escape.
+        const navigationErrors = await page.evaluate(() => {
+          const errors = [];
+          const nav = document.querySelector(".site-nav");
+          const menuButton = document.querySelector(".menu-toggle");
+          const dropdown = nav?.querySelector("details.nav-dropdown");
+          if (dropdown) {
+            dropdown.open = false;
+            dropdown.querySelector("summary")?.click();
+            if (!dropdown.open) errors.push("el desplegable no se abre");
+          }
+          if (window.matchMedia("(max-width: 1180px)").matches && menuButton && nav) {
+            if (!nav.classList.contains("open")) menuButton.click();
+            if (!nav.classList.contains("open") || menuButton.getAttribute("aria-expanded") !== "true") {
+              errors.push("el menú móvil no actualiza su estado abierto");
+            }
+          }
+          document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+          if (dropdown?.open) errors.push("Escape no cierra el desplegable");
+          if (window.matchMedia("(max-width: 1180px)").matches && nav &&
+              (nav.classList.contains("open") || menuButton?.getAttribute("aria-expanded") !== "false")) {
+            errors.push("Escape no cierra el menú móvil o no actualiza aria-expanded");
+          }
+          return errors;
+        });
+        for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
+
+        // Comprueba que el buscador devuelve páginas reales y gestiona búsquedas sin resultados.
+        if (route === "pages/buscar.html") {
+          const searchInput = page.locator("#site-search");
+          await searchInput.fill("proyecto");
+          await page.waitForFunction(() => document.querySelectorAll("#search-results a").length > 0, null, { timeout: 5000 });
+          const hasProject = await page.locator("#search-results").innerText();
+          if (!/Proyecto y ejes/i.test(hasProject)) failures.push(`${viewport.name} ${route}: el buscador no encuentra el proyecto`);
+          await searchInput.fill("cee-audit-sin-resultados-xyz");
+          const noResults = await page.locator("#search-status").innerText();
+          if (!/No encontramos resultados/i.test(noResults)) failures.push(`${viewport.name} ${route}: no informa correctamente una búsqueda vacía`);
+        }
         const item = {
           route, viewport: viewport.name, status: response?.status() ?? null,
           ...layout, pageErrors,
