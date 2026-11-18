@@ -58,7 +58,8 @@ try {
           }
         };
         results.push(item);
-        if (!response?.ok()) failures.push(`${viewport.name} ${route}: HTTP ${response?.status()}`);
+        const expectedStatus = route === "404.html" ? 404 : 200;
+        if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
