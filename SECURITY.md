@@ -1,6 +1,6 @@
 # Seguridad del proyecto CEE 2027 · CEAT
 
-Este proyecto es un sitio estático publicado en Cloudflare Pages. No ejecuta un servidor propio ni necesita abrir un puerto SSH. El tráfico público debe utilizar HTTPS.
+Este proyecto es un sitio estático publicado en Cloudflare Pages. No requiere administrar un servidor propio. El tráfico público debe utilizar HTTPS.
 
 ## Protección web y XSS
 
@@ -15,27 +15,16 @@ La configuración de cabeceras de Cloudflare Pages está en `_headers` e incluye
 
 El CSS inline está permitido porque el sitio utiliza algunos estilos inline existentes; los scripts inline y los manejadores de eventos HTML quedan bloqueados. Los datos que provengan de formularios o búsquedas deben insertarse como texto mediante `textContent` o nodos DOM, nunca concatenarse dentro de `innerHTML`, atributos HTML o código ejecutable. Si se incorpora un formulario externo o un servicio nuevo, revisar y actualizar la CSP solo para los dominios estrictamente necesarios.
 
-## Protección SSH para GitHub
+## Seguridad de la cuenta y del repositorio
 
-SSH protege la autenticación al operar con GitHub; no es un servicio que deba instalarse en Cloudflare Pages. Para proteger la cuenta que administra este repositorio:
+En GitHub → Settings, el propietario debe revisar:
 
-1. Activa la autenticación en dos pasos (2FA) en GitHub.
-2. Genera una clave personal Ed25519 con frase de contraseña en tu propio dispositivo: `ssh-keygen -t ed25519 -C "tu-correo"`.
-3. Guarda la clave privada en tu dispositivo y añade únicamente la clave pública (`.pub`) en GitHub → Settings → SSH and GPG keys.
-4. Carga la clave en el agente SSH de tu sistema y comprueba la conexión con `ssh -T git@github.com`.
-5. Verifica la huella de la clave de host de GitHub con la documentación oficial antes de confiar en ella. No desactives `StrictHostKeyChecking`.
-6. Nunca publiques, envíes ni subas la clave privada al repositorio, a incidencias o a mensajes. Si se pierde o queda expuesta, revócala en GitHub y crea otra.
-7. Revisa periódicamente las claves autorizadas y elimina las que ya no utilices.
-
-## Ajustes del repositorio que debe confirmar el propietario
-
-En GitHub → Settings:
-
-- En **Branches**, protege `main`: exigir pull requests, exigir que pasen los checks de calidad y auditoría disponibles antes de integrar, bloquear force-push y eliminación de la rama.
+- Activar y mantener la autenticación en dos pasos (2FA).
+- En **Branches**, proteger `main`: exigir pull requests, exigir que pasen los checks de calidad y auditoría disponibles antes de integrar, bloquear force-push y eliminación de la rama.
 - En **Code security and analysis**, mantener activados Secret scanning y Push protection cuando estén disponibles para el repositorio.
 - Mantener los permisos de GitHub Actions en el mínimo necesario. Los workflows actuales declaran `contents: read`.
 
-Estos ajustes de cuenta y repositorio requieren permisos del propietario y no se pueden activar desde un cambio de archivos del sitio. No se deben guardar claves SSH ni tokens en el código ni en archivos públicos.
+Estos ajustes requieren permisos del propietario y no se pueden activar desde un cambio de archivos del sitio. No se deben guardar contraseñas, tokens ni claves privadas en el código ni en archivos públicos.
 
 ## Revisión
 
