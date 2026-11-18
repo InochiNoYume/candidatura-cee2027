@@ -32,7 +32,7 @@ for (const [label, pattern] of [
   ["canvas sin capturar eventos", /\.cee-pointer-trail\s*\{[^}]*pointer-events:\s*none/s]
 ]) if (!pattern.test(styles)) failures.push("CSS: falta " + label);
 
-if (!/Cloudflare Workers AI/.test(privacy) || !/dirección IP/.test(privacy) || !/datos personales/.test(privacy)) failures.push("Privacidad: falta explicar el tratamiento de preguntas, IP y datos personales.");
+if (!/Cloudflare Workers AI/.test(privacy) || !/dirección IP/.test(privacy) || !/(datos personales|información personal)/.test(privacy)) failures.push("Privacidad: falta explicar el tratamiento de preguntas, IP y datos personales.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("Cliente: el asistente no debe persistir preguntas ni conversaciones.");
 if (failures.length) {
   console.error("ASSISTANT CHECKS FAILED");
