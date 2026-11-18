@@ -56,7 +56,7 @@ try {
               const visible = items.filter(item => !item.hidden);
               const expected = items.filter(item => {
                 if (name === "news") return value === "all";
-                const categories = (item.getAttribute("data-category") || "").trim().split(/\\s+/).filter(Boolean);
+                const categories = (item.getAttribute("data-category") || "").trim().split(/\s+/).filter(Boolean);
                 return value === "all" || categories.includes(value);
               });
               if (visible.length !== expected.length) {
