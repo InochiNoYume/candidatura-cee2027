@@ -160,7 +160,7 @@
       });
       if (empty) {
         if (name === "news") {
-          empty.hidden = false;
+          empty.hidden = value === "all";
           empty.textContent = value === "all"
             ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
             : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
