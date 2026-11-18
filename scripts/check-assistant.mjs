@@ -16,7 +16,7 @@ for (const [label, pattern] of [
   ["mapa de límites acotado", /requestWindows\.size\s*>\s*1000/],
   ["respuestas sin caché", /"Cache-Control":\s*"no-store"/],
   ["contexto editorial oficial", /CONTEXTO OFICIAL/],
-  ["respuesta con límite de tokens", /max_tokens:\s*190/]
+  ["respuesta con límite de tokens", /max_completion_tokens:\s*190/]
 ]) if (!pattern.test(endpoint)) failures.push("Function: falta " + label);
 
 for (const [label, pattern] of [
