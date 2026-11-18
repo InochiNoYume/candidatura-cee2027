@@ -4,34 +4,41 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 
 **Eslogan:** Compromiso, Gestión y Acción Estudiantil.
 
-## Publicación con GitHub Pages
+## Sitio publicado
 
-1. En GitHub, abre **Settings → Pages**.
-2. En **Build and deployment**, selecciona **Deploy from a branch**.
-3. Selecciona la rama `main` y la carpeta `/(root)`.
-4. Guarda los cambios y espera la publicación.
+La versión pública se encuentra en [https://candidatura-cee2027.pages.dev/](https://candidatura-cee2027.pages.dev/).
 
-La URL esperada tendrá el formato `https://candidatura-cee2027.pages.dev/`.
+El sitio se publica mediante **Cloudflare Pages**, conectado al repositorio GitHub. La rama de producción es `main`; al enviar cambios a esa rama, Pages puede desplegar automáticamente una nueva versión.
+
+### Configuración de publicación
+
+- Proveedor: Cloudflare Pages.
+- Repositorio: `InochiNoYume/candidatura-cee2027`.
+- Rama de producción: `main`.
+- Directorio raíz: `/`.
+- Comando de compilación: vacío (sitio estático sin proceso de build).
+- Directorio de salida: `/`.
 
 ## Estructura
 
 - `index.html`: portada.
-- `pages/`: páginas de lista, proyecto, transparencia, noticias, contacto, CEAT Te Escucha, preguntas frecuentes y galería.
-- `css/styles.css`: estilos y diseño adaptable.
-- `js/main.js`: menú móvil y mejoras de interacción.
-- `assets/icons/`: iconografía del sitio.
+- `pages/`: páginas de lista, proyecto, agenda, transparencia, noticias, galería, CEAT Te Escucha y demás secciones informativas.
+- `css/`: estilos y diseño adaptable.
+- `js/`: menú móvil, búsqueda y mejoras de interacción.
+- `assets/`: logotipo, iconos e ilustraciones.
 
 ## Pendientes de contenido
 
-- Incorporar logotipo institucional autorizado y fotografías aprobadas.
+- Incorporar fotografías reales del equipo y actividades cuando sean proporcionadas y exista autorización para publicarlas.
 - Añadir el enlace real de Google Forms en CEAT Te Escucha.
-- Añadir enlaces oficiales de contacto y redes, si corresponde.
-- Publicar noticias y estados de seguimiento solo cuando existan datos confirmados.
+- Añadir o actualizar noticias, agenda y registros solo cuando existan datos confirmados.
 
-## Criterios editoriales
+El logotipo institucional ya está incorporado.
 
-Las propuestas no se presentan como logros realizados. Los estados de transparencia deben actualizarse únicamente con información verificable. Las fotografías de estudiantes requieren autorización para su publicación.
+## Criterios editoriales y privacidad
+
+Las propuestas no se presentan como logros realizados. Los estados de transparencia deben actualizarse únicamente con información verificable. Las fotografías de estudiantes requieren autorización para su publicación. Los canales de participación deben explicar con claridad cómo se reciben y utilizan las respuestas.
 
 ## Tecnología
 
-HTML5, CSS3 y JavaScript sin dependencias de compilación. Preparado para GitHub Pages.
+HTML5, CSS3 y JavaScript sin dependencias de compilación. Sitio estático preparado para Cloudflare Pages.
