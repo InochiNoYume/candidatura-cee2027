@@ -30,7 +30,8 @@ try {
       try {
         response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
         await page.locator("body").waitFor();
-        await page.waitForTimeout(250);
+        // Espera a que terminen las animaciones .reveal para auditar los colores finales, no estados transitorios.
+        await page.waitForTimeout(850);
         const layout = await page.evaluate(() => ({
           title: document.title,
           viewportWidth: document.documentElement.clientWidth,
