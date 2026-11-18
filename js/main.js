@@ -300,6 +300,14 @@
   document.addEventListener("keydown",event => {
     if (event.key === "Escape" && !assistantPanel.hidden) setAssistantOpen(false);
   });
+  // Enter envía; Shift+Enter conserva la posibilidad de escribir una nueva línea.
+  assistantInput.addEventListener("keydown",event => {
+    if (event.key !== "Enter" || event.shiftKey || event.isComposing || assistantInput.disabled) return;
+    event.preventDefault();
+    if (!assistantInput.value.trim()) return;
+    if (typeof assistantForm.requestSubmit === "function") assistantForm.requestSubmit();
+    else assistantForm.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
+  });
   assistantForm.addEventListener("submit",async event => {
     event.preventDefault();
     const question = assistantInput.value.trim();
@@ -319,9 +327,12 @@
       const payload = await response.json().catch(() => ({}));
       pending.remove();
       if (!response.ok) {
-        addAssistantMessage(response.status === 503
-          ? "El asistente todavía no está activado en el servidor. Mientras tanto, puedes consultar Proyecto, Agenda y Preguntas frecuentes."
-          : "No pude procesar la consulta en este momento. Inténtalo más tarde o revisa las secciones del sitio.");
+        const safeError = typeof payload.error === "string" ? payload.error : "";
+        addAssistantMessage(safeError || (response.status === 503
+          ? "El asistente todavía no está activado en este entorno. Comprueba el Secret de Cloudflare y vuelve a desplegar."
+          : response.status === 429
+            ? "El asistente alcanzó temporalmente su límite de consultas. Inténtalo más tarde."
+            : "No pude conectar con el servicio de IA. Revisa la configuración y los registros de Cloudflare."));
       } else addAssistantMessage(typeof payload.answer === "string" && payload.answer
         ? payload.answer
         : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
