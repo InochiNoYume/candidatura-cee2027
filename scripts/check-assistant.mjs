@@ -8,7 +8,7 @@ for (const [label, pattern] of [
   ["Groq API secret", /env\.GROQ_API_KEY/],
   ["modelo GPT OSS 20B", /openai\/gpt-oss-20b/],
   ["endpoint Groq", /api\.groq\.com\/openai\/v1\/chat\/completions/],
-  ["clave en cabecera servidor", /Authorization: "Bearer " \+ env\.GROQ_API_KEY/],
+  ["clave en cabecera servidor", /"Authorization": "Bearer " \+ env\.GROQ_API_KEY/],
   ["filtro de alcance", /out_of_scope/],
   ["ámbito web", /ÁMBITO:/],
   ["respuesta fija fuera de alcance", /especializado exclusivamente en la información de esta página web/],
@@ -18,7 +18,8 @@ for (const [label, pattern] of [
   ["sin razonamiento de salida", /include_reasoning: false/],
   ["validación de origen", /request\.headers\.get\("Origin"\)/],
   ["límite de caracteres", /question\.length > 300/],
-  ["límite de cuerpo", /rawBody\.length > 2048/],
+  ["máximo de 55 palabras", /split\(\/\\s\+\/\)\.slice\(0, 55\)/],
+  ["límite de cuerpo en bytes", /new TextEncoder\(\)\.encode\(rawBody\)\.byteLength > 2048/],
   ["límite de mapa", /requestWindows\.size > 1000/]
 ]) if (!pattern.test(endpoint)) failures.push("Function: falta " + label);
 for (const [label, pattern] of [
