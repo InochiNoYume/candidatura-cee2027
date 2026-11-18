@@ -21,10 +21,10 @@ if (!fs.existsSync(headersPath)) {
   for (const [label, pattern] of required) if (!pattern.test(headers)) failures.push(`_headers: falta ${label}.`);
 }
 
-if (!fs.existsSync("SECURITY.md")) failures.push("Falta SECURITY.md con las pautas de seguridad SSH y XSS.");
+if (!fs.existsSync("SECURITY.md")) failures.push("Falta SECURITY.md con las pautas de seguridad web.");
 else {
   const guide = fs.readFileSync("SECURITY.md", "utf8");
-  for (const term of ["Ed25519", "frase de contraseña", "2FA", "force-push", "Secret scanning"])
+  for (const term of ["2FA", "force-push", "Secret scanning", "Push protection"])
     if (!guide.includes(term)) failures.push(`SECURITY.md: falta la pauta ${term}.`);
 }
 
@@ -43,7 +43,7 @@ const privateKey = /-----BEGIN (?:OPENSSH |RSA |EC |DSA )?PRIVATE KEY-----/;
 for (const file of tracked) {
   if (!textExtensions.test(file) || !fs.existsSync(file)) continue;
   const content = fs.readFileSync(file, "utf8");
-  if (privateKey.test(content)) failures.push(`Posible clave privada incluida en el repositorio: ${file}`);
+  if (privateKey.test(content)) failures.push(`Posible material de clave privada incluido en el repositorio: ${file}`);
 }
 
 if (failures.length) {
@@ -51,4 +51,4 @@ if (failures.length) {
   for (const failure of failures) console.error(" - " + failure);
   process.exit(1);
 }
-console.log(`SECURITY CHECKS PASSED: CSP and HTTP security headers, SSH guidance, safe search rendering and no tracked private-key blocks (${tracked.length} tracked files checked).`);
+console.log(`SECURITY CHECKS PASSED: CSP and HTTP security headers, safe search rendering and no tracked private-key material (${tracked.length} tracked files checked).`);
