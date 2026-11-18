@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /404.html
 
-Sitemap: https://inochinoyume.github.io/Web-CEE2027/sitemap.xml
+Sitemap: https://candidatura-cee2027.pages.dev/sitemap.xml
