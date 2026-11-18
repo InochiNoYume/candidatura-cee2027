@@ -24,5 +24,5 @@ jobs:
           node --check scripts/check-security.mjs
       - name: Validate HTML structure and local links
         run: node scripts/check-site.mjs
-      - name: Check XSS, SSH and repository security hygiene
+      - name: Check XSS and repository security hygiene
         run: node scripts/check-security.mjs
