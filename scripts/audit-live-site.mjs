@@ -53,7 +53,7 @@ try {
             }, {}),
             details: axe.violations.map(violation => ({
               id: violation.id, impact: violation.impact, description: violation.description,
-              help: violation.help, nodes: violation.nodes.length,
+              help: violation.help, nodeCount: violation.nodes.length,
               nodes: violation.nodes.map(node => ({ target: node.target, html: node.html, failureSummary: node.failureSummary }))
             }))
           }
@@ -79,7 +79,7 @@ try {
   const missingTitle = await missingPage.title();
   const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
   if (missingResponse?.status() !== 404) failures.push(`Ruta inexistente: se esperaba HTTP 404 y se recibió ${missingResponse?.status()}`);
-  if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: GitHub Pages no mostró la página 404 personalizada");
+  if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: Cloudflare Pages no mostró la página 404 personalizada");
   results.push({ route: "__cee_audit_missing_route__", viewport: "desktop", status: missingResponse?.status() ?? null, title: missingTitle, heading: missingHeading });
   await missingPage.close();
 } finally {
