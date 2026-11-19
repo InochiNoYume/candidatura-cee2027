@@ -1965,3 +1965,9 @@ img{max-width:100%;height:auto}
   .work-method-card:hover, .public-info-card:hover,
   .axis-card:hover { transform: none; box-shadow: inherit; }
 }
+
+/* Partículas ambientales con desplazamiento lento */
+@keyframes cee-glow {
+  0%,100% { opacity: .22; background-position: 0 0, 0 0, 0 0; }
+  50% { opacity: .48; background-position: 22px -18px, -16px 24px, 18px 20px; }
+}
