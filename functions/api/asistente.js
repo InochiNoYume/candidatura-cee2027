@@ -201,6 +201,7 @@ export async function onRequestPost({ request, env }) {
       const providerError = await response.json().catch(() => ({}));
       const providerMessage = providerError?.error?.message || "unknown";
       console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
+      if (response.status === 503) return json({ error: "Gemini está temporalmente sobrecargado o no disponible (HTTP 503). No es un problema con el contenido de tu pregunta. Espera un momento y vuelve a intentarlo." }, 503);
       if (response.status === 429) return json({ error: "El asistente alcanzó temporalmente su cuota de Gemini. Inténtalo más tarde." }, 429);
       if ([400, 401, 403].includes(response.status)) return json({ error: "Gemini rechazó la solicitud (HTTP " + response.status + "). Comprueba la clave, el modelo y que URL Context esté disponible." }, 502);
       if (response.status === 404) return json({ error: "Gemini no encontró el modelo configurado (HTTP 404). Revisa GEMINI_MODEL en Cloudflare." }, 502);
