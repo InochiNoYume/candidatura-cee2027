@@ -311,6 +311,7 @@ export async function onRequestPost({ request, env }) {
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 500) return json({ error: "La pregunta debe tener entre 1 y 500 caracteres." }, 400);
   const selectedPaths = selectSources(question);
+  const requestStartedAt = Date.now();
   // Incluso las preguntas sin palabras clave del sitio pasan por Gemini con un contexto base.
   // La clasificación final considera el significado, no un filtro rígido por coincidencias.
 
@@ -381,11 +382,24 @@ export async function onRequestPost({ request, env }) {
         if (!result || !["in_scope", "out_of_scope"].includes(result.scope)) {
           geminiFailure = "INVALID_RESPONSE";
         } else if (result.scope === "out_of_scope") {
+          console.info("CEE assistant request completed", {
+            provider: "gemini",
+            scope: "out_of_scope",
+            durationMs: Date.now() - requestStartedAt
+          });
           return json({ answer: outOfScopeMessage(), sources: [], provider: "gemini" });
         } else {
           const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
           const answer = normalizeAnswer(result.answer);
-          if (sources.length && answer) return json({ answer, sources, provider: "gemini" });
+          if (sources.length && answer) {
+            console.info("CEE assistant request completed", {
+              provider: "gemini",
+              scope: "in_scope",
+              sourceCount: sources.length,
+              durationMs: Date.now() - requestStartedAt
+            });
+            return json({ answer, sources, provider: "gemini" });
+          }
           geminiFailure = !sources.length ? "SOURCES_UNAVAILABLE" : "EMPTY_RESPONSE";
         }
       }
@@ -401,11 +415,19 @@ export async function onRequestPost({ request, env }) {
   // para sustituir una clasificación válida de pregunta fuera de alcance.
   try {
     const fallback = await callGroqFallback({ env, question, selectedPaths, siteOrigin });
+    console.info("CEE assistant fallback completed", {
+      primary: "gemini",
+      provider: "groq",
+      reason: geminiFailure || "GEMINI_FAILED",
+      sourceCount: fallback.sources.length,
+      durationMs: Date.now() - requestStartedAt
+    });
     return json({ ...fallback, provider: "groq", fallback: true });
   } catch (error) {
-    console.error("Groq fallback unavailable", {
-      reason: geminiFailure || "GEMINI_FAILED",
-      fallbackError: error?.message || "UNKNOWN"
+    console.error("CEE assistant providers unavailable", {
+      primaryReason: geminiFailure || "GEMINI_FAILED",
+      fallbackError: error?.message || "UNKNOWN",
+      durationMs: Date.now() - requestStartedAt
     });
     return json({
       error: env.GROQ_API_KEY
