@@ -8,7 +8,10 @@ const requiredEndpoint = [
   "env.GEMINI_API_KEY", "gemini-3.5-flash-lite", "generativelanguage.googleapis.com/v1beta/models",
   "tools: [{ url_context: {} }]", "function selectSources(question)", "MAX_ANSWER_WORDS = 130",
   "maxOutputTokens: MAX_OUTPUT_TOKENS", "question.length > 500", "getRetrievedSources(candidate, selectedPaths, siteOrigin)",
-  "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000"
+  "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
+  "function normalizeSourcePath(value, siteOrigin)", "decodeURIComponent(url.pathname)",
+  "const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)))",
+  "const canonicalUrl = path === \"/\" ? siteOrigin + \"/\" : siteOrigin + path"
 ];
 for (const item of requiredEndpoint) if (!endpoint.includes(item)) failures.push("Function: falta " + item);
 for (const item of [
