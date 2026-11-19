@@ -1367,7 +1367,7 @@ img{max-width:100%;height:auto}
 }
 /* En portátiles y ventanas medianas se usa el menú desplegable completo,
    evitando que las categorías se compriman o queden cortadas. */
-@media (min-width: 1181px) and (max-width: 1370px) {
+@media (min-width: 1181px) and (max-width: 1240px) {
   .site-header { height: 76px; }
   .site-header .nav-wrap { width: calc(100% - 44px); gap: 14px; }
   .site-header .brand { gap: 9px; }
