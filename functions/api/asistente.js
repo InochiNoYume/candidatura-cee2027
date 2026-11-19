@@ -4,7 +4,6 @@ const MAX_ANSWER_WORDS = 130;
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQUESTS_PER_INSTANCE = 10;
 const requestWindows = new Map();
-const SITE_URL = "https://candidatura-cee2027.pages.dev";
 const OUT_OF_SCOPE = "¡Hola! Soy el Asistente CEE y estoy especializado exclusivamente en la información de esta página web. Puedo ayudarte con dudas sobre la candidatura, sus propuestas y sus secciones.";
 
 const SOURCE_PAGES = [
@@ -57,13 +56,20 @@ function normalize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+function matchesTerm(normalized, term) {
+  if (term.includes(" ")) return normalized.includes(term);
+  return new RegExp("\\\\b" + term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\function selectSources(question) {
+  const normalized = normalize(question);
+  if (!SITE_TERMS.some(term => normalized.includes(term))) return [];") + "\\\\b").test(normalized);
+}
+
 function selectSources(question) {
   const normalized = normalize(question);
-  if (!SITE_TERMS.some(term => normalized.includes(term))) return [];
+  if (!SITE_TERMS.some(term => matchesTerm(normalized, term))) return [];
   if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|sitio completo|web completa)/.test(normalized)) return SOURCE_PAGES;
   const selected = new Set(["index.html"]);
   for (const group of SOURCE_GROUPS) {
-    if (group.terms.some(term => normalized.includes(term))) group.paths.forEach(path => selected.add(path));
+    if (group.terms.some(term => matchesTerm(normalized, term))) group.paths.forEach(path => selected.add(path));
   }
   if (selected.size === 1) SOURCE_PAGES.forEach(path => selected.add(path));
   return [...selected].slice(0, 10);
@@ -85,11 +91,11 @@ function json(data, status = 200) {
   }});
 }
 
-function getRetrievedSources(candidate, selectedPaths) {
+function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
   const metadata = candidate?.urlContextMetadata?.urlMetadata || candidate?.url_context_metadata?.url_metadata || [];
   const allowed = new Set(selectedPaths.flatMap(path => {
-    const url = new URL(path, SITE_URL + "/").href;
-    return path === "index.html" ? [url, SITE_URL + "/"] : [url];
+    const url = new URL(path, siteOrigin + "/").href;
+    return path === "index.html" ? [url, siteOrigin + "/"] : [url];
   }));
   const sources = [];
   for (const item of metadata) {
@@ -131,7 +137,8 @@ export async function onRequestPost({ request, env }) {
 
   const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL) ? env.GEMINI_MODEL : MODEL;
   const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
-  const sourceUrls = selectedPaths.map(path => new URL(path, SITE_URL + "/").href);
+  const siteOrigin = new URL(request.url).origin;
+  const sourceUrls = selectedPaths.map(path => new URL(path, siteOrigin + "/").href);
   const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question + "\n\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\n" +
     sourceUrls.map(url => "- " + url).join("\n") +
     "\n\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
@@ -173,7 +180,7 @@ export async function onRequestPost({ request, env }) {
     let result;
     try { result = JSON.parse(rawAnswer); } catch { return json({ error: "No se pudo interpretar la respuesta de Gemini. Inténtalo nuevamente." }, 502); }
     if (result?.scope !== "in_scope") return json({ answer: OUT_OF_SCOPE, sources: [] });
-    const sources = getRetrievedSources(candidate, selectedPaths);
+    const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
     if (!sources.length) return json({
       answer: "No pude recuperar el contenido de las páginas oficiales en este momento. Inténtalo nuevamente o consulta directamente las secciones del sitio.",
       sources: []
