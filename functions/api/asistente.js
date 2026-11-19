@@ -37,9 +37,9 @@ const SITE_TERMS = [
   "alumnado", "alumno", "alumna", "medio ambiente", "sustentabilidad", "reciclaje", "infraestructura",
   "convivencia", "deporte", "saludable", "tecnico", "profesional", "bienestar", "apoyo",
   "participacion", "integracion", "academico", "reconocimiento", "presidente de curso",
-  "profesor", "integrante", "integrantes", "secciones", "contenido", "informacion",
+  "profesor", "integrante", "integrantes", "grupo", "grupos", "quinto", "secciones", "contenido", "informacion",
   "centro de estudiantes", "centro de alumnos", "representacion", "representante",
-  "representantes", "compañeros", "compañeras", "candidato", "candidatos", "candidatura",
+  "representantes", "companeros", "companeras", "candidato", "candidatos", "candidatura",
   "nuestro", "nuestra", "nuestros", "nuestras", "quienes somos", "resumen", "general"
 ];
 
@@ -66,7 +66,7 @@ function matchesTerm(normalized, term) {
 function selectSources(question) {
   const normalized = normalize(question);
   if (!SITE_TERMS.some(term => matchesTerm(normalized, term))) return [];
-  if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|sitio completo|web completa)/.test(normalized)) return SOURCE_PAGES;
+  if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|resumen de toda la web|resumen de todo el sitio|sitio completo|web completa)/.test(normalized)) return SOURCE_PAGES;
   const selected = new Set(["index.html"]);
   for (const group of SOURCE_GROUPS) {
     if (group.terms.some(term => matchesTerm(normalized, term))) group.paths.forEach(path => selected.add(path));
