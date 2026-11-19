@@ -8,6 +8,8 @@ const requiredEndpoint = [
   "env.GEMINI_API_KEY", "gemini-3.5-flash-lite", "generativelanguage.googleapis.com/v1beta/models",
   "tools: [{ url_context: {} }]", "function selectSources(question)", "MAX_ANSWER_WORDS = 130",
   "maxOutputTokens: MAX_OUTPUT_TOKENS", "question.length > 500", "getRetrievedSources(candidate, selectedPaths, siteOrigin)",
+  'Gemini devolvió un error HTTP ' ,
+  'Gemini no encontró el modelo configurado (HTTP 404)',
   "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
   "function normalizeSourcePath(value, siteOrigin)", "decodeURIComponent(url.pathname)",
   "const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)))",
