@@ -396,11 +396,9 @@
     }
   });
 
-  // Rastro decorativo solo en dispositivos con mouse/pen.
-  // El canvas se anima únicamente mientras hay partículas: evita un bucle
-  // requestAnimationFrame permanente que consumía CPU y batería en cada página.
-  if (!reduceMotion && "requestAnimationFrame" in window &&
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  // Rastro de partículas para mouse, lápiz y toques.
+  // El canvas solo anima mientras hay partículas y se detiene al ocultar la página.
+  if (!reduceMotion && "requestAnimationFrame" in window) {
     const trailCanvas = document.createElement("canvas");
     trailCanvas.className = "cee-pointer-trail";
     trailCanvas.setAttribute("aria-hidden","true");
@@ -408,6 +406,7 @@
     const trailContext = trailCanvas.getContext("2d");
     if (trailContext) {
       let trailWidth=0,trailHeight=0,trailFrame=0,trailParticles=[];
+      let lastPointerAt=0;
       const resizeTrail=()=>{
         const dpr=Math.min(window.devicePixelRatio||1,1.25);
         trailWidth=window.innerWidth;trailHeight=window.innerHeight;
@@ -415,46 +414,57 @@
         trailCanvas.height=Math.round(trailHeight*dpr);
         trailContext.setTransform(dpr,0,0,dpr,0,0);
       };
-      const scheduleTrail=()=>{
-        if (!trailFrame && !document.hidden) trailFrame=requestAnimationFrame(drawTrail);
-      };
-      const addTrail=(x,y)=>{
-        for(let i=0;i<2;i++){
-          if(trailParticles.length>=36)trailParticles.shift();
-          trailParticles.push({
-            x:x+(Math.random()-.5)*7,y:y+(Math.random()-.5)*7,
-            vx:(Math.random()-.5)*.65,vy:(Math.random()-.5)*.65,
-            life:1,r:1.1+Math.random()*1.2
-          });
-        }
-        scheduleTrail();
-      };
-      let lastPointerAt=0;
-      document.addEventListener("pointermove",event=>{
-        if(event.pointerType!=="mouse" && event.pointerType!=="pen") return;
-        const now=performance.now();
-        if(now-lastPointerAt>16){addTrail(event.clientX,event.clientY);lastPointerAt=now;}
-      },{passive:true});
       const drawTrail=()=>{
         trailFrame=0;
         trailContext.clearRect(0,0,trailWidth,trailHeight);
-        trailParticles=trailParticles.filter(p=>p.life>.04);
+        trailParticles=trailParticles.filter(p=>p.life>.045);
         trailParticles.forEach(p=>{
-          p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.035;
+          p.x+=p.vx;p.y+=p.vy;p.vx*=.982;p.vy*=.982;p.life-=.035;
           trailContext.beginPath();
           trailContext.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
-          trailContext.fillStyle="rgba(128,21,21,"+(.30*p.life)+")";
+          trailContext.fillStyle="rgba(128,21,21,"+(.34*p.life)+")";
           trailContext.fill();
         });
         if(trailParticles.length) scheduleTrail();
       };
+      const scheduleTrail=()=>{
+        if (!trailFrame && !document.hidden) trailFrame=requestAnimationFrame(drawTrail);
+      };
+      const addTrail=(x,y,count=3)=>{
+        for(let i=0;i<count;i++){
+          if(trailParticles.length>=54)trailParticles.shift();
+          const angle=Math.random()*Math.PI*2;
+          const speed=.25+Math.random()*.85;
+          trailParticles.push({
+            x:x+(Math.random()-.5)*8,y:y+(Math.random()-.5)*8,
+            vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+            life:.85+Math.random()*.15,r:.9+Math.random()*1.55
+          });
+        }
+        scheduleTrail();
+      };
+      document.addEventListener("pointermove",event=>{
+        if(event.pointerType!=="mouse" && event.pointerType!=="pen" && event.pointerType!=="touch") return;
+        const now=performance.now();
+        if(now-lastPointerAt>=16){
+          addTrail(event.clientX,event.clientY,event.pointerType==="touch"?4:2);
+          lastPointerAt=now;
+        }
+      },{passive:true});
+      document.addEventListener("pointerdown",event=>{
+        if(event.pointerType==="touch" || event.pointerType==="pen" || event.pointerType==="mouse"){
+          addTrail(event.clientX,event.clientY,event.pointerType==="touch"?10:5);
+        }
+      },{passive:true});
       resizeTrail();
       window.addEventListener("resize",resizeTrail,{passive:true});
       document.addEventListener("visibilitychange",()=>{
         if(document.hidden){cancelAnimationFrame(trailFrame);trailFrame=0;}
         else if(trailParticles.length) scheduleTrail();
       });
-      window.addEventListener("pagehide",()=>cancelAnimationFrame(trailFrame),{once:true});
+      window.addEventListener("pagehide",()=>{
+        cancelAnimationFrame(trailFrame);trailFrame=0;
+      },{once:true});
     } else trailCanvas.remove();
   }
 
