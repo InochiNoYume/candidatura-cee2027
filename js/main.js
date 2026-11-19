@@ -354,8 +354,8 @@
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({question}),
-        // Cubre el presupuesto acotado de Gemini, recuperación de fuentes y Groq con reintentos.
-        signal: AbortSignal.timeout(70000)
+        // Cubre el timeout de Gemini y un reintento acotado.
+        signal: AbortSignal.timeout(55000)
       });
       const payload = await response.json().catch(() => ({}));
       window.clearTimeout(pendingTimer);
