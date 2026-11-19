@@ -186,8 +186,9 @@ export async function onRequestPost({ request, env }) {
       const providerMessage = providerError?.error?.message || "unknown";
       console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
       if (response.status === 429) return json({ error: "El asistente alcanzó temporalmente su cuota de Gemini. Inténtalo más tarde." }, 429);
-      if ([400, 401, 403].includes(response.status)) return json({ error: "Gemini rechazó la solicitud. Comprueba la clave, el modelo y que URL Context esté disponible." }, 502);
-      return json({ error: "Gemini no pudo completar la solicitud. Revisa los registros de la Function en Cloudflare." }, 502);
+      if ([400, 401, 403].includes(response.status)) return json({ error: "Gemini rechazó la solicitud (HTTP " + response.status + "). Comprueba la clave, el modelo y que URL Context esté disponible." }, 502);
+      if (response.status === 404) return json({ error: "Gemini no encontró el modelo configurado (HTTP 404). Revisa GEMINI_MODEL en Cloudflare." }, 502);
+      return json({ error: "Gemini devolvió un error HTTP " + response.status + ". Revisa los registros de la Function en Cloudflare." }, 502);
     }
     const payload = await response.json();
     const candidate = payload?.candidates?.[0];
@@ -203,8 +204,9 @@ export async function onRequestPost({ request, env }) {
     const answer = typeof result.answer === "string" ? result.answer.trim().split(/\s+/).slice(0, MAX_ANSWER_WORDS).join(" ").slice(0, 1100) : "";
     if (!answer) return json({ error: "No se recibió una respuesta válida." }, 502);
     return json({ answer, sources });
-  } catch {
-    return json({ error: "El servicio de IA no está disponible." }, 502);
+  } catch (error) {
+    console.error("Gemini request or response processing failed", { name: error?.name || "Error" });
+    return json({ error: "El servicio de IA no está disponible. Revisa los registros de la Function en Cloudflare." }, 502);
   }
 }
 
