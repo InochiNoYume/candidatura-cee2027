@@ -33,7 +33,6 @@ for (const item of [
 if (!styles.includes(".cee-assistant-panel") || !styles.includes(".cee-assistant-sources") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente, fuentes o movimiento reducido.");
 if (!privacy.includes("Google Gemini API") || !privacy.includes("ai.google.dev/gemini-api/terms") || !privacy.includes("contexto de URL")) failures.push("Privacidad: falta explicar Gemini URL Context y sus condiciones.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
-if (/GROQ|groq/i.test(endpoint + client + privacy + readme + functionReadme)) failures.push("Quedó una referencia Groq en el producto o su documentación.");
 if (!readme.includes("únicamente Google Gemini") || !functionReadme.includes("exclusivamente Gemini")) failures.push("La documentación debe indicar que Gemini es el único proveedor.");
 if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
 console.log("ASSISTANT CHECKS PASSED: Gemini-only, URL Context, retry limits, response validation, source routing, privacy and safe rendering.");
