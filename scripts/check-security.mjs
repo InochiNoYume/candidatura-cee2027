@@ -11,6 +11,7 @@ if (!fs.existsSync(headersPath)) {
     ["CSP por defecto", /Content-Security-Policy:\s*[^\n]*default-src 'self'/i],
     ["scripts solo del mismo origen", /Content-Security-Policy:\s*[^\n]*script-src 'self'/i],
     ["beacon de Cloudflare limitado a su archivo oficial", /script-src 'self' https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js(?:;|\s)/i],
+    ["Cloudflare Web Analytics permitido en connect-src", /connect-src 'self' https:\/\/cloudflareinsights\.com(?:;|\s)/i],
     ["bloqueo de scripts inline", /Content-Security-Policy:\s*[^\n]*script-src-attr 'none'/i],
     ["bloqueo de objetos", /Content-Security-Policy:\s*[^\n]*object-src 'none'/i],
     ["bloqueo de framing", /Content-Security-Policy:\s*[^\n]*frame-ancestors 'none'/i],
@@ -52,4 +53,4 @@ if (failures.length) {
   for (const failure of failures) console.error(" - " + failure);
   process.exit(1);
 }
-console.log(`SECURITY CHECKS PASSED: CSP and HTTP security headers, safe search rendering and no tracked private-key material (${tracked.length} tracked files checked).`);
+console.log(`SECURITY CHECKS PASSED: CSP including Cloudflare Analytics, HTTP security headers, safe search rendering and no tracked private-key material (${tracked.length} tracked files checked).`);
