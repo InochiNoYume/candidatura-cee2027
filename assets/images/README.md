@@ -5,12 +5,30 @@ Esta carpeta organiza los recursos gráficos utilizados por el sitio. Mantén lo
 ## Carpetas
 
 - `logo/`: logotipo institucional y, si se entrega, identidad gráfica oficial de la candidatura.
-- `illustrations/`: ilustraciones conceptuales SVG utilizadas en la portada y los ejes.
-- `ejes/`: espacio para recursos gráficos específicos de cada eje.
+- `illustrations/`: ilustraciones conceptuales SVG utilizadas actualmente como recursos de referencia.
+- `inicio/`: fotografías previstas para la portada y el bloque «Tu voz también construye».
+- `ejes/`: contiene las cinco imágenes JPEG ya subidas; sus nombres exactos están en `ejes/README.md`. Las ilustraciones SVG actuales se mantienen en `illustrations/` hasta integrar y revisar las fotografías.
 - `integrantes/`: retratos individuales autorizados.
 - `grupo/`: fotografías grupales autorizadas.
-- `actividades/`: fotografías de actividades reales autorizadas.
+- `actividades/`: fotografías de actividades reales autorizadas; se reutilizan en Galería y Memoria.
+- `noticias/`: imágenes opcionales para noticias y comunicados.
+- `comunidad-tp/`: imágenes opcionales de proyectos y experiencias técnico-profesionales.
 - `og/`: imagen de vista previa para redes y mensajería.
+
+## Qué se necesita por sección
+
+| Sección del sitio | Carpeta | Necesidad |
+| --- | --- | --- |
+| Inicio · imagen principal | `inicio/` | Recomendada; reemplazará la ilustración actual cuando llegue una fotografía real. |
+| Inicio · «Tu voz también construye» | `inicio/` | Recomendada; reemplazará la ilustración de participación actual. |
+| Nuestra lista | `integrantes/` y `grupo/` | Retratos y fotografía grupal, solo si se entregan y autorizan. |
+| Proyecto · cinco ejes | `ejes/` | Cinco archivos JPEG ya están en el repositorio; falta revisión visual e integración en la página. |
+| Noticias | `noticias/` | Opcional, una imagen por noticia cuando aporte contexto. |
+| Galería y Memoria | `actividades/` y `grupo/` | Solo registros reales de actividades o encuentros. |
+| Comunidad TP | `comunidad-tp/` | Opcional; proyectos y experiencias reales de especialidad. |
+| Agenda, Transparencia, Actas, Informes, Contacto y Preguntas | — | No requieren fotografías para funcionar correctamente. |
+
+Cada subcarpeta contiene su propio `README.md` con los nombres exactos sugeridos y las reglas de uso.
 
 ## Reglas generales
 
