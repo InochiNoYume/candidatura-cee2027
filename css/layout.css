@@ -1901,3 +1901,69 @@ img{max-width:100%;height:auto}
   line-height: 1.35;
   text-wrap: pretty;
 }
+
+
+/* Ajustes finales de la dirección editorial (cargado después de styles.css). */
+.pillars-section .pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 17px;
+}
+.pillars-section .pillar-card,
+.pillars-section .pillar-card:nth-child(4),
+.pillars-section .pillar-card:nth-child(5) {
+  grid-column: span 2;
+  min-height: 0;
+  padding: 16px 17px 22px;
+  overflow: hidden;
+  border: 1px solid #e5dfda;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 2px 9px rgba(35,20,18,.025);
+}
+.pillars-section .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
+.pillars-section .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
+.pillars-section .pillar-image {
+  display: block;
+  width: calc(100% + 34px);
+  height: clamp(155px,17vw,205px);
+  margin: -16px -17px 12px;
+  object-fit: cover;
+  border-radius: 0;
+  background: #e9e5e0;
+}
+.pillars-section .pillar-image-note {
+  min-height: 27px;
+  margin: 0 0 12px;
+  padding: 0 1px;
+  font-size: 9px;
+  line-height: 1.45;
+}
+.pillars-section .pillar-icon { display: none; }
+.pillars-section .pillar-card h3 {
+  margin: 12px 0 8px;
+  font-size: 18px;
+  line-height: 1.35;
+}
+.pillars-section .pillar-card p { font-size: 13px; line-height: 1.75; }
+.pillars-section .pillar-card .card-arrow { top: auto; bottom: 18px; }
+@media (max-width: 900px) {
+  .pillars-section .pillar-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .pillars-section .pillar-card,
+  .pillars-section .pillar-card:nth-child(4),
+  .pillars-section .pillar-card:nth-child(5) { grid-column: auto; }
+  .pillars-section .pillar-card:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+  .pillars-section .pillar-grid { grid-template-columns: minmax(0,1fr); gap: 13px; }
+  .pillars-section .pillar-card,
+  .pillars-section .pillar-card:last-child {
+    grid-column: auto;
+    padding: 14px 16px 21px;
+  }
+  .pillars-section .pillar-image {
+    width: calc(100% + 32px);
+    height: 190px;
+    margin: -14px -16px 11px;
+  }
+}
