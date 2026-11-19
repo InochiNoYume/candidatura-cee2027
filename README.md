@@ -90,7 +90,7 @@ Las fechas y los contenidos deben mantenerse alineados con la documentación ofi
 
 ## Fotografías e identidad visual
 
-Las ilustraciones SVG actuales de los ejes y de la portada están en `assets/images/illustrations/`. Son recursos conceptuales de referencia, no fotografías reales. Se conservarán hasta que se reciban imágenes reales adecuadas; no se reemplazarán por imágenes genéricas ni se presentarán ilustraciones como fotografías.
+Las ilustraciones SVG actuales de los ejes y de la portada están en `assets/images/illustrations/`. Son recursos conceptuales de referencia, no fotografías reales. Las cinco imágenes JPEG de los ejes ya están subidas a `assets/images/ejes/` en `main`; sus nombres exactos y el uso previsto están documentados en `assets/images/ejes/README.md`. Aún falta revisar visualmente los archivos e integrarlos en la página Proyecto. Las ilustraciones se conservarán como respaldo hasta validar esa integración. No se reemplazarán por imágenes genéricas ni se presentarán ilustraciones como fotografías.
 
 ### Carpetas y nombres para las próximas imágenes
 
@@ -102,7 +102,7 @@ Cada carpeta contiene un `README.md` con instrucciones y nombres exactos. Resume
 | Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Recomendada; reemplazará la ilustración actual de participación. |
 | Nuestra lista · retratos | `assets/images/integrantes/` | Nombre por cargo, detallado en su README | Solo si hay retratos autorizados. |
 | Nuestra lista · foto grupal | `assets/images/grupo/` | `lista-cee-2027-completa-01.jpg` | Opcional, con autorización de todas las personas identificables. |
-| Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Nombres detallados en su README | Opcional; las ilustraciones actuales siguen disponibles. |
+| Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Cinco JPEG ya subidos: nombres exactos en su README | Pendiente revisión visual e integración; las ilustraciones siguen como respaldo. |
 | Noticias | `assets/images/noticias/` | `AAAA-MM-DD-titulo-noticia.webp` | Opcional por noticia. |
 | Galería y Memoria | `assets/images/actividades/` | `AAAA-MM-DD-nombre-de-actividad-01.webp` | Solo para registros reales autorizados. |
 | Comunidad TP | `assets/images/comunidad-tp/` | Nombres por proyecto o especialidad, detallados en su README | Opcional, cuando existan proyectos o experiencias reales. |
@@ -150,7 +150,7 @@ Antes de modificar CSP, comprobar los dominios estrictamente necesarios para las
 
 ### Última auditoría registrada
 
-**19 de noviembre de 2026**, sobre el sitio público:
+**19 de noviembre de 2026**, sobre el sitio público. Se registraron dos ejecuciones relevantes: la auditoría base tras PR #18 y otra posterior al nuevo despliegue con los cinco JPEG de ejes:
 
 - 103 combinaciones de página y viewport comprobadas.
 - 0 infracciones detectadas por axe.
@@ -164,11 +164,14 @@ Antes de modificar CSP, comprobar los dominios estrictamente necesarios para las
 | Nuestra lista | 99 | 100 | 92 | 100 |
 | Proyecto | 99 | 100 | 92 | 100 |
 
-El 92 de buenas prácticas se vinculó a un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero la directiva `connect-src` solo permitía el mismo origen. Este repositorio incorpora el dominio de métricas explícitamente en esa directiva y añade una comprobación automatizada para evitar que vuelva a faltar.
+En la segunda ejecución, el rendimiento de CEAT Te Escucha subió de 81 a 99 y las cuatro páginas evaluadas marcaron 99 en rendimiento, 100 en accesibilidad y 100 en SEO. El 92 de buenas prácticas se mantuvo.
 
-El 81 de rendimiento de CEAT Te Escucha estuvo asociado a un LCP de 5,0 s en esa ejecución. El informe también identificó una redirección de la URL con `.html`, solicitudes CSS de bloqueo de renderizado y reglas CSS no utilizadas. La auditoría de Lighthouse se ajusta para medir la ruta limpia canónica de esa página. Una única ejecución de Lighthouse puede variar; la mejora debe confirmarse con una nueva auditoría después del despliegue.
+La revisión inicial relacionó el 92 de buenas prácticas con un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero `connect-src` solo permitía el mismo origen. Este PR incorpora el dominio de métricas explícitamente en esa directiva y añade una comprobación automatizada. **La corrección está en esta rama/PR y todavía no está desplegada en producción**, por lo que el 92 debe volver a medirse después de integrar el cambio.
 
-Informe de la ejecución: [GitHub Actions · auditoría del 19-11-2026](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44520081909).
+Los resultados de Lighthouse pueden variar entre ejecuciones. La mejora de rendimiento ya aparece en la auditoría posterior, pero conviene repetirla tras el despliegue del PR y comparar varias ejecuciones.
+
+- Auditoría base: [GitHub Actions · ejecución 44520081909](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44520081909).
+- Auditoría posterior: [GitHub Actions · ejecución 44523480582](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44523480582).
 
 ### Verificación manual pendiente
 
