@@ -40,7 +40,7 @@ for (const item of [
   "GROQ_TIMEOUT_MS = 12000", "SOURCE_TIMEOUT_MS = 5000",
   "PROVIDER_ATTEMPTS = 2", "fetchWithRetry(apiUrl", "fetchWithRetry(\"https://api.groq.com/openai/v1/chat/completions\"",
   "TRANSIENT_PROVIDER_STATUSES", "Gemini y el servicio de respaldo están temporalmente no disponibles.",
-  "llama-3.3-70b-versatile", "callGroqFallback", "TRANSIENT_GEMINI_STATUSES",
+  "openai/gpt-oss-120b", "callGroqFallback", "TRANSIENT_GEMINI_STATUSES",
   "retrieveGroqContext", "max_completion_tokens: MAX_OUTPUT_TOKENS"
 ]) if (!endpoint.includes(item)) failures.push("Function: falta respaldo Groq o control de fallos: " + item);
 if (!privacy.includes("GroqCloud") || !privacy.includes("trust.groq.com/faq") || !privacy.includes("30 días")) failures.push("Privacidad: falta informar el tratamiento de datos por Groq y su retención.");
