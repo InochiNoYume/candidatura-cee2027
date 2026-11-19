@@ -202,6 +202,52 @@ try {
     }
     await context.close();
   }
+  // Prueba real del endpoint Gemini en el Preview: una consulta del proyecto y otra fuera de alcance.
+  const assistantTests = [
+    { name: "in-scope", question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length > 0 },
+    { name: "out-of-scope", question: "¿Cuál es la capital de Francia?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length === 0 }
+  ];
+  const assistantResults = [];
+  for (const test of assistantTests) {
+    try {
+      const response = await fetch(new URL("api/asistente", base), { method: "POST", headers: { "Content-Type": "application/json", "Origin": new URL(base).origin }, body: JSON.stringify({ question: test.question }), signal: AbortSignal.timeout(55000) });
+      const payload = await response.json().catch(() => ({}));
+      const valid = response.ok && test.validate(payload);
+      assistantResults.push({ name: test.name, status: response.status, provider: payload?.provider || null, answerPresent: typeof payload?.answer === "string" && payload.answer.trim().length > 0, sourceCount: Array.isArray(payload?.sources) ? payload.sources.length : 0, code: payload?.code || null, passed: valid });
+      if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status + ", provider " + (payload?.provider || "none") + ", code " + (payload?.code || "none"));
+    } catch (error) {
+      assistantResults.push({ name: test.name, passed: false, error: error.message });
+      failures.push("Gemini Preview " + test.name + ": " + error.message);
+    }
+  }
+
+  // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
+  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }];
+  const screenshotViewports = [
+    { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
+    { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
+    { name: "desktop", width: 1280, height: 900, isMobile: false, hasTouch: false },
+    { name: "wide-desktop", width: 1440, height: 900, isMobile: false, hasTouch: false }
+  ];
+  fs.mkdirSync("audit-results/screenshots", { recursive: true });
+  const screenshotResults = [];
+  for (const viewport of screenshotViewports) {
+    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, isMobile: viewport.isMobile, hasTouch: viewport.hasTouch });
+    const page = await context.newPage();
+    for (const route of screenshotRoutes) {
+      try {
+        await page.goto(new URL(route.route, base).href, { waitUntil: "networkidle", timeout: 45000 });
+        await page.waitForTimeout(900);
+        const file = "audit-results/screenshots/" + route.name + "-" + viewport.name + ".png";
+        await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
+        screenshotResults.push({ page: route.name, viewport: viewport.name, file, passed: true });
+      } catch (error) {
+        screenshotResults.push({ page: route.name, viewport: viewport.name, passed: false, error: error.message });
+        failures.push("Captura visual " + route.name + " " + viewport.name + ": " + error.message);
+      }
+    }
+    await context.close();
+  }
   const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
   const missingTitle = await missingPage.title();
@@ -222,8 +268,14 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
     missingRouteStatus: results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? null,
     accessibilityViolations: results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0),
     pagesWithAccessibilityIssues: results.filter(item => (item.accessibility?.violations || 0) > 0).length,
+    geminiTestsPassed: assistantResults.filter(item => item.passed).length,
+    geminiTestsTotal: assistantResults.length,
+    screenshotsPassed: screenshotResults.filter(item => item.passed).length,
+    screenshotsTotal: screenshotResults.length,
     failures
   },
+  assistantResults,
+  screenshotResults,
   results
 }, null, 2));
 console.log(`Responsive audit: ${results.length} page/viewport combinations; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
