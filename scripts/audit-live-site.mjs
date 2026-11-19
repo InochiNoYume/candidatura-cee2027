@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 
-const base = "https://candidatura-cee2027.pages.dev/";
+const base = (process.env.CEE_AUDIT_BASE_URL || "https://candidatura-cee2027.pages.dev/").replace(/\/?$/, "/");
 const routes = [
   "", "pages/lista.html", "pages/proyecto.html", "pages/agenda.html",
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
