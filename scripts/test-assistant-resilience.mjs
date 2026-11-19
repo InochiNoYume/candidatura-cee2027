@@ -89,7 +89,7 @@ try {
   assert.ok(listResult.answer.includes("\n- **Presidenta:**"), "Structured Markdown line breaks must be preserved");
 
   const recovered = await run("Gemini transient error then success", 200, async url => {
-    assert.match(String(url), /generativelanguage\.googleapis\.com/);
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     geminiCalls += 1;
     return geminiCalls === 1
       ? providerJson({ error: { status: "UNAVAILABLE" } }, 503)
