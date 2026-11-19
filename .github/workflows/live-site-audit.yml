@@ -37,7 +37,7 @@ jobs:
           mkdir -p audit-results/lighthouse
           export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
           echo "Lighthouse Chrome: $CHROME_PATH"
-          for page in "" "pages/lista.html" "pages/proyecto.html" "pages/escucha.html"; do
+          for page in "" "pages/lista" "pages/proyecto" "pages/escucha"; do
             name=$(printf '%s' "${page:-home}" | tr '/.' '--')
             npx lighthouse "https://candidatura-cee2027.pages.dev/${page}" \
               --chrome-flags="--headless --no-sandbox" \
