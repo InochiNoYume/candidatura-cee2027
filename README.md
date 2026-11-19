@@ -16,7 +16,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - `css/`: estilos y diseño responsive.
 - `js/main.js`: navegación, filtros, efectos y asistente.
 - `js/search.js`: búsqueda interna.
-- `functions/api/asistente.js`: endpoint privado con Groq.
+- `functions/api/asistente.js`: endpoint privado con Google Gemini.
 - `assets/`: recursos gráficos.
 - `scripts/`: validaciones.
 - `.github/workflows/`: CI.
@@ -33,7 +33,7 @@ Fotografías reales autorizadas, formulario CEAT Te Escucha, Instagram de candid
 El workflow `.github/workflows/site-checks.yml` valida sintaxis, HTML, enlaces, cabeceras, renderizado seguro y el asistente. No sustituye pruebas visuales en navegador.
 
 ## Asistente IA
-Usa Groq desde Cloudflare Pages Functions. Configura `GROQ_API_KEY` como secret. Modelo predeterminado: `openai/gpt-oss-20b`. Para ahorrar tokens: contexto compacto, sin historial, máximo 55 palabras por respuesta, 120 tokens de finalización y razonamiento bajo. Solo responde sobre la web CEE 2027. No guarda conversaciones. Ver [functions/README.md](functions/README.md) y [Privacidad](pages/privacidad.html).
+Usa Google Gemini desde Cloudflare Pages Functions. Configura `GEMINI_API_KEY` como Secret. Modelo predeterminado: `gemini-3.5-flash-lite`. Para reducir consumo: contexto compacto, sin historial, máximo 55 palabras por respuesta y 160 tokens de generación. Solo responde sobre la web CEE 2027. No guarda conversaciones. Ver [functions/README.md](functions/README.md) y [Privacidad](pages/privacidad.html).
 
 ## Seguridad
 Cabeceras y CSP en `_headers`; pautas adicionales en `SECURITY.md`. Tecnología: HTML5, CSS3, JavaScript y Cloudflare Pages.
