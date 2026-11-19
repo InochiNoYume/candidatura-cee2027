@@ -62,10 +62,13 @@ La auditoría recorrió 34 combinaciones de página y dispositivo, registró cer
  
 ## Asistente informativo y efectos visuales
 
-- El asistente del sitio utiliza una Pages Function en `functions/api/asistente.js` y el binding de Cloudflare Workers AI llamado `AI`.
-- En Cloudflare Pages: Settings → Functions → Workers AI bindings → Add binding; nombre de variable `AI`; guardar y volver a desplegar.
-- El modelo Gemma 4 26B A4B se invoca únicamente desde el servidor. No colocar claves API ni credenciales en JavaScript del navegador.
-- El asistente responde con contexto oficial curado, limita cada pregunta a 300 caracteres y no persiste el historial. La limitación temporal en memoria de la Function es orientativa por instancia, no un rate limit global; para límites estrictos, configurar una regla de rate limiting de Cloudflare.
-- Antes de publicar, confirmar el binding `AI` y probar `POST /api/asistente`. Sin binding, la interfaz informa que el servicio todavía no está activado.
+- El asistente utiliza Google Gemini mediante una Pages Function en `functions/api/asistente.js`; no utiliza el binding Workers AI ni modelos Gemma.
+- En Cloudflare Pages → Settings → Variables and Secrets, configura `GEMINI_API_KEY` como Secret. Debe existir por separado en Preview y Production, según el entorno que se vaya a probar.
+- `GEMINI_MODEL` es opcional; el valor predeterminado es `gemini-3.5-flash-lite`. La clave se envía solo desde el servidor mediante `x-goog-api-key`; nunca incluirla en el navegador, repositorio o mensajes.
+- El asistente limita cada pregunta a 500 caracteres, no persiste el historial y utiliza Gemini URL Context para recuperar páginas públicas del propio sitio. El inventario contiene 16 páginas; una pregunta general puede consultar las 16 (dentro del máximo de 20 URL por solicitud de la herramienta).
+- La aplicación solo muestra como fuentes las URL que Gemini informa como recuperadas correctamente. Si no se recupera ninguna, no presenta una respuesta factual como si estuviera verificada.
+- Las respuestas se limitan a 130 palabras y 420 tokens de generación. El filtro local debe reconocer variantes frecuentes como «ejes» y «elecciones», y rechazar consultas ajenas antes de llamar a Gemini.
+- La limitación de diez preguntas por hora se mantiene en memoria por instancia; no equivale a un rate limit global. Para cuotas estrictas, configurar Rate Limiting en Cloudflare.
+- Antes de publicar, probar `POST /api/asistente` desde la vista previa con `GEMINI_API_KEY` configurada en Preview y verificar preguntas dentro y fuera de ámbito, recuperación de fuentes y errores de cuota. Repetir en Production solo cuando se autorice el despliegue.
 - El rastro de partículas se comparte entre páginas, usa pointer events para mouse y tacto, limita la cantidad de partículas y se desactiva con `prefers-reduced-motion`.
 - Los degradados y controles visuales usan CSS local; no se incorporan librerías de terceros.

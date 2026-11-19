@@ -273,14 +273,42 @@
     '<p class="cee-assistant-intro">Resuelvo dudas sobre esta web y su propuesta usando información publicada aquí.</p>' +
     '<div class="cee-assistant-messages" role="log" aria-live="polite" aria-relevant="additions text"><p class="cee-assistant-message assistant">¡Hola! Puedes preguntarme por los ejes, la agenda, la lista o las secciones del sitio.</p></div>' +
     '<form class="cee-assistant-form"><label class="sr-only" for="cee-assistant-input">Escribe tu pregunta</label>' +
-    '<textarea id="cee-assistant-input" maxlength="300" rows="2" placeholder="Escribe tu pregunta…" required></textarea>' +
-    '<div class="cee-assistant-form-foot"><span>Máximo 300 caracteres</span><button type="submit">Enviar <span aria-hidden="true">↑</span></button></div></form>' +
+    '<textarea id="cee-assistant-input" maxlength="500" rows="2" placeholder="Escribe tu pregunta…" required></textarea>' +
+    '<div class="cee-assistant-form-foot"><span>Máximo 500 caracteres</span><button type="submit">Enviar <span aria-hidden="true">↑</span></button></div></form>' +
     '<p class="cee-assistant-privacy">No compartas datos personales. Las preguntas se envían a Cloudflare para generar la respuesta y no se guardan en este sitio.</p>';
   document.body.append(assistantLauncher,assistantPanel);
   const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
   const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
   const assistantForm = assistantPanel.querySelector("form");
-  const addAssistantMessage = (text,isUser=false) => {
+  const addAssistantSources = sources => {
+    if (!Array.isArray(sources) || !sources.length) return;
+    const wrapper = document.createElement("div");
+    wrapper.className = "cee-assistant-sources";
+    const heading = document.createElement("strong");
+    heading.textContent = "Fuentes consultadas";
+    wrapper.appendChild(heading);
+    const list = document.createElement("ul");
+    const allowedPaths = new Set(["/","/index.html","/pages/lista.html","/pages/proyecto.html","/pages/agenda.html","/pages/transparencia.html","/pages/noticias.html","/pages/galeria.html","/pages/escucha.html","/pages/preguntas.html","/pages/contacto.html","/pages/actas.html","/pages/informes.html","/pages/comunidad-tp.html","/pages/memoria.html","/pages/privacidad.html","/pages/buscar.html"]);
+    sources.forEach(source => {
+      if (!source || typeof source.url !== "string") return;
+      let url;
+      try { url = new URL(source.url,window.location.origin); } catch { return; }
+      if (url.origin !== window.location.origin || !allowedPaths.has(url.pathname)) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = url.href;
+      link.textContent = typeof source.title === "string" ? source.title : "Página oficial";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    if (!list.childElementCount) return;
+    wrapper.appendChild(list);
+    assistantMessages.appendChild(wrapper);
+    assistantMessages.scrollTop = assistantMessages.scrollHeight;
+  };
+    const addAssistantMessage = (text,isUser=false) => {
     const message = document.createElement("p");
     message.className = "cee-assistant-message " + (isUser ? "user" : "assistant");
     message.textContent = text;
@@ -300,10 +328,18 @@
   document.addEventListener("keydown",event => {
     if (event.key === "Escape" && !assistantPanel.hidden) setAssistantOpen(false);
   });
+  // Enter envía; Shift+Enter conserva la posibilidad de escribir una nueva línea.
+  assistantInput.addEventListener("keydown",event => {
+    if (event.key !== "Enter" || event.shiftKey || event.isComposing || assistantInput.disabled) return;
+    event.preventDefault();
+    if (!assistantInput.value.trim()) return;
+    if (typeof assistantForm.requestSubmit === "function") assistantForm.requestSubmit();
+    else assistantForm.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
+  });
   assistantForm.addEventListener("submit",async event => {
     event.preventDefault();
     const question = assistantInput.value.trim();
-    if (!question || question.length > 300) return;
+    if (!question || question.length > 500) return;
     addAssistantMessage(question,true);
     assistantInput.value = "";
     assistantInput.disabled = true;
@@ -319,12 +355,18 @@
       const payload = await response.json().catch(() => ({}));
       pending.remove();
       if (!response.ok) {
-        addAssistantMessage(response.status === 503
-          ? "El asistente todavía no está activado en el servidor. Mientras tanto, puedes consultar Proyecto, Agenda y Preguntas frecuentes."
-          : "No pude procesar la consulta en este momento. Inténtalo más tarde o revisa las secciones del sitio.");
-      } else addAssistantMessage(typeof payload.answer === "string" && payload.answer
-        ? payload.answer
-        : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
+        const safeError = typeof payload.error === "string" ? payload.error : "";
+        addAssistantMessage(safeError || (response.status === 503
+          ? "El asistente todavía no está activado en este entorno. Comprueba el Secret de Cloudflare y vuelve a desplegar."
+          : response.status === 429
+            ? "El asistente alcanzó temporalmente su límite de consultas. Inténtalo más tarde."
+            : "No pude conectar con el servicio de IA. Revisa la configuración y los registros de Cloudflare."));
+      } else {
+        addAssistantMessage(typeof payload.answer === "string" && payload.answer
+          ? payload.answer
+          : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
+        addAssistantSources(payload.sources);
+      }
     } catch {
       pending.remove();
       addAssistantMessage("No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");

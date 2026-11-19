@@ -1,11 +1,22 @@
-# Configuración del asistente CEE 2027
+# Asistente CEE 2027
 
-1. Abre Cloudflare Dashboard → Workers & Pages → candidatura-cee2027.
-2. Entra en Settings → Functions → Workers AI bindings.
-3. Añade un binding con variable **AI** y guarda.
-4. Ejecuta un nuevo despliegue de Pages.
-5. Comprueba que `POST /api/asistente` responde con JSON.
+1. En Cloudflare Pages → Settings → Variables and Secrets, añade **GEMINI_API_KEY** como Secret.
+2. Opcional: define **GEMINI_MODEL**. Predeterminado: `gemini-3.5-flash-lite`.
+3. Guarda el secreto en el entorno correspondiente (Preview para despliegues de prueba y Production para el sitio público) y vuelve a desplegar ese entorno.
+4. Prueba `POST /api/asistente`.
 
-La Function utiliza el modelo `@cf/google/gemma-4-26b-a4b-it`. El modelo y el binding se ejecutan del lado del servidor; no añadas credenciales al repositorio ni al JavaScript del navegador.
+La clave se usa solo en el servidor mediante la cabecera `x-goog-api-key`. Nunca la incluyas en HTML, JavaScript, commits o mensajes.
 
-La limitación de diez consultas por hora se mantiene en memoria por instancia y es solo una barrera básica; no representa un límite global fiable. Para imponer cuotas globales, crea una regla de Rate Limiting en Cloudflare antes de abrir el asistente al público. Las preguntas no se persisten en la web.
+## Fuentes y filtros
+
+El asistente se limita a la web CEE 2027. Un filtro local reconoce consultas relacionadas con la candidatura y sus secciones; las consultas claramente ajenas reciben una respuesta fija sin llamar a Gemini.
+
+Para preguntas pertinentes, el servidor selecciona páginas relacionadas y envía sus URL públicas a la herramienta **URL Context** de Gemini. Las fuentes permitidas incluyen Inicio, Nuestra lista, Proyecto, Agenda, Transparencia, Noticias, Galería, CEAT Te Escucha, Preguntas frecuentes, Contacto, Actas, Informes, Comunidad TP, Memoria, Privacidad y Buscar. Las preguntas generales pueden consultar todas las secciones. La interfaz muestra enlaces a las páginas que Gemini informa haber recuperado correctamente.
+
+Gemini debe basarse en el contenido recuperado, no inventar datos y distinguir propuestas de actividades realizadas. Las respuestas son resúmenes detallados en español de hasta 130 palabras. La generación está limitada a 420 tokens. No se envía historial.
+
+## Seguridad y privacidad
+
+El límite de diez preguntas por hora es por instancia y no equivale a un límite global. Añade Rate Limiting global en Cloudflare antes de publicar ampliamente.
+
+En el nivel gratuito de Gemini API, Google puede utilizar los datos enviados para mejorar sus productos y los datos pueden ser revisados por personas. No enviar datos personales, académicos, privados ni sensibles. Consulta https://ai.google.dev/gemini-api/terms y https://ai.google.dev/gemini-api/docs/url-context.

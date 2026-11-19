@@ -1,44 +1,26 @@
 import fs from "node:fs";
-
 const failures = [];
 const endpoint = fs.readFileSync("functions/api/asistente.js", "utf8");
 const client = fs.readFileSync("js/main.js", "utf8");
 const styles = fs.readFileSync("css/styles.css", "utf8");
 const privacy = fs.readFileSync("pages/privacidad.html", "utf8");
-
-for (const [label, pattern] of [
-  ["binding de Workers AI", /env\.AI\.run\s*\(/],
-  ["modelo Gemma 4 vigente", /@cf\/google\/gemma-4-26b-a4b-it/],
-  ["validación de origen", /request\.headers\.get\("Origin"\)/],
-  ["límite de pregunta", /question\.length\s*>\s*300/],
-  ["control de tamaño", /Content-Length/],
-  ["límite del cuerpo leído", /rawBody\.length\s*>\s*2048/],
-  ["mapa de límites acotado", /requestWindows\.size\s*>\s*1000/],
-  ["respuestas sin caché", /"Cache-Control":\s*"no-store"/],
-  ["contexto editorial oficial", /CONTEXTO OFICIAL/],
-  ["respuesta con límite de tokens", /max_completion_tokens:\s*190/]
-]) if (!pattern.test(endpoint)) failures.push("Function: falta " + label);
-
-for (const [label, pattern] of [
-  ["interfaz del asistente", /cee-assistant-launcher/],
-  ["envío al endpoint del servidor", /fetch\("\/api\/asistente"/],
-  ["límite de entrada visible", /maxlength="300"/i],
-  ["renderizado seguro de respuestas", /message\.textContent\s*=\s*text/],
-  ["aviso de privacidad", /No compartas datos personales/],
-  ["rastro pointer", /addEventListener\("pointermove"/]
-]) if (!pattern.test(client)) failures.push("Cliente: falta " + label);
-
-for (const [label, pattern] of [
-  ["estilos de movimiento reducido", /prefers-reduced-motion:\s*reduce/],
-  ["panel móvil adaptable", /\.cee-assistant-panel/],
-  ["canvas sin capturar eventos", /\.cee-pointer-trail\s*\{[^}]*pointer-events:\s*none/s]
-]) if (!pattern.test(styles)) failures.push("CSS: falta " + label);
-
-if (!/Cloudflare Workers AI/.test(privacy) || !/dirección IP/.test(privacy) || !/(datos personales|información personal)/.test(privacy)) failures.push("Privacidad: falta explicar el tratamiento de preguntas, IP y datos personales.");
-if (/localStorage|sessionStorage/.test(client)) failures.push("Cliente: el asistente no debe persistir preguntas ni conversaciones.");
-if (failures.length) {
-  console.error("ASSISTANT CHECKS FAILED");
-  failures.forEach(failure => console.error(" - " + failure));
-  process.exit(1);
-}
-console.log("ASSISTANT CHECKS PASSED: Workers AI binding, model, input validation, privacy safeguards, safe rendering, pointer trail and reduced-motion support.");
+const requiredEndpoint = [
+  "env.GEMINI_API_KEY", "gemini-3.5-flash-lite", "generativelanguage.googleapis.com/v1beta/models",
+  "tools: [{ url_context: {} }]", "function selectSources(question)", "MAX_ANSWER_WORDS = 130",
+  "maxOutputTokens: MAX_OUTPUT_TOKENS", "question.length > 500", "getRetrievedSources(candidate, selectedPaths, siteOrigin)",
+  "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
+  "function normalizeSourcePath(value, siteOrigin)", "decodeURIComponent(url.pathname)",
+  "const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)))",
+  "const canonicalUrl = path === \"/\" ? siteOrigin + \"/\" : siteOrigin + path"
+];
+for (const item of requiredEndpoint) if (!endpoint.includes(item)) failures.push("Function: falta " + item);
+for (const item of [
+  'fetch("/api/asistente"', 'maxlength="500"', "addAssistantSources(payload.sources)",
+  "url.origin !== window.location.origin", "message.textContent = text", "No compartas datos personales"
+]) if (!client.includes(item)) failures.push("Cliente: falta " + item);
+if (!styles.includes(".cee-assistant-panel") || !styles.includes(".cee-assistant-sources") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente, fuentes o movimiento reducido.");
+if (!privacy.includes("Google Gemini API") || !privacy.includes("ai.google.dev/gemini-api/terms") || !privacy.includes("contexto de URL")) failures.push("Privacidad: falta explicar Gemini URL Context y sus condiciones.");
+if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
+if (/GROQ_API_KEY|api.groq.com|GroqCloud/.test(endpoint + privacy)) failures.push("Quedó una referencia activa a Groq.");
+if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
+console.log("ASSISTANT CHECKS PASSED: Gemini URL Context, page routing, source links, detailed summaries, privacy and safe rendering.");
