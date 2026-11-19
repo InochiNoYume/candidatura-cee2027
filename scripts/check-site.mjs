@@ -133,7 +133,7 @@ const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
 const faqPage = read("pages/preguntas.html");
 const homePage = read("index.html");
-if (!listPage.includes("Agustina Almirón") || listPage.includes("Agustina Pérez"))
+if (!listPage.includes("Agustina Almirón") || listPage.includes("Agustina Pérez") || !listPage.includes('aria-hidden="true">AA</div><span class="role">Presidenta</span>'))
   failures.push("Contenido oficial: el nombre de la presidenta debe coincidir con el PDF (Agustina Almirón).");
 if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
   failures.push("Proyecto: el eje 5 debe estar identificado como complementario y separado de los cuatro ejes oficiales.");
