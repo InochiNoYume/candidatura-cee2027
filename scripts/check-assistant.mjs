@@ -29,7 +29,7 @@ if (!client.includes("fallbackErrors")) failures.push("El cliente debe traducir 
 for (const item of requiredEndpoint) if (!endpoint.includes(item)) failures.push("Function: falta " + item);
 for (const item of [
   'fetch("/api/asistente"', 'maxlength="500"', "addAssistantSources(payload.sources)",
-  "url.origin !== window.location.origin", "renderAssistantText(message,text,isUser)",
+  "url.origin !== window.location.origin", "url.pathname.replace(/\\\\.html$/i, \"\")", "renderAssistantText(message,text,isUser)",
   "No compartas datos personales", "fallbackErrors"
 ]) if (!client.includes(item)) failures.push("Cliente: falta " + item);
 if (!styles.includes(".cee-assistant-panel") || !styles.includes(".cee-assistant-sources") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente, fuentes o movimiento reducido.");
