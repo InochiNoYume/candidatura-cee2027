@@ -170,23 +170,33 @@ async function retrieveGroqContext(selectedPaths, siteOrigin) {
         headers: { "Accept": "text/html", "User-Agent": "CEE2027-Assistant/1.0" },
         signal: AbortSignal.timeout(7000)
       });
-      if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("text/html")) return null;
+      if (!response.ok) return { failure: { path, reason: "HTTP_" + response.status } };
+      if (!response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
+        return { failure: { path, reason: "INVALID_CONTENT_TYPE" } };
+      }
       const html = await response.text();
       const text = cleanRetrievedHtml(html).slice(0, 8500);
-      if (!text) return null;
-      return { title: PAGE_TITLES[path] || "Página oficial", url: url.href, text };
-    } catch {
-      return null;
+      if (!text) return { failure: { path, reason: "EMPTY_CONTENT" } };
+      return { source: { title: PAGE_TITLES[path] || "Página oficial", url: url.href, text } };
+    } catch (error) {
+      const reason = error?.name === "TimeoutError" || error?.name === "AbortError"
+        ? "TIMEOUT" : "FETCH_ERROR";
+      return { failure: { path, reason } };
     }
   }));
-  const sources = results.filter(Boolean);
+  const sources = results.filter(item => item.source).map(item => item.source);
+  const failures = results.filter(item => item.failure).map(item => item.failure);
   let remaining = 26000;
   const documents = sources.map(source => {
     const text = source.text.slice(0, remaining);
     remaining -= text.length;
     return { title: source.title, url: source.url, text };
   }).filter(item => item.text.length > 0);
-  return { documents, sources: documents.map(({title,url}) => ({title,url})) };
+  return {
+    documents,
+    sources: documents.map(({title,url}) => ({title,url})),
+    diagnostics: { selected: selectedPaths.length, retrieved: documents.length, failures }
+  };
 }
 
 function parseProviderJson(value) {
@@ -208,7 +218,10 @@ function normalizeAnswer(value) {
 
 async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
   if (!env.GROQ_API_KEY) throw new Error("GROQ_NOT_CONFIGURED");
-  const { documents, sources } = await retrieveGroqContext(selectedPaths, siteOrigin);
+  const { documents, sources, diagnostics } = await retrieveGroqContext(selectedPaths, siteOrigin);
+  if (diagnostics.failures.length) {
+    console.warn("Groq source retrieval diagnostics", diagnostics);
+  }
   if (!documents.length) throw new Error("GROQ_SOURCES_UNAVAILABLE");
   const model = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
     ? env.GROQ_MODEL : GROQ_DEFAULT_MODEL;
@@ -238,7 +251,21 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
     })
   });
   if (!response.ok) {
-    console.error("Groq fallback request failed", { status: response.status });
+    const errorPayload = await response.json().catch(() => ({}));
+    const providerError = errorPayload?.error || {};
+    const providerMessage = typeof providerError.message === "string"
+      ? providerError.message
+          .replace(/Bearer\\s+\\S+/gi, "Bearer [redacted]")
+          .replace(/(api[_ -]?key|token|authorization)\\s*[:=]\\s*\\S+/gi, "$1=[redacted]")
+          .slice(0, 180)
+      : "No provider message";
+    console.error("Groq fallback request failed", {
+      status: response.status,
+      model,
+      providerCode: String(providerError.code || "UNKNOWN").slice(0, 80),
+      providerType: String(providerError.type || "UNKNOWN").slice(0, 80),
+      providerMessage
+    });
     throw new Error("GROQ_HTTP_" + response.status);
   }
   const payload = await response.json();
