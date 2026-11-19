@@ -10,6 +10,7 @@ if (!fs.existsSync(headersPath)) {
   const required = [
     ["CSP por defecto", /Content-Security-Policy:\s*[^\n]*default-src 'self'/i],
     ["scripts solo del mismo origen", /Content-Security-Policy:\s*[^\n]*script-src 'self'/i],
+    ["beacon de Cloudflare limitado a su archivo oficial", /script-src 'self' https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js(?:;|\s)/i],
     ["bloqueo de scripts inline", /Content-Security-Policy:\s*[^\n]*script-src-attr 'none'/i],
     ["bloqueo de objetos", /Content-Security-Policy:\s*[^\n]*object-src 'none'/i],
     ["bloqueo de framing", /Content-Security-Policy:\s*[^\n]*frame-ancestors 'none'/i],
