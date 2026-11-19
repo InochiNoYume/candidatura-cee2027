@@ -2206,3 +2206,28 @@ img{max-width:100%;height:auto}
 .agenda-calendar-detail p{margin:6px 0 0}
 @media(max-width:760px){.commitment-metrics{grid-template-columns:1fr 1fr}.commitment-dashboard-grid{grid-template-columns:1fr}.commitment-grid{grid-template-columns:1fr}.commitment-toolbar{align-items:stretch;flex-direction:column}.commitment-search{width:100%}.agenda-calendar-panel{padding:16px}.agenda-calendar-grid{gap:3px}.agenda-calendar-day,.agenda-calendar-blank{min-height:38px}.agenda-calendar-heading h2{font-size:19px}}
 @media(max-width:420px){.commitment-metrics{grid-template-columns:1fr}.commitment-card{padding:17px}.commitment-stage{font-size:9px}}
+
+
+/* Accesibilidad: foco visible, controles cómodos y movimiento reducido */
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+ outline:3px solid #8b1d29!important;
+ outline-offset:3px!important;
+ box-shadow:0 0 0 2px #fff!important;
+}
+:where(button,[role="button"],input[type="search"],summary){scroll-margin-block:110px}
+.faq-item summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.news-sidebar a,.update-history a{color:var(--brand);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.update-history{margin-top:52px;padding:28px;border:1px solid var(--border-soft);border-radius:14px;background:var(--surface-muted)}
+.update-history-heading h2{margin:0 0 10px;font:800 clamp(23px,3vw,32px) Manrope,sans-serif}
+.update-history-heading p:not(.eyebrow),.update-history-note{max-width:780px;color:var(--text-muted);font-size:13px;line-height:1.75}
+.update-history-list{list-style:none;margin:22px 0 0;padding:0;border-left:2px solid #d9b9bc}
+.update-history-list li{position:relative;display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:18px;padding:0 0 22px 22px}
+.update-history-list li:before{content:"";position:absolute;left:-7px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px #f3e7e8}
+.update-history-list time{color:var(--brand);font-size:12px;font-weight:800}
+.update-history-list strong{font:750 15px Manrope,sans-serif}
+.update-history-list p{margin:6px 0 0;color:var(--text-muted);font-size:13px;line-height:1.7}
+.update-history-note{margin:0}
+@media(max-width:620px){.update-history{padding:19px}.update-history-list li{grid-template-columns:1fr;gap:6px}}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
