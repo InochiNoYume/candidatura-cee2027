@@ -243,8 +243,12 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
     console.warn("Groq source retrieval diagnostics", diagnostics);
   }
   if (!documents.length) throw new Error("GROQ_SOURCES_UNAVAILABLE");
-  const model = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
+  const configuredModel = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
     ? env.GROQ_MODEL : GROQ_DEFAULT_MODEL;
+  // Fuerza la migración incluso si Cloudflare conserva un GROQ_MODEL retirado.
+  const model = configuredModel === "llama-3.3-70b-versatile"
+    ? GROQ_DEFAULT_MODEL
+    : configuredModel;
   const documentContext = documents.map((doc, index) =>
     "FUENTE " + (index + 1) + ": " + doc.title + "\nURL: " + doc.url + "\nCONTENIDO: " + doc.text
   ).join("\n\n");
