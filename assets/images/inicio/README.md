@@ -1,8 +1,20 @@
 # Imágenes de la página de inicio
 
-Esta carpeta reúne las fotografías que podrán reemplazar las ilustraciones actuales de la portada y del bloque **«Tu voz también construye»**.
+Esta carpeta contiene recursos visuales exclusivos de la portada y del bloque «Plan de trabajo». Las cinco ilustraciones de los ejes de Inicio son independientes de las imágenes fotográficas referenciales de la página Proyecto.
 
-## Archivos previstos
+## Ilustraciones exclusivas de las tarjetas de Inicio
+
+| Archivo | Uso |
+| --- | --- |
+| `eje-01-ambiente.svg` | Tarjeta de medio ambiente y sustentabilidad. |
+| `eje-02-convivencia.svg` | Tarjeta de infraestructura y convivencia. |
+| `eje-03-deporte.svg` | Tarjeta de deportes y vida saludable. |
+| `eje-04-identidad-tp.svg` | Tarjeta de identidad y vinculación TP. |
+| `eje-05-bienestar.svg` | Tarjeta de bienestar y participación. |
+
+Estas piezas son ilustraciones originales en SVG, no fotografías. Se usan para dar variedad visual sin reutilizar los JPEG temporales de la página Proyecto.
+
+## Fotografías pendientes
 
 | Nombre exacto | Uso | Estado |
 | --- | --- | --- |
@@ -15,7 +27,7 @@ Esta carpeta reúne las fotografías que podrán reemplazar las ilustraciones ac
 - Formato preferido: WebP optimizado. También se acepta JPG/JPEG si se conserva su extensión real.
 - Para la portada, entrega una fotografía horizontal y de buena resolución, con espacio visual suficiente para que el diseño no tape el motivo principal.
 - Para «Tu voz también construye», entrega una fotografía horizontal relacionada con participación, diálogo o comunidad estudiantil.
-- No uses imágenes generadas o ilustrativas como si fueran fotografías reales.
+- No presentes imágenes ilustrativas como fotografías reales.
 - Antes de publicar, confirma los permisos correspondientes de las personas que aparezcan.
 
-**Importante:** añadir aquí los archivos no cambia automáticamente el sitio. Al recibirlos, se actualizarán las referencias de `index.html` y se revisará el recorte en escritorio y móvil.
+**Importante:** añadir fotografías a esta carpeta no cambia automáticamente el sitio. Al recibirlas, se actualizarán las referencias de `index.html` y se revisará el recorte en escritorio y móvil.
