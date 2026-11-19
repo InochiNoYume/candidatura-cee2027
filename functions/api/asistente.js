@@ -177,70 +177,6 @@ function normalizeAnswer(value) {
     : "";
 }
 
-async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
-  if (!env.GROQ_API_KEY) throw new Error("GROQ_NOT_CONFIGURED");
-  const { documents, sources, diagnostics } = await retrieveGroqContext(selectedPaths, siteOrigin);
-  if (diagnostics.failures.length) {
-    console.warn("Groq source retrieval diagnostics", diagnostics);
-  }
-  if (!documents.length) throw new Error("GROQ_SOURCES_UNAVAILABLE");
-  const configuredModel = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
-    ? env.GROQ_MODEL : GROQ_DEFAULT_MODEL;
-  // Fuerza la migración incluso si Cloudflare conserva un GROQ_MODEL retirado.
-  const model = configuredModel === "llama-3.3-70b-versatile"
-    ? GROQ_DEFAULT_MODEL
-    : configuredModel;
-  const documentContext = documents.map((doc, index) =>
-    "FUENTE " + (index + 1) + ": " + doc.title + "\nURL: " + doc.url + "\nCONTENIDO: " + doc.text
-  ).join("\n\n");
-  const userPrompt = "PREGUNTA DEL ESTUDIANTE:\n" + question +
-    "\n\nCONTENIDO RECUPERADO DE LAS MISMAS PÁGINAS OFICIALES SELECCIONADAS PARA GEMINI:\n" +
-    documentContext +
-    "\n\nResponde usando exclusivamente este contenido. Si la consulta no está relacionada con la web CEE 2027, usa scope out_of_scope. Devuelve solo JSON válido con scope y answer.";
-  const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + env.GROQ_API_KEY
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: INSTRUCTIONS },
-        { role: "user", content: userPrompt }
-      ],
-      temperature: 0.2,
-      max_completion_tokens: MAX_OUTPUT_TOKENS,
-      response_format: { type: "json_object" }
-    })
-  }, { timeoutMs: GROQ_TIMEOUT_MS });
-  if (!response.ok) {
-    const errorPayload = await response.json().catch(() => ({}));
-    const providerError = errorPayload?.error || {};
-    const providerMessage = typeof providerError.message === "string"
-      ? providerError.message
-          .replace(/Bearer\s+\S+/gi, "Bearer [redacted]")
-          .replace(/(api[_ -]?key|token|authorization)\s*[:=]\s*\S+/gi, "$1=[redacted]")
-          .slice(0, 180)
-      : "No provider message";
-    console.error("Groq fallback request failed", {
-      status: response.status,
-      model,
-      providerCode: String(providerError.code || "UNKNOWN").slice(0, 80),
-      providerType: String(providerError.type || "UNKNOWN").slice(0, 80),
-      providerMessage
-    });
-    throw new Error("GROQ_HTTP_" + response.status);
-  }
-  const payload = await response.json();
-  const result = parseProviderJson(payload?.choices?.[0]?.message?.content);
-  if (!result || !["in_scope", "out_of_scope"].includes(result.scope)) throw new Error("GROQ_INVALID_RESPONSE");
-  if (result.scope === "out_of_scope") return { answer: outOfScopeMessage(), sources: [] };
-  const answer = normalizeAnswer(result.answer);
-  if (!answer) throw new Error("GROQ_EMPTY_RESPONSE");
-  return { answer, sources };
-}
-
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
   if (origin && origin !== new URL(request.url).origin) return json({ error: "La solicitud fue bloqueada por seguridad (HTTP 403). Abre el asistente desde la web oficial del CEE.", code: "ORIGIN_FORBIDDEN" }, 403);
@@ -273,9 +209,9 @@ export async function onRequestPost({ request, env }) {
   const selectedPaths = selectSources(question);
   const siteOrigin = new URL(request.url).origin;
   const sourceUrls = selectedPaths.map(path => new URL(path, siteOrigin + "/").href);
-  const prompt = "PREGUNTA DEL ESTUDIANTE:\\n" + question +
-    "\\n\\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\\n" +
-    sourceUrls.map(url => "- " + url).join("\\n") +
+  const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question +
+    "\\n\\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\n" +
+    sourceUrls.map(url => "- " + url).join("\n") +
     "\\n\\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
   const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL) ? env.GEMINI_MODEL : MODEL;
   const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
