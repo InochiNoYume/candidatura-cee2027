@@ -145,21 +145,21 @@ const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 
 function cleanRetrievedHtml(html) {
   let value = String(html || "");
-  value = value.replace(/<!--[\\s\\S]*?-->/g, " ");
-  value = value.replace(/<(script|style|noscript|svg|template)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, " ");
-  const main = value.match(/<main\\b[^>]*>([\\s\\S]*?)<\\/main>/i);
+  value = value.replace(/<!--[\s\S]*?-->/g, " ");
+  value = value.replace(/<(script|style|noscript|svg|template)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+  const main = value.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
   if (main) value = main[1];
   else {
-    value = value.replace(/<(header|nav|footer)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, " ");
+    value = value.replace(/<(header|nav|footer)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
   }
-  value = value.replace(/<\\/(p|div|section|article|li|h[1-6]|tr|br)>/gi, "\\n");
+  value = value.replace(/<\/(p|div|section|article|li|h[1-6]|tr|br)>/gi, "\n");
   value = value.replace(/<[^>]+>/g, " ");
   return value
     .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
     .replace(/&quot;/gi, '"').replace(/&#39;|&apos;/gi, "'")
-    .replace(/&#(\\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
-    .replace(/\\s+/g, " ").trim();
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/\s+/g, " ").trim();
 }
 
 async function retrieveGroqContext(selectedPaths, siteOrigin) {
@@ -192,7 +192,7 @@ async function retrieveGroqContext(selectedPaths, siteOrigin) {
 function parseProviderJson(value) {
   const raw = typeof value === "string" ? value.trim() : "";
   try { return JSON.parse(raw); } catch {
-    const match = raw.match(/\\{[\\s\\S]*\\}/);
+    const match = raw.match(/\{[\s\S]*\}/);
     if (match) {
       try { return JSON.parse(match[0]); } catch {}
     }
@@ -202,7 +202,7 @@ function parseProviderJson(value) {
 
 function normalizeAnswer(value) {
   return typeof value === "string"
-    ? value.trim().split(/\\s+/).slice(0, MAX_ANSWER_WORDS).join(" ").slice(0, 1100)
+    ? value.trim().split(/\s+/).slice(0, MAX_ANSWER_WORDS).join(" ").slice(0, 1100)
     : "";
 }
 
@@ -213,12 +213,12 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
   const model = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
     ? env.GROQ_MODEL : GROQ_DEFAULT_MODEL;
   const documentContext = documents.map((doc, index) =>
-    "FUENTE " + (index + 1) + ": " + doc.title + "\\nURL: " + doc.url + "\\nCONTENIDO: " + doc.text
-  ).join("\\n\\n");
-  const userPrompt = "PREGUNTA DEL ESTUDIANTE:\\n" + question +
-    "\\n\\nCONTENIDO RECUPERADO DE LAS MISMAS PÁGINAS OFICIALES SELECCIONADAS PARA GEMINI:\\n" +
+    "FUENTE " + (index + 1) + ": " + doc.title + "\nURL: " + doc.url + "\nCONTENIDO: " + doc.text
+  ).join("\n\n");
+  const userPrompt = "PREGUNTA DEL ESTUDIANTE:\n" + question +
+    "\n\nCONTENIDO RECUPERADO DE LAS MISMAS PÁGINAS OFICIALES SELECCIONADAS PARA GEMINI:\n" +
     documentContext +
-    "\\n\\nResponde usando exclusivamente este contenido. Si la consulta no está relacionada con la web CEE 2027, usa scope out_of_scope. Devuelve solo JSON válido con scope y answer.";
+    "\n\nResponde usando exclusivamente este contenido. Si la consulta no está relacionada con la web CEE 2027, usa scope out_of_scope. Devuelve solo JSON válido con scope y answer.";
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -281,9 +281,9 @@ export async function onRequestPost({ request, env }) {
 
   const siteOrigin = new URL(request.url).origin;
   const sourceUrls = selectedPaths.map(path => new URL(path, siteOrigin + "/").href);
-  const prompt = "PREGUNTA DEL ESTUDIANTE:\\n" + question + "\\n\\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\\n" +
-    sourceUrls.map(url => "- " + url).join("\\n") +
-    "\\n\\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
+  const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question + "\n\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\n" +
+    sourceUrls.map(url => "- " + url).join("\n") +
+    "\n\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
 
   let geminiFailure = null;
   if (env.GEMINI_API_KEY) {
