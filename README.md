@@ -90,16 +90,28 @@ Las fechas y los contenidos deben mantenerse alineados con la documentación ofi
 
 ## Fotografías e identidad visual
 
-Las imágenes actuales que cumplen una función ilustrativa o de referencia no deben presentarse como fotografías reales del establecimiento ni como retratos auténticos de estudiantes.
+Las ilustraciones SVG actuales de los ejes y de la portada están en `assets/images/illustrations/`. Son recursos conceptuales de referencia, no fotografías reales. Se conservarán hasta que se reciban imágenes reales adecuadas; no se reemplazarán por imágenes genéricas ni se presentarán ilustraciones como fotografías.
 
-En una etapa posterior se incorporarán, cuando estén disponibles:
-- Fotografía real del establecimiento o de su comunidad para la portada.
-- Retratos autorizados de integrantes de la lista.
-- Fotografía grupal oficial.
-- Fotografías relacionadas con los cinco ejes del proyecto.
-- Registros reales de actividades para la galería y la memoria.
+### Carpetas y nombres para las próximas imágenes
 
-Las fotografías de estudiantes deben contar con las autorizaciones correspondientes antes de publicarse. Al recibir las imágenes definitivas, se revisarán recorte, proporción, resolución, peso, texto alternativo y adaptación a móvil y escritorio. Hasta entonces, se mantienen los recursos ilustrativos claramente identificados.
+Cada carpeta contiene un `README.md` con instrucciones y nombres exactos. Resumen:
+
+| Sección / uso | Carpeta | Nombre previsto | Necesidad |
+| --- | --- | --- | --- |
+| Inicio · imagen principal | `assets/images/inicio/` | `portada-inicio.webp` | Recomendada; reemplazará la ilustración de portada. |
+| Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Recomendada; reemplazará la ilustración actual de participación. |
+| Nuestra lista · retratos | `assets/images/integrantes/` | Nombre por cargo, detallado en su README | Solo si hay retratos autorizados. |
+| Nuestra lista · foto grupal | `assets/images/grupo/` | `lista-cee-2027-completa-01.jpg` | Opcional, con autorización de todas las personas identificables. |
+| Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Nombres detallados en su README | Opcional; las ilustraciones actuales siguen disponibles. |
+| Noticias | `assets/images/noticias/` | `AAAA-MM-DD-titulo-noticia.webp` | Opcional por noticia. |
+| Galería y Memoria | `assets/images/actividades/` | `AAAA-MM-DD-nombre-de-actividad-01.webp` | Solo para registros reales autorizados. |
+| Comunidad TP | `assets/images/comunidad-tp/` | Nombres por proyecto o especialidad, detallados en su README | Opcional, cuando existan proyectos o experiencias reales. |
+
+Agenda, Transparencia, Actas, Informes, Contacto y Preguntas no necesitan fotografías para funcionar correctamente. La Galería y la Memoria reutilizan las fotografías de `actividades/` y `grupo/`; no requieren carpetas duplicadas.
+
+**Formato:** WebP optimizado como primera opción; JPG/JPEG cuando corresponda. Conserva siempre la extensión real del archivo y usa minúsculas, sin tildes ni espacios. No renombres un archivo para simular otro formato.
+
+Las fotografías de estudiantes deben contar con las autorizaciones correspondientes antes de publicarse. Al recibir las imágenes definitivas, se revisarán recorte, proporción, resolución, peso, texto alternativo y adaptación a móvil y escritorio. Añadir archivos a estas carpetas no los conecta automáticamente con el sitio: también habrá que actualizar las referencias HTML/CSS y comprobar la visualización en escritorio y móvil.
 
 ## Asistente informativo
 
