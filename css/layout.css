@@ -51,6 +51,7 @@ img{max-width:100%}a,button{-webkit-tap-highlight-color:transparent}
 .pillar-grid{gap:16px}
 .pillar-card{min-width:0;min-height:330px;padding:23px;border:1px solid var(--border-soft);border-radius:var(--radius-card);box-shadow:0 5px 20px rgba(35,18,18,.035)}
 .pillar-image{width:100%;height:150px;margin:-2px 0 17px;object-fit:contain;border-radius:9px;background:#f8f4f2}
+.pillar-image-note{display:block;margin:-10px 0 16px;color:var(--text-muted);font-size:10px;line-height:1.45;overflow-wrap:anywhere}
 .pillar-card h3{font-size:17px;line-height:1.35}.pillar-card p{line-height:1.7}
 
 /* Ejes programáticos: visual a la izquierda, contenido ordenado a la derecha */
