@@ -663,3 +663,78 @@ body {
 @media(prefers-reduced-motion:reduce){
  .axis-index a,.axis-visual img{transition:none!important}
 }
+
+
+
+/* Asistente CEE · panel móvil compacto, legible y adaptable */
+.cee-assistant-panel {
+  width: min(430px, calc(100vw - 36px));
+  height: min(650px, calc(100dvh - 112px));
+  max-height: calc(100dvh - 112px);
+  min-height: 0;
+  display: flex;
+}
+.cee-assistant-head { flex: 0 0 auto; }
+.cee-assistant-intro { flex: 0 0 auto; }
+.cee-assistant-messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.cee-assistant-message {
+  width: fit-content;
+  max-width: min(94%, 390px);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+.cee-assistant-message p { margin: 0 0 .55em; }
+.cee-assistant-message p:last-child { margin-bottom: 0; }
+.cee-assistant-message ul { margin: .25em 0 .15em; padding-left: 1.15em; }
+.cee-assistant-message li { margin: .22em 0; padding-left: .12em; }
+.cee-assistant-message strong { font-weight: 800; }
+.cee-assistant-form { flex: 0 0 auto; }
+.cee-assistant-form textarea { box-sizing: border-box; width: 100%; min-height: 58px; max-height: 96px; resize: vertical; }
+.cee-assistant-privacy { flex: 0 0 auto; }
+@media (max-width: 560px) {
+  .cee-assistant-launcher {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    min-height: 46px;
+    padding: 0 13px 0 9px;
+    gap: 8px;
+    font-size: 12px;
+    border-radius: 15px 15px 15px 5px;
+  }
+  .cee-assistant-launcher-icon { width: 29px; height: 29px; flex-basis: 29px; }
+  .cee-assistant-launcher-icon svg { width: 22px; height: 22px; }
+  .cee-assistant-panel {
+    left: 12px;
+    right: 12px;
+    bottom: max(70px, calc(env(safe-area-inset-bottom) + 66px));
+    width: auto;
+    height: min(76dvh, 590px);
+    max-height: min(76dvh, 590px);
+    border-radius: 18px 18px 18px 6px;
+  }
+  .cee-assistant-head { padding: 14px 15px 10px; gap: 10px; }
+  .cee-assistant-head h2 { font-size: 18px; }
+  .cee-assistant-close { width: 32px; height: 32px; flex-basis: 32px; }
+  .cee-assistant-intro { padding: 0 15px 10px; font-size: 11px; }
+  .cee-assistant-messages { padding: 13px 11px; gap: 10px; }
+  .cee-assistant-message { max-width: 97%; padding: 10px 12px; font-size: 12.5px; line-height: 1.58; }
+  .cee-assistant-sources { width: 97%; box-sizing: border-box; }
+  .cee-assistant-form { padding: 10px 11px 7px; }
+  .cee-assistant-form textarea { min-height: 54px; max-height: 82px; padding: 10px 11px; font-size: 13px; }
+  .cee-assistant-form-foot { padding-top: 7px; }
+  .cee-assistant-form-foot button { min-height: 36px; padding: 8px 14px; }
+  .cee-assistant-privacy { padding: 1px 12px 9px; font-size: 8.5px; line-height: 1.4; }
+}
+@media (max-width: 380px) {
+  .cee-assistant-panel { left: 8px; right: 8px; }
+  .cee-assistant-head { padding-left: 12px; padding-right: 12px; }
+  .cee-assistant-messages { padding-left: 9px; padding-right: 9px; }
+}
