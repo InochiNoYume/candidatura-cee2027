@@ -2020,6 +2020,11 @@ img{max-width:100%;height:auto}
 }
 
 @media (max-width: 760px) {
+  /* En pantallas pequeñas se prioriza fluidez y ahorro de batería. */
+  .hero-grid,
+  .page-hero::before {
+    animation: none !important;
+  }
   .pillar-card .pillar-image {
     flex-basis: 205px;
     height: 205px !important;
