@@ -437,3 +437,153 @@ body {
 .cee-assistant-sources strong { display: block; margin-bottom: .25rem; }
 .cee-assistant-sources ul { margin: 0; padding-left: 1.15rem; }
 .cee-assistant-sources a { text-decoration: underline; text-underline-offset: 2px; }
+
+
+/* Asistente CEE · mejora visual de conversación y respuestas */
+.cee-assistant-panel {
+  background: #fffdfd;
+  border-color: rgba(128,21,21,.22);
+}
+.cee-assistant-messages {
+  gap: 13px;
+  padding: 19px 17px;
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(128,21,21,.045), transparent 45%),
+    #fbf8f7;
+  scrollbar-color: #c9a7a8 transparent;
+  scrollbar-width: thin;
+}
+.cee-assistant-message {
+  position: relative;
+  max-width: 94%;
+  padding: 12px 14px;
+  border-radius: 15px;
+  font-size: 13px;
+  line-height: 1.65;
+  box-shadow: 0 3px 12px rgba(49,20,22,.045);
+}
+.cee-assistant-message::before {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  line-height: 1.2;
+}
+.cee-assistant-message.assistant {
+  align-self: flex-start;
+  border: 1px solid #eee1df;
+  border-bottom-left-radius: 5px;
+  background: #fff;
+  color: #38292a;
+}
+.cee-assistant-message.assistant::before {
+  content: "ASISTENTE CEE";
+  color: #8a343a;
+}
+.cee-assistant-message.user {
+  align-self: flex-end;
+  border: 1px solid #741923;
+  border-bottom-right-radius: 5px;
+  background: linear-gradient(145deg,#96313b,#74151f);
+  color: #fff;
+}
+.cee-assistant-message.user::before {
+  content: "TÚ";
+  color: rgba(255,255,255,.78);
+}
+.cee-assistant-sources {
+  align-self: flex-start;
+  width: min(94%, 340px);
+  margin: -5px 0 3px;
+  padding: 11px 13px 12px;
+  border: 1px solid #ead8d6;
+  border-left: 3px solid #8d3038;
+  border-radius: 5px 13px 13px 13px;
+  background: linear-gradient(145deg,#fff,#faf3f2);
+  color: #493638;
+  font-size: 11px;
+  box-shadow: 0 4px 14px rgba(49,20,22,.045);
+}
+.cee-assistant-sources strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  color: #76232c;
+  font-size: 10px;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+.cee-assistant-sources strong::before {
+  content: "↗";
+  display: inline-grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(128,21,21,.09);
+  font-size: 12px;
+}
+.cee-assistant-sources ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+.cee-assistant-sources li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 4px 9px;
+  border: 1px solid #eadbd9;
+  border-radius: 999px;
+  background: #fff;
+  color: #713039;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.cee-assistant-sources li a:hover {
+  transform: translateY(-1px);
+  border-color: #c99b9e;
+  background: #f8e9e8;
+}
+.cee-assistant-form {
+  padding: 13px 15px 9px;
+  background: #fff;
+}
+.cee-assistant-form textarea {
+  min-height: 66px;
+  padding: 11px 12px;
+  border-color: #dfcecc;
+  border-radius: 12px;
+  background: #fdfafa;
+  font-size: 13px;
+}
+.cee-assistant-form-foot {
+  padding-top: 9px;
+  font-size: 10px;
+}
+.cee-assistant-form-foot button {
+  min-height: 36px;
+  padding: 8px 16px;
+  border-radius: 10px 10px 10px 4px;
+  background: linear-gradient(135deg,#96313b,#74151f);
+  box-shadow: 0 4px 10px rgba(116,21,31,.16);
+}
+.cee-assistant-privacy {
+  padding: 2px 16px 12px;
+  background: #fff;
+  font-size: 9px;
+}
+@media (max-width: 560px) {
+  .cee-assistant-messages { padding: 15px 12px; }
+  .cee-assistant-message { max-width: 96%; font-size: 12.5px; }
+  .cee-assistant-sources { width: 96%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cee-assistant-sources li a { transition: none; }
+}
