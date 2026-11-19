@@ -4,7 +4,21 @@ const MAX_ANSWER_WORDS = 130;
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQUESTS_PER_INSTANCE = 10;
 const requestWindows = new Map();
-const OUT_OF_SCOPE = "¡Hola! Soy el Asistente CEE y estoy especializado exclusivamente en la información de esta página web. Puedo ayudarte con dudas sobre la candidatura, sus propuestas y sus secciones.";
+const OUT_OF_SCOPE_MESSAGES = [
+  "¡Gracias por tu pregunta! Soy el Asistente CEE y mi función es ayudarte con la información publicada en esta web: candidatura, propuestas, agenda y actividades.",
+  "Puedo orientarte sobre el sitio del CEE 2027. Mi especialidad es la información de esta página, así que no puedo desarrollar consultas que no estén relacionadas con ella.",
+  "Esta consulta parece estar fuera de los temas de la web. Estoy aquí para ayudarte con los ejes, la lista, las fechas, las noticias y las demás secciones del CEE 2027.",
+  "¡Con gusto te ayudo con temas del CEE! Mi información se limita a esta web y a lo que está publicado sobre la candidatura y la comunidad estudiantil.",
+  "No tengo información para responder eso desde el sitio del CEE 2027. Sí puedo ayudarte a encontrar propuestas, actividades, documentos o información de sus secciones.",
+  "Recuerda que soy el asistente informativo de la web del CEE 2027. Puedo responder preguntas sobre su contenido, pero no consultas de otros temas."
+];
+const FALLBACK_SOURCE_PAGES = [
+  "index.html", "pages/proyecto.html", "pages/agenda.html",
+  "pages/lista.html", "pages/preguntas.html", "pages/buscar.html"
+];
+function outOfScopeMessage() {
+  return OUT_OF_SCOPE_MESSAGES[Math.floor(Math.random() * OUT_OF_SCOPE_MESSAGES.length)];
+}
 
 const SOURCE_PAGES = [
   "index.html", "pages/lista.html", "pages/proyecto.html", "pages/agenda.html",
@@ -65,7 +79,8 @@ function matchesTerm(normalized, term) {
 
 function selectSources(question) {
   const normalized = normalize(question);
-  if (!SITE_TERMS.some(term => matchesTerm(normalized, term))) return [];
+  const hasSiteSignal = SITE_TERMS.some(term => matchesTerm(normalized, term));
+  if (!hasSiteSignal) return [...FALLBACK_SOURCE_PAGES];
   if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|resumen de toda la web|resumen de todo el sitio|sitio completo|web completa|que ofrece esta web|que contiene esta web|de que trata esta web|explicame la web|informacion general|panorama general|como esta organizada la web)/.test(normalized)) return SOURCE_PAGES;
   const selected = new Set(["index.html"]);
   for (const group of SOURCE_GROUPS) {
@@ -77,7 +92,7 @@ function selectSources(question) {
 
 const INSTRUCTIONS = [
   "Eres el Asistente CEE 2027 · CEAT, guía oficial de esta página web.",
-  "ALCANCE: responde exclusivamente preguntas relacionadas con la candidatura CEE 2027, el liceo en el contexto de esta web, sus páginas, contenidos, propuestas, integrantes, fechas, canales, documentos y navegación. Si la consulta no guarda relación, devuelve scope=out_of_scope y answer vacío.",
+  "ALCANCE: responde exclusivamente preguntas relacionadas con la candidatura CEE 2027, el liceo en el contexto de esta web, sus páginas, contenidos, propuestas, integrantes, fechas, canales, documentos y navegación. Evalúa el SENTIDO de la pregunta, no solo sus palabras exactas: puede estar relacionada aunque no mencione CEE, CEAT, la web o una sección por su nombre. Interpreta referencias indirectas y el contexto estudiantil. Solo marca out_of_scope cuando la consulta sea claramente ajena a estos temas. Si parece relacionada pero falta un dato, responde que no aparece en las fuentes; no la rechaces como ajena.",
   "FUENTES: consulta las URL oficiales del mensaje usando URL Context. Basa los datos concretos únicamente en el contenido recuperado de esas páginas. No uses recuerdos del modelo ni conocimiento externo para completar datos del sitio. Si una página no contiene el dato, dilo con claridad.",
   "PRECISIÓN: no inventes nombres, cargos, compromisos, fechas, enlaces, actividades, avances ni resultados. Distingue entre propuestas, actividades planificadas, actividades realizadas y resultados publicados. Si las páginas discrepan o un dato no está actualizado, indícalo sin resolver la contradicción por tu cuenta.",
   "RESPUESTA: español de Chile, tono claro, amable e informativo. Redacta como un resumen detallado: responde primero lo principal y luego organiza los puntos relevantes en 2–5 viñetas cuando ayude. Explica contexto y propósito sin repetir contenido. Máximo 130 palabras.",
@@ -138,7 +153,8 @@ export async function onRequestPost({ request, env }) {
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 500) return json({ error: "La pregunta debe tener entre 1 y 500 caracteres." }, 400);
   const selectedPaths = selectSources(question);
-  if (!selectedPaths.length) return json({ answer: OUT_OF_SCOPE, sources: [] });
+  // Incluso las preguntas sin palabras clave del sitio pasan por Gemini con un contexto base.
+  // La clasificación final considera el significado, no un filtro rígido por coincidencias.
 
   const now = Date.now();
   for (const [key, state] of requestWindows) if (now - state.startedAt > WINDOW_MS) requestWindows.delete(key);
@@ -195,7 +211,7 @@ export async function onRequestPost({ request, env }) {
     const rawAnswer = candidate?.content?.parts?.map(part => part.text || "").join("") || "";
     let result;
     try { result = JSON.parse(rawAnswer); } catch { return json({ error: "No se pudo interpretar la respuesta de Gemini. Inténtalo nuevamente." }, 502); }
-    if (result?.scope !== "in_scope") return json({ answer: OUT_OF_SCOPE, sources: [] });
+    if (result?.scope !== "in_scope") return json({ answer: outOfScopeMessage(), sources: [] });
     const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
     if (!sources.length) return json({
       answer: "No pude recuperar el contenido de las páginas oficiales en este momento. Inténtalo nuevamente o consulta directamente las secciones del sitio.",
