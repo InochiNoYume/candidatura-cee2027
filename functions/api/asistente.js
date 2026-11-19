@@ -123,6 +123,50 @@ function normalizeSourcePath(value, siteOrigin) {
   }
 }
 
+function extractOfficialPageText(html) {
+  const source = String(html);
+  const main = source.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] || source;
+  return main
+    .replace(/<(script|style|svg|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<\/(p|h[1-6]|li|section|article|div|details|summary|tr)>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .slice(0, 9000);
+}
+
+async function fetchOfficialPages(selectedPaths, siteOrigin) {
+  const results = await Promise.all(selectedPaths.map(async path => {
+    const url = new URL(path, siteOrigin + "/");
+    if (url.origin !== siteOrigin) return null;
+    try {
+      const response = await fetch(url.href, {
+        method: "GET",
+        headers: { Accept: "text/html" },
+        signal: AbortSignal.timeout(5000)
+      });
+      if (!response.ok || !response.headers.get("content-type")?.includes("text/html")) return null;
+      const content = extractOfficialPageText(await response.text());
+      if (!content) return null;
+      const normalized = normalizeSourcePath(url.href, siteOrigin);
+      const sourcePath = normalized === "/" ? "index.html" : normalized.replace(/^\//, "") + ".html";
+      const publicUrl = normalized === "/" ? siteOrigin + "/" : siteOrigin + normalized;
+      return { title: PAGE_TITLES[sourcePath] || "Página del sitio", url: publicUrl, content };
+    } catch {
+      return null;
+    }
+  }));
+  return results.filter(Boolean);
+}
+
 function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
   const metadata = candidate?.urlContextMetadata?.urlMetadata || candidate?.url_context_metadata?.url_metadata || [];
   const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)));
@@ -212,11 +256,14 @@ export async function onRequestPost({ request, env }) {
   const toPublicUrl = path => path === "index.html" ? siteOrigin + "/" : siteOrigin + "/" + path.replace(/\.html$/i, "");
   const sourceUrls = selectedPaths.map(toPublicUrl);
   const allSourceUrls = SOURCE_PAGES.map(toPublicUrl);
+  const officialPages = await fetchOfficialPages(selectedPaths, siteOrigin);
+  const officialContext = officialPages.map(page => "FUENTE: " + page.title + "\nURL: " + page.url + "\nCONTENIDO PUBLICADO:\n" + page.content).join("\n\n---\n\n").slice(0, 18000);
   const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question +
     "\n\nÍNDICE COMPLETO DE PÁGINAS OFICIALES DEL SITIO (puedes consultar cualquiera de estas secciones si la pregunta lo requiere):\n" +
     allSourceUrls.map(url => "- " + url).join("\n") +
     "\n\nPÁGINAS PRIORITARIAS PARA ESTA PREGUNTA: consulta estas URL con URL Context y basa la respuesta primero en ellas:\n" +
     sourceUrls.map(url => "- " + url).join("\n") +
+    "\n\nCONTENIDO VERIFICADO RECUPERADO DIRECTAMENTE DEL SITIO (prioriza este contenido y no completes datos ausentes):\n" + officialContext +
     "\n\nUsa exclusivamente contenido recuperado de estas páginas oficiales. Si falta información, dilo claramente. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
   const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL) ? env.GEMINI_MODEL : MODEL;
   const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
@@ -273,7 +320,9 @@ export async function onRequestPost({ request, env }) {
       return json({ answer: outOfScopeMessage(), sources: [], provider: "gemini" });
     }
 
-    const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
+    const groundedSources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
+    const sources = [...officialPages.map(({title,url}) => ({title,url})), ...groundedSources]
+      .filter((source,index,list) => list.findIndex(item => item.url === source.url) === index);
     const answer = normalizeAnswer(result.answer);
     if (!answer || !sources.length) {
       console.warn("Gemini response incomplete", {
