@@ -164,14 +164,15 @@ Antes de modificar CSP, comprobar los dominios estrictamente necesarios para las
 | Nuestra lista | 99 | 100 | 92 | 100 |
 | Proyecto | 99 | 100 | 92 | 100 |
 
-En la segunda ejecución, el rendimiento de CEAT Te Escucha subió de 81 a 99 y las cuatro páginas evaluadas marcaron 99 en rendimiento, 100 en accesibilidad y 100 en SEO. El 92 de buenas prácticas se mantuvo.
+En la segunda ejecución, el rendimiento de CEAT Te Escucha subió de 81 a 99 y las cuatro páginas evaluadas marcaron 99 en rendimiento, 100 en accesibilidad y 100 en SEO. El 92 de buenas prácticas se mantuvo en esa medición.
 
-La revisión inicial relacionó el 92 de buenas prácticas con un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero `connect-src` solo permitía el mismo origen. Este PR incorpora el dominio de métricas explícitamente en esa directiva y añade una comprobación automatizada. **La corrección está en esta rama/PR y todavía no está desplegada en producción**, por lo que el 92 debe volver a medirse después de integrar el cambio.
+La revisión inicial relacionó el 92 de buenas prácticas con un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero `connect-src` solo permitía el mismo origen. El cambio de CSP ya fue integrado en `main` mediante el PR #19. La auditoría posterior al despliegue, ejecución [44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319), confirmó **100/100 en buenas prácticas para las cuatro páginas evaluadas**, además de 100 en accesibilidad y SEO. El rendimiento registrado fue 95 en Inicio, 100 en CEAT Te Escucha y 99 en Nuestra lista y Proyecto.
 
-Los resultados de Lighthouse pueden variar entre ejecuciones. La mejora de rendimiento ya aparece en la auditoría posterior, pero conviene repetirla tras el despliegue del PR y comparar varias ejecuciones.
+Los resultados de Lighthouse pueden variar entre ejecuciones; conviene comparar mediciones posteriores y no tratar un único puntaje como garantía permanente.
 
 - Auditoría base: [GitHub Actions · ejecución 44520081909](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44520081909).
 - Auditoría posterior: [GitHub Actions · ejecución 44523480582](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44523480582).
+- Auditoría tras la corrección CSP de PR #19: [GitHub Actions · ejecución 44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319).
 
 ### Verificación manual pendiente
 
