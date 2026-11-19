@@ -356,11 +356,21 @@
       pending.remove();
       if (!response.ok) {
         const safeError = typeof payload.error === "string" ? payload.error : "";
-        addAssistantMessage(safeError || (response.status === 503
-          ? "Gemini está temporalmente no disponible. Espera un momento y vuelve a intentarlo."
-          : response.status === 429
-            ? "El asistente alcanzó temporalmente su límite de consultas. Inténtalo más tarde."
-            : "No pude conectar con el servicio de IA. Revisa la configuración y los registros de Cloudflare."));
+        const fallbackErrors = {
+          400: "La solicitud no pudo procesarse. Revisa tu pregunta e inténtalo otra vez.",
+          401: "La autenticación del asistente no fue aceptada. El equipo administrador debe revisar su configuración.",
+          403: "Acceso denegado. Abre el asistente desde la web oficial del CEE.",
+          404: "No se encontró el modelo de Gemini configurado. El equipo administrador debe revisar su identificador.",
+          408: "La solicitud tardó demasiado. Espera un momento y vuelve a intentarlo.",
+          413: "La solicitud es demasiado grande. Reduce el contenido e inténtalo nuevamente.",
+          415: "El formato de la solicitud no es compatible. Recarga la página e inténtalo otra vez.",
+          429: "Se alcanzó temporalmente el límite de consultas. Espera antes de volver a intentarlo.",
+          500: "El servicio encontró un error interno. Inténtalo más tarde.",
+          502: "No se pudo completar la comunicación con Gemini. Inténtalo nuevamente más tarde.",
+          503: "Gemini está temporalmente no disponible. No es un problema con tu pregunta; espera un momento y vuelve a intentarlo.",
+          504: "Gemini tardó demasiado en responder. Vuelve a intentarlo más tarde."
+        };
+        addAssistantMessage(safeError || fallbackErrors[response.status] || ("No se pudo completar la solicitud (HTTP " + response.status + "). Inténtalo más tarde."));
       } else {
         addAssistantMessage(typeof payload.answer === "string" && payload.answer
           ? payload.answer
