@@ -309,7 +309,7 @@
     assistantMessages.scrollTop = assistantMessages.scrollHeight;
   };
     const appendAssistantInline = (parent, text) => {
-    const parts = String(text).split(/(\\*\\*[^*]+\\*\\*)/g);
+    const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
     parts.forEach(part => {
       if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
         const strong = document.createElement("strong");
@@ -319,12 +319,12 @@
     });
   };
   const renderAssistantText = (message, text, isUser) => {
-    const lines = String(text).replace(/\\r/g,"").split("\\n");
+    const lines = String(text).replace(/\r/g,"").split("\n");
     let list = null;
     lines.forEach(line => {
       const trimmed = line.trim();
       if (!trimmed) { list = null; return; }
-      const item = trimmed.match(/^(?:[-*•]|\\d+[.)])\\s+(.+)$/);
+      const item = trimmed.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
       if (item && !isUser) {
         if (!list) { list = document.createElement("ul"); message.appendChild(list); }
         const li = document.createElement("li");
