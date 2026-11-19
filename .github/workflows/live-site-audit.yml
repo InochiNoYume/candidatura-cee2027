@@ -50,10 +50,22 @@ jobs:
           BASE_URL="${CEE_AUDIT_BASE_URL%/}"
           echo "Lighthouse Chrome: $CHROME_PATH"
           for device in mobile desktop; do
+            if [ "$device" = "mobile" ]; then
+              DEVICE_FLAGS=(
+                --form-factor=mobile
+                --screenEmulation.mobile=true
+                --screenEmulation.width=390
+                --screenEmulation.height=844
+                --screenEmulation.deviceScaleFactor=2
+              )
+            else
+              DEVICE_FLAGS=(--preset=desktop)
+            fi
+
             for page in "" "pages/lista" "pages/proyecto" "pages/escucha"; do
               name=$(printf '%s-%s' "$device" "${page:-home}" | tr '/.' '--')
               npx lighthouse "${BASE_URL}/${page}" \
-                --preset="$device" \
+                "${DEVICE_FLAGS[@]}" \
                 --chrome-flags="--headless --no-sandbox" \
                 --only-categories=performance,accessibility,best-practices,seo \
                 --output=json --output-path="audit-results/lighthouse/${name}.json" \
