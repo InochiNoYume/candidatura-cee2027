@@ -20,7 +20,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - CSS3 con diseño responsive y preferencias de movimiento reducido.
 - JavaScript del navegador, sin framework de interfaz.
 - Cloudflare Pages y Pages Functions.
-- Google Gemini API mediante una función del servidor.
+- Google Gemini API como motor principal y Groq como respaldo mediante una función del servidor.
 - GitHub Actions para validaciones y auditorías automatizadas.
 - Playwright, axe-core y Lighthouse para pruebas.
 
@@ -34,7 +34,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 | `css/layout.css` | Ajustes compartidos de estructura y responsive. |
 | `js/main.js` | Navegación, filtros, efectos y asistente. |
 | `js/search.js` | Buscador interno del sitio. |
-| `functions/api/asistente.js` | Endpoint del asistente Gemini. |
+| `functions/api/asistente.js` | Endpoint del asistente Gemini con respaldo Groq. |
 | `functions/README.md` | Configuración, fuentes y límites del asistente. |
 | `assets/` | Logotipo, iconos, ilustraciones y recursos visuales. |
 | `scripts/` | Validaciones de estructura, seguridad y auditoría. |
@@ -115,16 +115,17 @@ Las fotografías de estudiantes deben contar con las autorizaciones correspondie
 
 ## Asistente informativo
 
-El asistente de la web utiliza Google Gemini desde `functions/api/asistente.js`.
+El asistente de la web utiliza **Gemini como motor principal** y **Groq como respaldo automático** desde `functions/api/asistente.js`.
 
-- Se configura mediante el Secret `GEMINI_API_KEY` en Cloudflare Pages.
-- Modelo predeterminado configurado en el código: `gemini-3.5-flash-lite`; puede sobrescribirse con `GEMINI_MODEL`.
-- Utiliza URL Context para consultar páginas públicas del propio sitio.
-- Selecciona páginas según el tema de la pregunta y puede consultar las 16 páginas informativas para preguntas generales.
-- Está limitado a consultas relacionadas con la web CEE 2027.
+- Gemini se configura mediante el Secret `GEMINI_API_KEY`; su modelo predeterminado es `gemini-3.5-flash-lite` y puede sobrescribirse con `GEMINI_MODEL`.
+- Groq se configura mediante el Secret `GROQ_API_KEY`; el modelo predeterminado es `llama-3.3-70b-versatile` y puede sobrescribirse con `GROQ_MODEL`.
+- Groq solo se intenta cuando Gemini falla por timeout, conexión, respuesta inválida o error temporal (HTTP 408, 429, 5xx). Una clasificación válida `out_of_scope` de Gemini no activa el respaldo.
+- Gemini utiliza URL Context. Si se activa Groq, el servidor recupera directamente las mismas páginas oficiales seleccionadas y le entrega su contenido como contexto.
+- Ambos motores comparten las instrucciones de alcance, precisión, fuentes y formato de respuesta.
 - No mantiene historial de conversación en el sitio.
 - Máximo de 500 caracteres por pregunta, 130 palabras por respuesta y 420 tokens de salida.
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
+- Si ambos motores fallan, el sitio muestra un mensaje general sin exponer detalles técnicos ni claves.
 
 No incluir claves API en el código del navegador, archivos versionados, commits ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
 
