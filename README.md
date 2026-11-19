@@ -34,7 +34,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 | `css/layout.css` | Ajustes compartidos de estructura y responsive. |
 | `js/main.js` | Navegación, filtros, efectos y asistente. |
 | `js/search.js` | Buscador interno del sitio. |
-| `functions/api/asistente.js` | Endpoint del asistente Gemini con respaldo Groq. |
+| `functions/api/asistente.js` | Endpoint del asistente Gemini. |
 | `functions/README.md` | Configuración, fuentes y límites del asistente. |
 | `assets/` | Logotipo, iconos, ilustraciones y recursos visuales. |
 | `scripts/` | Validaciones de estructura, seguridad y auditoría. |
@@ -115,19 +115,19 @@ Las fotografías de estudiantes deben contar con las autorizaciones correspondie
 
 ## Asistente informativo
 
-El asistente de la web utiliza **Gemini como motor principal** y **Groq como respaldo automático** desde `functions/api/asistente.js`.
+El asistente de la web utiliza **únicamente Google Gemini** desde `functions/api/asistente.js`.
 
-- Gemini se configura mediante el Secret `GEMINI_API_KEY`; su modelo predeterminado es `gemini-3.5-flash-lite` y puede sobrescribirse con `GEMINI_MODEL`.
-- Groq se configura mediante el Secret `GROQ_API_KEY`; el modelo predeterminado es `llama-3.3-70b-versatile` y puede sobrescribirse con `GROQ_MODEL`.
-- Groq solo se intenta cuando Gemini falla por timeout, conexión, respuesta inválida o error temporal (HTTP 408, 429, 5xx). Una clasificación válida `out_of_scope` de Gemini no activa el respaldo.
-- Gemini utiliza URL Context. Si se activa Groq, el servidor recupera directamente las mismas páginas oficiales seleccionadas y le entrega su contenido como contexto.
-- Ambos motores comparten las instrucciones de alcance, precisión, fuentes y formato de respuesta.
+- Se configura mediante el Secret `GEMINI_API_KEY`; el modelo predeterminado es `gemini-3.5-flash-lite` y puede sobrescribirse con `GEMINI_MODEL`.
+- Utiliza URL Context para consultar páginas públicas del propio sitio.
+- Selecciona páginas según el tema de la pregunta y puede consultar todas las secciones para preguntas generales.
+- Está limitado a consultas relacionadas con la web CEE 2027.
 - No mantiene historial de conversación en el sitio.
 - Máximo de 500 caracteres por pregunta, 130 palabras por respuesta y 420 tokens de salida.
+- El timeout del proveedor es de 20 segundos, con hasta dos intentos ante fallos transitorios.
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
-- Si ambos motores fallan, el sitio muestra un mensaje general sin exponer detalles técnicos ni claves.
+- Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
-No incluir claves API en el código del navegador, archivos versionados, commits ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
+No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
 
 Más detalles: [functions/README.md](functions/README.md).
 
