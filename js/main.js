@@ -357,7 +357,7 @@
       if (!response.ok) {
         const safeError = typeof payload.error === "string" ? payload.error : "";
         addAssistantMessage(safeError || (response.status === 503
-          ? "El asistente todavía no está activado en este entorno. Comprueba el Secret de Cloudflare y vuelve a desplegar."
+          ? "Gemini está temporalmente no disponible. Espera un momento y vuelve a intentarlo."
           : response.status === 429
             ? "El asistente alcanzó temporalmente su límite de consultas. Inténtalo más tarde."
             : "No pude conectar con el servicio de IA. Revisa la configuración y los registros de Cloudflare."));

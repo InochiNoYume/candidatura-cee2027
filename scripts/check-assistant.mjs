@@ -9,6 +9,7 @@ const requiredEndpoint = [
   "tools: [{ url_context: {} }]", "function selectSources(question)", "MAX_ANSWER_WORDS = 130",
   "maxOutputTokens: MAX_OUTPUT_TOKENS", "question.length > 500", "getRetrievedSources(candidate, selectedPaths, siteOrigin)",
   'Gemini devolvió un error HTTP ' ,
+  "Gemini está temporalmente sobrecargado o no disponible (HTTP 503)",
   'Gemini no encontró el modelo configurado (HTTP 404)',
   "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
   "const OUT_OF_SCOPE_MESSAGES = [", "const FALLBACK_SOURCE_PAGES = [",
@@ -21,6 +22,7 @@ const requiredEndpoint = [
   "const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)))",
   "const canonicalUrl = path === \"/\" ? siteOrigin + \"/\" : siteOrigin + path"
 ];
+if (!client.includes("Gemini está temporalmente no disponible. Espera un momento y vuelve a intentarlo.")) failures.push("El cliente debe mostrar un aviso claro cuando Gemini esté temporalmente no disponible.");
 for (const item of requiredEndpoint) if (!endpoint.includes(item)) failures.push("Function: falta " + item);
 for (const item of [
   'fetch("/api/asistente"', 'maxlength="500"', "addAssistantSources(payload.sources)",
