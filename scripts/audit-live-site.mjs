@@ -124,10 +124,12 @@ try {
           const errors = [];
           const launcher = document.querySelector(".cee-assistant-launcher");
           const panel = document.querySelector("#cee-assistant-panel");
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           const trail = document.querySelector(".cee-pointer-trail");
           if (!launcher) errors.push("no aparece el botón del Asistente CEE");
           if (!panel) errors.push("no aparece el panel del Asistente CEE");
-          if (!trail) errors.push("no aparece el canvas de partículas");
+          if (!reduceMotion && !trail) errors.push("no aparece el canvas de partículas aunque el movimiento está permitido");
+          if (reduceMotion && trail && getComputedStyle(trail).display !== "none") errors.push("el rastro de partículas no respeta prefers-reduced-motion");
           if (launcher && !/Asistente CEE/.test(launcher.textContent)) errors.push("el botón no muestra el nombre Asistente CEE");
           if (panel && !/Asistente CEE/.test(panel.querySelector("#cee-assistant-title")?.textContent || "")) errors.push("el panel no muestra el título Asistente CEE");
           if (launcher && panel) {
@@ -135,7 +137,7 @@ try {
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
             const input = panel.querySelector("#cee-assistant-input");
-            if (!input || Number(input.getAttribute("maxlength")) !== 300) errors.push("el campo del asistente no limita la pregunta a 300 caracteres");
+            if (!input || Number(input.getAttribute("maxlength")) !== 500) errors.push("el campo del asistente no limita la pregunta a 500 caracteres");
             panel.querySelector(".cee-assistant-close")?.click();
             if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
             const topButton = document.querySelector(".back-to-top");
