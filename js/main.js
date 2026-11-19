@@ -350,7 +350,8 @@
       const response = await fetch("/api/asistente",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({question})
+        body:JSON.stringify({question}),
+        signal: AbortSignal.timeout(30000)
       });
       const payload = await response.json().catch(() => ({}));
       pending.remove();
@@ -377,9 +378,12 @@
           : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
         addAssistantSources(payload.sources);
       }
-    } catch {
+    } catch (error) {
       pending.remove();
-      addAssistantMessage("No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");
+      const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
+      addAssistantMessage(timedOut
+        ? "El asistente está tardando más de lo esperado. Tu mensaje no se perdió; espera un momento y vuelve a intentarlo."
+        : "No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");
     } finally {
       assistantInput.disabled = false;
       sendButton.disabled = false;
