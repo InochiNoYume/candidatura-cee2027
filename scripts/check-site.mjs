@@ -133,7 +133,7 @@ const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
 const faqPage = read("pages/preguntas.html");
 const homePage = read("index.html");
-if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Pérez") || !listPage.includes('aria-hidden="true">AP</div><span class="role">Presidenta</span>'))
+if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Almirón") || !listPage.includes('aria-hidden="true">AP</div><span class="role">Presidenta</span>'))
   failures.push("La tarjeta pública debe respetar el nombre preferido de la presidenta (Agustina Pérez).");
 if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
   failures.push("Proyecto: el eje 5 debe estar identificado como complementario y separado de los cuatro ejes oficiales.");
