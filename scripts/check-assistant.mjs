@@ -33,7 +33,7 @@ for (const [label, pattern] of [
   ["panel adaptable", /\.cee-assistant-panel/],
   ["canvas no bloquea interacción", /\.cee-pointer-trail\s*\{[^}]*pointer-events:\s*none/s]
 ]) if (!pattern.test(styles)) failures.push("CSS: falta " + label);
-if (!/Google Gemini API/.test(privacy) || !/Google AI Studio/.test(privacy)) failures.push("Privacidad: falta explicar Gemini y enlazar sus condiciones de datos.");
+if (!/Google Gemini API/.test(privacy) || !/ai\.google\.dev\/gemini-api\/terms/.test(privacy)) failures.push("Privacidad: falta explicar Gemini y enlazar sus condiciones de datos.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
 if (/GROQ_API_KEY|api\.groq\.com|GroqCloud/.test(endpoint + privacy)) failures.push("Quedó una referencia activa a Groq en la Function o privacidad.");
 if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
