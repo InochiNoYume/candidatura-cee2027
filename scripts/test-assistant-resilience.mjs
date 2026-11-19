@@ -23,7 +23,7 @@ function providerJson(payload, status = 200) {
     headers: { "Content-Type": "application/json" }
   });
 }
-async function run(name, expectedStatus, fetchImpl, expectedCode) {
+async function run(name, expectedStatus, fetchImpl, expectedCode, question = "¿Cuáles son los ejes del proyecto?") {
   geminiCalls = 0;
   globalThis.fetch = fetchImpl;
   try {
@@ -34,7 +34,7 @@ async function run(name, expectedStatus, fetchImpl, expectedCode) {
         "Origin": "https://cee.test",
         "CF-Connecting-IP": "192.0.2." + (name.length + 10)
       },
-      body: JSON.stringify({ question: "¿Cuáles son los ejes del proyecto?" })
+      body: JSON.stringify({ question })
     });
     const response = await onRequest({
       request,
@@ -56,6 +56,34 @@ try {
   });
   assert.equal(success.provider, "gemini");
   assert.equal(geminiCalls, 1, "A successful request must not retry");
+
+
+  const listPayload = {
+    candidates: [{
+      content: { parts: [{ text: JSON.stringify({
+        scope: "in_scope",
+        answer: "La lista está integrada por ocho cargos y sus responsables."
+      }) }] },
+      urlContextMetadata: {
+        urlMetadata: [{
+          retrievedUrl: "https://cee.test/pages/lista",
+          urlRetrievalStatus: "URL_RETRIEVAL_STATUS_SUCCESS"
+        }]
+      }
+    }]
+  };
+  let listPrompt = "";
+  const listResult = await run("List page source and canonical URL", 200, async (url, options) => {
+    const sent = JSON.parse(options.body);
+    listPrompt = sent.contents[0].parts[0].text;
+    assert.match(listPrompt, /https:\\/\\/cee\\.test\\/pages\\/lista/);
+    assert.match(listPrompt, /ÍNDICE COMPLETO DE PÁGINAS OFICIALES/);
+    assert.match(listPrompt, /https:\\/\\/cee\\.test\\/pages\\/privacidad/);
+    return providerJson(listPayload);
+  }, undefined, "¿Quiénes integran la lista del CEE 2027?");
+  assert.equal(listResult.sources.length, 1, "A list question must return its verified source");
+  assert.equal(listResult.sources[0].title, "Nuestra lista");
+  assert.equal(listResult.sources[0].url, "https://cee.test/pages/lista");
 
   const recovered = await run("Gemini transient error then success", 200, async url => {
     assert.match(String(url), /generativelanguage\.googleapis\.com/);
@@ -85,7 +113,7 @@ try {
   }, "GEMINI_REQUEST_FAILED");
   assert.equal(geminiCalls, 2, "A transient error must stop after two attempts");
 
-  console.log("GEMINI RESILIENCE TESTS PASSED: success, transient retry, no retry for auth errors, invalid response validation and bounded retry exhaustion.");
+  console.log("GEMINI RESILIENCE TESTS PASSED: success, list source routing, canonical URL normalization, full page index, transient retry, auth handling, invalid response validation and bounded retry exhaustion.");
 } finally {
   globalThis.fetch = originalFetch;
 }
