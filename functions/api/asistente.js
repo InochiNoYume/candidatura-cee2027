@@ -93,19 +93,32 @@ function json(data, status = 200) {
   }});
 }
 
+function normalizeSourcePath(value, siteOrigin) {
+  try {
+    const url = new URL(value, siteOrigin + "/");
+    if (url.origin !== siteOrigin) return null;
+    let pathname = decodeURIComponent(url.pathname).replace(/\\/+$/, "") || "/";
+    if (pathname === "/index.html") pathname = "/";
+    return pathname;
+  } catch {
+    return null;
+  }
+}
+
 function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
   const metadata = candidate?.urlContextMetadata?.urlMetadata || candidate?.url_context_metadata?.url_metadata || [];
-  const allowed = new Set(selectedPaths.flatMap(path => {
-    const url = new URL(path, siteOrigin + "/").href;
-    return path === "index.html" ? [url, siteOrigin + "/"] : [url];
-  }));
+  const allowed = new Set(selectedPaths.map(path => normalizeSourcePath(path, siteOrigin)));
+  allowed.add("/");
   const sources = [];
   for (const item of metadata) {
-    const url = item?.retrievedUrl || item?.retrieved_url || item?.url;
+    const retrievedUrl = item?.retrievedUrl || item?.retrieved_url || item?.url;
     const status = item?.urlRetrievalStatus || item?.url_retrieval_status || item?.status || "";
-    if (!url || !allowed.has(url) || !String(status).toUpperCase().includes("SUCCESS")) continue;
-    const path = new URL(url).pathname.replace(/^\//, "") || "index.html";
-    sources.push({ title: PAGE_TITLES[path] || "Inicio", url });
+    if (!retrievedUrl || !String(status).toUpperCase().includes("SUCCESS")) continue;
+    const path = normalizeSourcePath(retrievedUrl, siteOrigin);
+    if (!path || !allowed.has(path)) continue;
+    const sourcePath = path === "/" ? "index.html" : path.replace(/^\\//, "");
+    const canonicalUrl = path === "/" ? siteOrigin + "/" : siteOrigin + path;
+    sources.push({ title: PAGE_TITLES[sourcePath] || "Página del sitio", url: canonicalUrl });
   }
   return sources.filter((source, index, list) => list.findIndex(item => item.url === source.url) === index);
 }
