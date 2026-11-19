@@ -201,7 +201,8 @@ export async function onRequestPost({ request, env }) {
       response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-        signal: AbortSignal.timeout(17000),
+        // URL Context puede tardar más al recuperar varias páginas. El límite se mantiene acotado para evitar solicitudes colgadas.
+        signal: AbortSignal.timeout(24000),
         body: requestBody
       });
       if (response.status !== 503 || attempt === 1) break;
