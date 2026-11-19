@@ -142,6 +142,27 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
 
 const GROQ_DEFAULT_MODEL = "llama-3.3-70b-versatile";
 const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
+const TRANSIENT_PROVIDER_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
+const GEMINI_TIMEOUT_MS = 14000;
+const GROQ_TIMEOUT_MS = 12000;
+const SOURCE_TIMEOUT_MS = 5000;
+const PROVIDER_ATTEMPTS = 2;
+
+async function fetchWithRetry(url, options, { timeoutMs, attempts = PROVIDER_ATTEMPTS, retryStatuses = TRANSIENT_PROVIDER_STATUSES }) {
+  let lastError;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, { ...options, signal: AbortSignal.timeout(timeoutMs) });
+      if (!retryStatuses.has(response.status) || attempt === attempts - 1) return response;
+      await response.body?.cancel().catch(() => {});
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts - 1) throw error;
+    }
+    await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1) + Math.floor(Math.random() * 250)));
+  }
+  throw lastError || new Error("PROVIDER_REQUEST_FAILED");
+}
 
 function cleanRetrievedHtml(html) {
   let value = String(html || "");
@@ -168,7 +189,7 @@ async function retrieveGroqContext(selectedPaths, siteOrigin) {
     try {
       const response = await fetch(url.href, {
         headers: { "Accept": "text/html", "User-Agent": "CEE2027-Assistant/1.0" },
-        signal: AbortSignal.timeout(7000)
+        signal: AbortSignal.timeout(SOURCE_TIMEOUT_MS)
       });
       if (!response.ok) return { failure: { path, reason: "HTTP_" + response.status } };
       if (!response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
@@ -232,13 +253,12 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
     "\n\nCONTENIDO RECUPERADO DE LAS MISMAS PÁGINAS OFICIALES SELECCIONADAS PARA GEMINI:\n" +
     documentContext +
     "\n\nResponde usando exclusivamente este contenido. Si la consulta no está relacionada con la web CEE 2027, usa scope out_of_scope. Devuelve solo JSON válido con scope y answer.";
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + env.GROQ_API_KEY
     },
-    signal: AbortSignal.timeout(18000),
     body: JSON.stringify({
       model,
       messages: [
@@ -249,7 +269,7 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
       max_completion_tokens: MAX_OUTPUT_TOKENS,
       response_format: { type: "json_object" }
     })
-  });
+  }, { timeoutMs: GROQ_TIMEOUT_MS });
   if (!response.ok) {
     const errorPayload = await response.json().catch(() => ({}));
     const providerError = errorPayload?.error || {};
@@ -337,33 +357,22 @@ export async function onRequestPost({ request, env }) {
           }
         }
       });
-      let response;
-      for (let attempt = 0; attempt < 2; attempt += 1) {
-        response = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-          signal: AbortSignal.timeout(24000),
-          body: requestBody
-        });
-        if (response.status !== 503 || attempt === 1 || env.GROQ_API_KEY) break;
-        await response.body?.cancel();
-        await new Promise(resolve => setTimeout(resolve, 700 + Math.floor(Math.random() * 500)));
-      }
+      const response = await fetchWithRetry(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+        body: requestBody
+      }, { timeoutMs: GEMINI_TIMEOUT_MS });
       if (!response.ok) {
         const providerError = await response.json().catch(() => ({}));
-        const providerMessage = providerError?.error?.message || "unknown";
-        console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
-        if (!TRANSIENT_GEMINI_STATUSES.has(response.status)) {
-          const providerErrors = {
-            400: "Gemini no pudo procesar la solicitud (HTTP 400). Puede haber un parámetro incompatible o una función no admitida.",
-            401: "La autenticación con Gemini falló (HTTP 401). El equipo administrador debe revisar GEMINI_API_KEY en Cloudflare.",
-            403: "Gemini denegó el acceso (HTTP 403). Revisa los permisos de la API y la configuración de la clave en Cloudflare.",
-            404: "Gemini no encontró el modelo solicitado (HTTP 404). Comprueba GEMINI_MODEL.",
-            413: "La solicitud es demasiado grande.",
-            415: "El formato de la solicitud no es compatible."
-          };
-          return json({ error: providerErrors[response.status] || "Gemini rechazó la solicitud. Inténtalo más tarde.", code: "GEMINI_HTTP_" + response.status }, response.status >= 400 && response.status < 500 ? response.status : 502);
-        }
+        const providerCode = String(providerError?.error?.status || providerError?.error?.code || "UNKNOWN").slice(0, 80);
+        console.error("Gemini API request failed", {
+          status: response.status,
+          model,
+          providerCode,
+          retryable: TRANSIENT_GEMINI_STATUSES.has(response.status)
+        });
+        // Un fallo de autenticación o configuración de Gemini no debe impedir
+        // que Groq responda si sus credenciales y su servicio siguen disponibles.
         geminiFailure = "HTTP_" + response.status;
       } else {
         const payload = await response.json();
