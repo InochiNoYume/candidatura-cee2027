@@ -20,7 +20,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - CSS3 con diseño responsive y preferencias de movimiento reducido.
 - JavaScript del navegador, sin framework de interfaz.
 - Cloudflare Pages y Pages Functions.
-- Google Gemini API como motor principal y Groq como respaldo mediante una función del servidor.
+- Google Gemini API como único motor del asistente mediante una función del servidor.
 - GitHub Actions para validaciones y auditorías automatizadas.
 - Playwright, axe-core y Lighthouse para pruebas.
 
