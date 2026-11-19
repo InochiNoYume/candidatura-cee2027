@@ -97,7 +97,7 @@ function normalizeSourcePath(value, siteOrigin) {
   try {
     const url = new URL(value, siteOrigin + "/");
     if (url.origin !== siteOrigin) return null;
-    let pathname = decodeURIComponent(url.pathname).replace(/\\/+$/, "") || "/";
+    let pathname = decodeURIComponent(url.pathname).replace(/\/+$/, "") || "/";
     if (pathname === "/index.html") pathname = "/";
     return pathname;
   } catch {
@@ -116,7 +116,7 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
     if (!retrievedUrl || !String(status).toUpperCase().includes("SUCCESS")) continue;
     const path = normalizeSourcePath(retrievedUrl, siteOrigin);
     if (!path || !allowed.has(path)) continue;
-    const sourcePath = path === "/" ? "index.html" : path.replace(/^\\//, "");
+    const sourcePath = path === "/" ? "index.html" : path.replace(/^\//, "");
     const canonicalUrl = path === "/" ? siteOrigin + "/" : siteOrigin + path;
     sources.push({ title: PAGE_TITLES[sourcePath] || "Página del sitio", url: canonicalUrl });
   }
