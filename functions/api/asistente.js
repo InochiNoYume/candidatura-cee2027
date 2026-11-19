@@ -116,6 +116,7 @@ function normalizeSourcePath(value, siteOrigin) {
     if (url.origin !== siteOrigin) return null;
     let pathname = decodeURIComponent(url.pathname).replace(/\/+$/, "") || "/";
     if (pathname === "/index.html") pathname = "/";
+    else pathname = pathname.replace(/\.html$/i, "");
     return pathname;
   } catch {
     return null;
@@ -208,11 +209,15 @@ export async function onRequestPost({ request, env }) {
   const requestStartedAt = Date.now();
   const selectedPaths = selectSources(question);
   const siteOrigin = new URL(request.url).origin;
-  const sourceUrls = selectedPaths.map(path => new URL(path, siteOrigin + "/").href);
+  const toPublicUrl = path => path === "index.html" ? siteOrigin + "/" : siteOrigin + "/" + path.replace(/\.html$/i, "");
+  const sourceUrls = selectedPaths.map(toPublicUrl);
+  const allSourceUrls = SOURCE_PAGES.map(toPublicUrl);
   const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question +
-    "\n\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\n" +
+    "\n\nÍNDICE COMPLETO DE PÁGINAS OFICIALES DEL SITIO (puedes consultar cualquiera de estas secciones si la pregunta lo requiere):\n" +
+    allSourceUrls.map(url => "- " + url).join("\n") +
+    "\n\nPÁGINAS PRIORITARIAS PARA ESTA PREGUNTA: consulta estas URL con URL Context y basa la respuesta primero en ellas:\n" +
     sourceUrls.map(url => "- " + url).join("\n") +
-    "\n\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
+    "\n\nUsa exclusivamente contenido recuperado de estas páginas oficiales. Si falta información, dilo claramente. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
   const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL) ? env.GEMINI_MODEL : MODEL;
   const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
   const requestBody = JSON.stringify({
