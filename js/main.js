@@ -354,8 +354,8 @@
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({question}),
-        // Debe cubrir los dos intentos del servidor (24 s cada uno) y la breve espera entre ellos.
-        signal: AbortSignal.timeout(55000)
+        // Cubre el presupuesto acotado de Gemini, recuperación de fuentes y Groq con reintentos.
+        signal: AbortSignal.timeout(70000)
       });
       const payload = await response.json().catch(() => ({}));
       window.clearTimeout(pendingTimer);
