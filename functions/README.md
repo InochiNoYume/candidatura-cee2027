@@ -7,8 +7,16 @@
 
 La clave se usa solo en el servidor mediante la cabecera `x-goog-api-key`. Nunca la incluyas en HTML, JavaScript, commits o mensajes.
 
-Para reducir consumo: solo se envía la pregunta actual (sin historial), el contexto está resumido, las respuestas tienen un máximo de 55 palabras y la generación está limitada a 160 tokens. Las preguntas claramente ajenas al sitio reciben una respuesta fija del servidor sin llamar a Gemini.
+## Fuentes y filtros
+
+El asistente se limita a la web CEE 2027. Un filtro local reconoce consultas relacionadas con la candidatura y sus secciones; las consultas claramente ajenas reciben una respuesta fija sin llamar a Gemini.
+
+Para preguntas pertinentes, el servidor selecciona páginas relacionadas y envía sus URL públicas a la herramienta **URL Context** de Gemini. Las fuentes permitidas incluyen Inicio, Nuestra lista, Proyecto, Agenda, Transparencia, Noticias, Galería, CEAT Te Escucha, Preguntas frecuentes, Contacto, Actas, Informes, Comunidad TP, Memoria, Privacidad y Buscar. Las preguntas generales pueden consultar todas las secciones. La interfaz muestra enlaces a las páginas que Gemini informa haber recuperado correctamente.
+
+Gemini debe basarse en el contenido recuperado, no inventar datos y distinguir propuestas de actividades realizadas. Las respuestas son resúmenes detallados en español de hasta 130 palabras. La generación está limitada a 420 tokens. No se envía historial.
+
+## Seguridad y privacidad
 
 El límite de diez preguntas por hora es por instancia y no equivale a un límite global. Añade Rate Limiting global en Cloudflare antes de publicar ampliamente.
 
-**Privacidad:** en el nivel gratuito de Gemini API, Google puede utilizar los datos enviados para mejorar sus productos y los datos pueden ser revisados por personas. No enviar datos personales, académicos, privados ni sensibles. Consulta las condiciones de uso de Gemini API: https://ai.google.dev/gemini-api/terms
+En el nivel gratuito de Gemini API, Google puede utilizar los datos enviados para mejorar sus productos y los datos pueden ser revisados por personas. No enviar datos personales, académicos, privados ni sensibles. Consulta https://ai.google.dev/gemini-api/terms y https://ai.google.dev/gemini-api/docs/url-context.
