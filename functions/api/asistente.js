@@ -255,8 +255,8 @@ async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
     const providerError = errorPayload?.error || {};
     const providerMessage = typeof providerError.message === "string"
       ? providerError.message
-          .replace(/Bearer\\s+\\S+/gi, "Bearer [redacted]")
-          .replace(/(api[_ -]?key|token|authorization)\\s*[:=]\\s*\\S+/gi, "$1=[redacted]")
+          .replace(/Bearer\s+\S+/gi, "Bearer [redacted]")
+          .replace(/(api[_ -]?key|token|authorization)\s*[:=]\s*\S+/gi, "$1=[redacted]")
           .slice(0, 180)
       : "No provider message";
     console.error("Groq fallback request failed", {
