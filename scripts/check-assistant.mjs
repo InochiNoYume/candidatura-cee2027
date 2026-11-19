@@ -29,7 +29,7 @@ for (const item of [
 if (!styles.includes(".cee-assistant-panel") || !styles.includes(".cee-assistant-sources") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente, fuentes o movimiento reducido.");
 if (!privacy.includes("Google Gemini API") || !privacy.includes("ai.google.dev/gemini-api/terms") || !privacy.includes("contexto de URL")) failures.push("Privacidad: falta explicar Gemini URL Context y sus condiciones.");
 if (endpoint.includes("if (!selectedPaths.length) return json({ answer:")) failures.push("El filtro local no debe rechazar preguntas antes de que Gemini interprete su contexto.");
-if (!/OUT_OF_SCOPE_MESSAGES\\s*=\\s*\\[/.test(endpoint) || !endpoint.includes("outOfScopeMessage()")) failures.push("Faltan mensajes alternativos de alcance.");
+if (!endpoint.includes("const OUT_OF_SCOPE_MESSAGES = [") || !endpoint.includes("outOfScopeMessage()")) failures.push("Faltan mensajes alternativos de alcance.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
 if (/GROQ_API_KEY|api.groq.com|GroqCloud/.test(endpoint + privacy)) failures.push("Quedó una referencia activa a Groq.");
 if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
