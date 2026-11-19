@@ -135,7 +135,7 @@ try {
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
             const input = panel.querySelector("#cee-assistant-input");
-            if (!input || Number(input.getAttribute("maxlength")) !== 300) errors.push("el campo del asistente no limita la pregunta a 300 caracteres");
+            if (!input || Number(input.getAttribute("maxlength")) !== 500) errors.push("el campo del asistente no limita la pregunta a 300 caracteres");
             panel.querySelector(".cee-assistant-close")?.click();
             if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
             const topButton = document.querySelector(".back-to-top");
