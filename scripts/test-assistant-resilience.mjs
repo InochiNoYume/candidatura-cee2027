@@ -17,6 +17,7 @@ const successPayload = {
     }
   }]
 };
+function staticPage() { return new Response("<main><h1>Nuestra lista</h1><p>Agustina Pérez y el equipo de candidatura.</p></main>", { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }); }
 function providerJson(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
@@ -74,6 +75,7 @@ try {
   };
   let listPrompt = "";
   const listResult = await run("List page source and canonical URL", 200, async (url, options) => {
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     const sent = JSON.parse(options.body);
     listPrompt = sent.contents[0].parts[0].text;
     assert.match(listPrompt, /https:\\/\\/cee\\.test\\/pages\\/lista/);
@@ -96,18 +98,21 @@ try {
   assert.equal(geminiCalls, 2, "A transient 503 should retry once");
 
   await run("Gemini authentication error", 503, async url => {
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     geminiCalls += 1;
     return providerJson({ error: { status: "UNAUTHENTICATED" } }, 401);
   }, "GEMINI_REQUEST_FAILED");
   assert.equal(geminiCalls, 1, "A 401 must not be retried");
 
   await run("Gemini malformed response", 502, async url => {
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     geminiCalls += 1;
     return providerJson({ candidates: [{ content: { parts: [{ text: "not-json" }] } }] });
   }, "GEMINI_INVALID_RESPONSE");
   assert.equal(geminiCalls, 1, "An invalid model response must not be retried");
 
   await run("Gemini transient service exhausted", 503, async url => {
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     geminiCalls += 1;
     return providerJson({ error: { status: "UNAVAILABLE" } }, 503);
   }, "GEMINI_REQUEST_FAILED");
