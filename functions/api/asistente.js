@@ -140,7 +140,7 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
 }
 
 
-const GROQ_DEFAULT_MODEL = "llama-3.3-70b-versatile";
+const GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b";
 const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 const TRANSIENT_PROVIDER_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 const GEMINI_TIMEOUT_MS = 14000;
