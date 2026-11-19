@@ -13,8 +13,7 @@ const OUT_OF_SCOPE_MESSAGES = [
   "Recuerda que soy el asistente informativo de la web del CEE 2027. Puedo responder preguntas sobre su contenido, pero no consultas de otros temas."
 ];
 const FALLBACK_SOURCE_PAGES = [
-  "index.html", "pages/proyecto.html", "pages/agenda.html",
-  "pages/lista.html", "pages/preguntas.html", "pages/buscar.html"
+  "index.html", "pages/proyecto.html", "pages/agenda.html", "pages/preguntas.html"
 ];
 function outOfScopeMessage() {
   return OUT_OF_SCOPE_MESSAGES[Math.floor(Math.random() * OUT_OF_SCOPE_MESSAGES.length)];
@@ -86,7 +85,9 @@ function selectSources(question) {
   for (const group of SOURCE_GROUPS) {
     if (group.terms.some(term => matchesTerm(normalized, term))) group.paths.forEach(path => selected.add(path));
   }
-  if (selected.size === 1) SOURCE_PAGES.forEach(path => selected.add(path));
+  // Si no hay coincidencia específica, consulta un conjunto breve de páginas base.
+  // Evita enviar las 16 páginas en preguntas genéricas, reduciendo latencia y contexto.
+  if (selected.size === 1) FALLBACK_SOURCE_PAGES.forEach(path => selected.add(path));
   return [...selected];
 }
 
@@ -174,30 +175,40 @@ export async function onRequestPost({ request, env }) {
     sourceUrls.map(url => "- " + url).join("\n") +
     "\n\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
   try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-      signal: AbortSignal.timeout(25000),
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        tools: [{ url_context: {} }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: MAX_OUTPUT_TOKENS,
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              scope: { type: "STRING", enum: ["in_scope", "out_of_scope"] },
-              answer: { type: "STRING" }
-            },
-            required: ["scope", "answer"],
-            propertyOrdering: ["scope", "answer"]
-          }
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      tools: [{ url_context: {} }],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            scope: { type: "STRING", enum: ["in_scope", "out_of_scope"] },
+            answer: { type: "STRING" }
+          },
+          required: ["scope", "answer"],
+          propertyOrdering: ["scope", "answer"]
         }
-      })
+      }
     });
+    let response;
+    // Google recomienda reintentos limitados con espera progresiva para errores transitorios.
+    // Solo repetimos una vez ante 503; no insistimos en errores de clave, permisos o cuota.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+        signal: AbortSignal.timeout(17000),
+        body: requestBody
+      });
+      if (response.status !== 503 || attempt === 1) break;
+      await response.body?.cancel();
+      const retryDelay = 700 + Math.floor(Math.random() * 500);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
     if (!response.ok) {
       const providerError = await response.json().catch(() => ({}));
       const providerMessage = providerError?.error?.message || "unknown";
