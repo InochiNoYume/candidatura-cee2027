@@ -423,3 +423,17 @@ body {
   .cee-assistant-launcher { transition: none; }
   .cee-assistant-launcher-icon svg { animation: none; }
 }
+
+
+/* Fuentes oficiales mostradas bajo las respuestas del asistente */
+.cee-assistant-sources {
+  margin: .25rem 0 .8rem;
+  padding: .65rem .8rem;
+  border-left: 3px solid var(--color-primary, #801515);
+  border-radius: 0 .55rem .55rem 0;
+  background: rgba(128,21,21,.055);
+  font-size: .82rem;
+}
+.cee-assistant-sources strong { display: block; margin-bottom: .25rem; }
+.cee-assistant-sources ul { margin: 0; padding-left: 1.15rem; }
+.cee-assistant-sources a { text-decoration: underline; text-underline-offset: 2px; }
