@@ -25,7 +25,8 @@
       item("comunidad-tp.html","Comunidad TP","Especialidades y experiencias técnico-profesionales.","08"),
       item("proyecto.html#eje-3","Deportes y vida saludable","Iniciativas del tercer eje.","09"),
       item("proyecto.html#eje-1","Medio ambiente","Sustentabilidad y cuidado del entorno.","10"),
-      item("proyecto.html#eje-2","Convivencia e infraestructura","Cuidado de espacios y convivencia escolar.","11")
+      item("proyecto.html#eje-2","Convivencia e infraestructura","Cuidado de espacios y convivencia escolar.","11"),
+      item("proyecto.html#eje-5","Eje complementario: bienestar","Apoyo, oportunidades y participación estudiantil.","18")
     ]},
     { id:"actualidad", label:"Actualidad y recursos", icon:"⌕", description:"Novedades, ayuda y canales de contacto.", items:[
       item("noticias.html","Noticias y avances","Comunicaciones y novedades.","12"),
@@ -67,6 +68,7 @@
   const closeMenu = () => {
     if (!menuButton || !nav) return;
     nav.classList.remove("open");
+    document.body.classList.remove("menu-open");
     menuButton.setAttribute("aria-expanded","false");
     menuButton.setAttribute("aria-label","Abrir menú");
     menuButton.classList.remove("is-open");
@@ -74,6 +76,7 @@
   if (menuButton && nav) {
     menuButton.addEventListener("click",() => {
       const opened = nav.classList.toggle("open");
+      document.body.classList.toggle("menu-open",opened);
       menuButton.setAttribute("aria-expanded",String(opened));
       menuButton.setAttribute("aria-label",opened ? "Cerrar menú" : "Abrir menú");
       menuButton.classList.toggle("is-open",opened);
