@@ -21,6 +21,8 @@ const viewports = [
 const browser = await chromium.launch({ headless: true });
 const results = [];
 const failures = [];
+const assistantResults = [];
+const screenshotResults = [];
 
 try {
   for (const viewport of viewports) {
@@ -207,7 +209,6 @@ try {
     { name: "in-scope", question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length > 0 },
     { name: "out-of-scope", question: "¿Cuál es la capital de Francia?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length === 0 }
   ];
-  const assistantResults = [];
   for (const test of assistantTests) {
     try {
       const response = await fetch(new URL("api/asistente", base), { method: "POST", headers: { "Content-Type": "application/json", "Origin": new URL(base).origin }, body: JSON.stringify({ question: test.question }), signal: AbortSignal.timeout(55000) });
@@ -230,14 +231,20 @@ try {
     { name: "wide-desktop", width: 1440, height: 900, isMobile: false, hasTouch: false }
   ];
   fs.mkdirSync("audit-results/screenshots", { recursive: true });
-  const screenshotResults = [];
   for (const viewport of screenshotViewports) {
     const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, isMobile: viewport.isMobile, hasTouch: viewport.hasTouch });
     const page = await context.newPage();
     for (const route of screenshotRoutes) {
       try {
         await page.goto(new URL(route.route, base).href, { waitUntil: "networkidle", timeout: 45000 });
-        await page.waitForTimeout(900);
+        // Activa los elementos con reveal/IntersectionObserver antes de capturar la página completa.
+        const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+        for (let y = 0; y < pageHeight; y += Math.max(500, viewport.height - 120)) {
+          await page.evaluate(scrollY => window.scrollTo(0, scrollY), y);
+          await page.waitForTimeout(120);
+        }
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.waitForTimeout(500);
         const file = "audit-results/screenshots/" + route.name + "-" + viewport.name + ".png";
         await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
         screenshotResults.push({ page: route.name, viewport: viewport.name, file, passed: true });
