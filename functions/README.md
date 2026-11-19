@@ -7,7 +7,7 @@ En **Settings → Variables and Secrets**, configura estos secretos por separado
 1. **`GEMINI_API_KEY`** (Secret): clave del motor principal.
 2. **`GROQ_API_KEY`** (Secret): clave del motor de respaldo.
 3. Opcional, **`GEMINI_MODEL`**: modelo Gemini; predeterminado `gemini-3.5-flash-lite`.
-4. Opcional, **`GROQ_MODEL`**: modelo Groq; predeterminado `llama-3.3-70b-versatile`.
+4. Opcional, **`GROQ_MODEL`**: modelo Groq; predeterminado `openai/gpt-oss-120b`.
 
 Después de añadir o cambiar secretos, vuelve a desplegar el entorno correspondiente. Las claves se usan solo desde el servidor: Gemini mediante `x-goog-api-key` y Groq mediante `Authorization: Bearer`. Nunca las incluyas en HTML, JavaScript del navegador, commits, registros ni mensajes.
 
