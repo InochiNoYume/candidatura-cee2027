@@ -346,14 +346,18 @@
     const sendButton = assistantForm.querySelector('button[type="submit"]');
     sendButton.disabled = true;
     const pending = addAssistantMessage("Estoy revisando la información del sitio…");
+    const pendingTimer = window.setTimeout(() => {
+      if (pending.isConnected) pending.textContent = "La consulta está tardando un poco más. Estoy intentando completarla…";
+    }, 8000);
     try {
       const response = await fetch("/api/asistente",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({question}),
-        signal: AbortSignal.timeout(30000)
+        signal: AbortSignal.timeout(39000)
       });
       const payload = await response.json().catch(() => ({}));
+      window.clearTimeout(pendingTimer);
       pending.remove();
       if (!response.ok) {
         const safeError = typeof payload.error === "string" ? payload.error : "";
@@ -379,6 +383,7 @@
         addAssistantSources(payload.sources);
       }
     } catch (error) {
+      window.clearTimeout(pendingTimer);
       pending.remove();
       const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
       addAssistantMessage(timedOut
@@ -391,8 +396,11 @@
     }
   });
 
-  // Rastro de partículas equilibrado para mouse y tacto, en todas las páginas.
-  if (!reduceMotion && "requestAnimationFrame" in window) {
+  // Rastro decorativo solo en dispositivos con mouse/pen.
+  // El canvas se anima únicamente mientras hay partículas: evita un bucle
+  // requestAnimationFrame permanente que consumía CPU y batería en cada página.
+  if (!reduceMotion && "requestAnimationFrame" in window &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     const trailCanvas = document.createElement("canvas");
     trailCanvas.className = "cee-pointer-trail";
     trailCanvas.setAttribute("aria-hidden","true");
@@ -401,48 +409,50 @@
     if (trailContext) {
       let trailWidth=0,trailHeight=0,trailFrame=0,trailParticles=[];
       const resizeTrail=()=>{
-        const dpr=Math.min(window.devicePixelRatio||1,1.5);
+        const dpr=Math.min(window.devicePixelRatio||1,1.25);
         trailWidth=window.innerWidth;trailHeight=window.innerHeight;
         trailCanvas.width=Math.round(trailWidth*dpr);
         trailCanvas.height=Math.round(trailHeight*dpr);
         trailContext.setTransform(dpr,0,0,dpr,0,0);
       };
+      const scheduleTrail=()=>{
+        if (!trailFrame && !document.hidden) trailFrame=requestAnimationFrame(drawTrail);
+      };
       const addTrail=(x,y)=>{
-        const mobile=window.matchMedia("(pointer: coarse)").matches;
-        const count=mobile?2:3;
-        for(let i=0;i<count;i++){
-          if(trailParticles.length>=64)trailParticles.shift();
+        for(let i=0;i<2;i++){
+          if(trailParticles.length>=36)trailParticles.shift();
           trailParticles.push({
             x:x+(Math.random()-.5)*7,y:y+(Math.random()-.5)*7,
-            vx:(Math.random()-.5)*.75,vy:(Math.random()-.5)*.75,
-            life:1,r:1.1+Math.random()*(mobile?1.1:1.5)
+            vx:(Math.random()-.5)*.65,vy:(Math.random()-.5)*.65,
+            life:1,r:1.1+Math.random()*1.2
           });
         }
+        scheduleTrail();
       };
       let lastPointerAt=0;
       document.addEventListener("pointermove",event=>{
-        if(event.pointerType==="mouse" || event.pointerType==="pen" || event.pointerType==="touch"){
-          const now=performance.now();
-          if(now-lastPointerAt>10){addTrail(event.clientX,event.clientY);lastPointerAt=now;}
-        }
+        if(event.pointerType!=="mouse" && event.pointerType!=="pen") return;
+        const now=performance.now();
+        if(now-lastPointerAt>16){addTrail(event.clientX,event.clientY);lastPointerAt=now;}
       },{passive:true});
       const drawTrail=()=>{
+        trailFrame=0;
         trailContext.clearRect(0,0,trailWidth,trailHeight);
-        trailParticles=trailParticles.filter(p=>p.life>.035);
+        trailParticles=trailParticles.filter(p=>p.life>.04);
         trailParticles.forEach(p=>{
-          p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.027;
+          p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.035;
           trailContext.beginPath();
           trailContext.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
-          trailContext.fillStyle="rgba(128,21,21,"+(.34*p.life)+")";
+          trailContext.fillStyle="rgba(128,21,21,"+(.30*p.life)+")";
           trailContext.fill();
         });
-        if(trailParticles.length || !document.hidden)trailFrame=requestAnimationFrame(drawTrail);
+        if(trailParticles.length) scheduleTrail();
       };
-      resizeTrail();trailFrame=requestAnimationFrame(drawTrail);
+      resizeTrail();
       window.addEventListener("resize",resizeTrail,{passive:true});
       document.addEventListener("visibilitychange",()=>{
         if(document.hidden){cancelAnimationFrame(trailFrame);trailFrame=0;}
-        else if(!trailFrame)trailFrame=requestAnimationFrame(drawTrail);
+        else if(trailParticles.length) scheduleTrail();
       });
       window.addEventListener("pagehide",()=>cancelAnimationFrame(trailFrame),{once:true});
     } else trailCanvas.remove();
