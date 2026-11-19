@@ -283,35 +283,7 @@
   const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
   const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
   const assistantForm = assistantPanel.querySelector("form");
-  const addAssistantSources = sources => {
-    if (!Array.isArray(sources) || !sources.length) return;
-    const wrapper = document.createElement("div");
-    wrapper.className = "cee-assistant-sources";
-    const heading = document.createElement("strong");
-    heading.textContent = "Fuentes consultadas";
-    wrapper.appendChild(heading);
-    const list = document.createElement("ul");
-    const allowedPaths = new Set(["/","/pages/lista","/pages/proyecto","/pages/agenda","/pages/transparencia","/pages/noticias","/pages/galeria","/pages/escucha","/pages/preguntas","/pages/contacto","/pages/actas","/pages/informes","/pages/comunidad-tp","/pages/memoria","/pages/privacidad","/pages/buscar"]);
-    sources.forEach(source => {
-      if (!source || typeof source.url !== "string") return;
-      let url;
-      try { url = new URL(source.url,window.location.origin); } catch { return; }
-      const sourcePath = url.pathname.replace(/\.html$/i, "").replace(/\/+$/, "") || "/";
-      if (url.origin !== window.location.origin || !allowedPaths.has(sourcePath)) return;
-      const item = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = url.href;
-      link.textContent = typeof source.title === "string" ? source.title : "Página oficial";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      item.appendChild(link);
-      list.appendChild(item);
-    });
-    if (!list.childElementCount) return;
-    wrapper.appendChild(list);
-    assistantMessages.appendChild(wrapper);
-    assistantMessages.scrollTop = assistantMessages.scrollHeight;
-  };
+
     const appendAssistantInline = (parent, text) => {
     const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
     parts.forEach(part => {
@@ -415,7 +387,6 @@
         addAssistantMessage(typeof payload.answer === "string" && payload.answer
           ? payload.answer
           : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
-        addAssistantSources(payload.sources);
       }
     } catch (error) {
       window.clearTimeout(pendingTimer);
