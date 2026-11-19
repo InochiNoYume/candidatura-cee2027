@@ -139,11 +139,122 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
   return sources.filter((source, index, list) => list.findIndex(item => item.url === source.url) === index);
 }
 
+
+const GROQ_DEFAULT_MODEL = "llama-3.3-70b-versatile";
+const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
+
+function cleanRetrievedHtml(html) {
+  let value = String(html || "");
+  value = value.replace(/<!--[\\s\\S]*?-->/g, " ");
+  value = value.replace(/<(script|style|noscript|svg|template)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, " ");
+  const main = value.match(/<main\\b[^>]*>([\\s\\S]*?)<\\/main>/i);
+  if (main) value = main[1];
+  else {
+    value = value.replace(/<(header|nav|footer)\\b[^>]*>[\\s\\S]*?<\\/\\1>/gi, " ");
+  }
+  value = value.replace(/<\\/(p|div|section|article|li|h[1-6]|tr|br)>/gi, "\\n");
+  value = value.replace(/<[^>]+>/g, " ");
+  return value
+    .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"').replace(/&#39;|&apos;/gi, "'")
+    .replace(/&#(\\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/\\s+/g, " ").trim();
+}
+
+async function retrieveGroqContext(selectedPaths, siteOrigin) {
+  const results = await Promise.all(selectedPaths.map(async path => {
+    const url = new URL(path, siteOrigin + "/");
+    try {
+      const response = await fetch(url.href, {
+        headers: { "Accept": "text/html", "User-Agent": "CEE2027-Assistant/1.0" },
+        signal: AbortSignal.timeout(7000)
+      });
+      if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("text/html")) return null;
+      const html = await response.text();
+      const text = cleanRetrievedHtml(html).slice(0, 8500);
+      if (!text) return null;
+      return { title: PAGE_TITLES[path] || "Página oficial", url: url.href, text };
+    } catch {
+      return null;
+    }
+  }));
+  const sources = results.filter(Boolean);
+  let remaining = 26000;
+  const documents = sources.map(source => {
+    const text = source.text.slice(0, remaining);
+    remaining -= text.length;
+    return { title: source.title, url: source.url, text };
+  }).filter(item => item.text.length > 0);
+  return { documents, sources: documents.map(({title,url}) => ({title,url})) };
+}
+
+function parseProviderJson(value) {
+  const raw = typeof value === "string" ? value.trim() : "";
+  try { return JSON.parse(raw); } catch {
+    const match = raw.match(/\\{[\\s\\S]*\\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); } catch {}
+    }
+    return null;
+  }
+}
+
+function normalizeAnswer(value) {
+  return typeof value === "string"
+    ? value.trim().split(/\\s+/).slice(0, MAX_ANSWER_WORDS).join(" ").slice(0, 1100)
+    : "";
+}
+
+async function callGroqFallback({ env, question, selectedPaths, siteOrigin }) {
+  if (!env.GROQ_API_KEY) throw new Error("GROQ_NOT_CONFIGURED");
+  const { documents, sources } = await retrieveGroqContext(selectedPaths, siteOrigin);
+  if (!documents.length) throw new Error("GROQ_SOURCES_UNAVAILABLE");
+  const model = typeof env.GROQ_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL)
+    ? env.GROQ_MODEL : GROQ_DEFAULT_MODEL;
+  const documentContext = documents.map((doc, index) =>
+    "FUENTE " + (index + 1) + ": " + doc.title + "\\nURL: " + doc.url + "\\nCONTENIDO: " + doc.text
+  ).join("\\n\\n");
+  const userPrompt = "PREGUNTA DEL ESTUDIANTE:\\n" + question +
+    "\\n\\nCONTENIDO RECUPERADO DE LAS MISMAS PÁGINAS OFICIALES SELECCIONADAS PARA GEMINI:\\n" +
+    documentContext +
+    "\\n\\nResponde usando exclusivamente este contenido. Si la consulta no está relacionada con la web CEE 2027, usa scope out_of_scope. Devuelve solo JSON válido con scope y answer.";
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + env.GROQ_API_KEY
+    },
+    signal: AbortSignal.timeout(18000),
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: INSTRUCTIONS },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.2,
+      max_completion_tokens: MAX_OUTPUT_TOKENS,
+      response_format: { type: "json_object" }
+    })
+  });
+  if (!response.ok) {
+    console.error("Groq fallback request failed", { status: response.status });
+    throw new Error("GROQ_HTTP_" + response.status);
+  }
+  const payload = await response.json();
+  const result = parseProviderJson(payload?.choices?.[0]?.message?.content);
+  if (!result || !["in_scope", "out_of_scope"].includes(result.scope)) throw new Error("GROQ_INVALID_RESPONSE");
+  if (result.scope === "out_of_scope") return { answer: outOfScopeMessage(), sources: [] };
+  const answer = normalizeAnswer(result.answer);
+  if (!answer) throw new Error("GROQ_EMPTY_RESPONSE");
+  return { answer, sources };
+}
+
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
   if (origin && origin !== new URL(request.url).origin) return json({ error: "La solicitud fue bloqueada por seguridad (HTTP 403). Abre el asistente desde la web oficial del CEE y vuelve a intentarlo.", code: "ORIGIN_FORBIDDEN" }, 403);
   if (!request.headers.get("Content-Type")?.toLowerCase().includes("application/json")) return json({ error: "La solicitud llegó en un formato no compatible (HTTP 415). Recarga la página e inténtalo otra vez.", code: "UNSUPPORTED_MEDIA_TYPE" }, 415);
-  if (!env.GEMINI_API_KEY) return json({ error: "El asistente aún no está configurado en este entorno (HTTP 503). El equipo administrador debe revisar el secreto GEMINI_API_KEY en Cloudflare.", code: "MISSING_API_KEY" }, 503);
+  if (!env.GEMINI_API_KEY && !env.GROQ_API_KEY) return json({ error: "El asistente no está configurado. El equipo administrador debe revisar las claves API en Cloudflare.", code: "MISSING_PROVIDER_KEYS" }, 503);
   const declaredLength = Number(request.headers.get("Content-Length") || 0);
   if (declaredLength > 2048) return json({ error: "Solicitud demasiado grande." }, 413);
   let rawBody;
@@ -167,94 +278,106 @@ export async function onRequestPost({ request, env }) {
   requestWindows.set(address, state);
   while (requestWindows.size > 1000) requestWindows.delete(requestWindows.keys().next().value);
 
-  const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL) ? env.GEMINI_MODEL : MODEL;
-  const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
+
   const siteOrigin = new URL(request.url).origin;
   const sourceUrls = selectedPaths.map(path => new URL(path, siteOrigin + "/").href);
-  const prompt = "PREGUNTA DEL ESTUDIANTE:\n" + question + "\n\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\n" +
-    sourceUrls.map(url => "- " + url).join("\n") +
-    "\n\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
-  try {
-    const requestBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      tools: [{ url_context: {} }],
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: MAX_OUTPUT_TOKENS,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "OBJECT",
-          properties: {
-            scope: { type: "STRING", enum: ["in_scope", "out_of_scope"] },
-            answer: { type: "STRING" }
-          },
-          required: ["scope", "answer"],
-          propertyOrdering: ["scope", "answer"]
+  const prompt = "PREGUNTA DEL ESTUDIANTE:\\n" + question + "\\n\\nPÁGINAS OFICIALES QUE DEBES CONSULTAR CON URL CONTEXT:\\n" +
+    sourceUrls.map(url => "- " + url).join("\\n") +
+    "\\n\\nUsa solo las páginas recuperadas. Si la pregunta es ajena a la web CEE 2027, clasifícala out_of_scope.";
+
+  let geminiFailure = null;
+  if (env.GEMINI_API_KEY) {
+    try {
+      const model = typeof env.GEMINI_MODEL === "string" && /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GEMINI_MODEL)
+        ? env.GEMINI_MODEL : MODEL;
+      const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
+      const requestBody = JSON.stringify({
+        systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        tools: [{ url_context: {} }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              scope: { type: "STRING", enum: ["in_scope", "out_of_scope"] },
+              answer: { type: "STRING" }
+            },
+            required: ["scope", "answer"],
+            propertyOrdering: ["scope", "answer"]
+          }
+        }
+      });
+      let response;
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+          signal: AbortSignal.timeout(24000),
+          body: requestBody
+        });
+        if (response.status !== 503 || attempt === 1) break;
+        await response.body?.cancel();
+        await new Promise(resolve => setTimeout(resolve, 700 + Math.floor(Math.random() * 500)));
+      }
+      if (!response.ok) {
+        const providerError = await response.json().catch(() => ({}));
+        const providerMessage = providerError?.error?.message || "unknown";
+        console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
+        if (!TRANSIENT_GEMINI_STATUSES.has(response.status)) {
+          const providerErrors = {
+            400: "Gemini no pudo procesar la solicitud (HTTP 400). Puede haber un parámetro incompatible o una función no admitida.",
+            401: "La autenticación con Gemini falló (HTTP 401). El equipo administrador debe revisar GEMINI_API_KEY en Cloudflare.",
+            403: "Gemini denegó el acceso (HTTP 403). Revisa los permisos de la API y la configuración de la clave en Cloudflare.",
+            404: "Gemini no encontró el modelo solicitado (HTTP 404). Comprueba GEMINI_MODEL.",
+            413: "La solicitud es demasiado grande.",
+            415: "El formato de la solicitud no es compatible."
+          };
+          return json({ error: providerErrors[response.status] || "Gemini rechazó la solicitud. Inténtalo más tarde.", code: "GEMINI_HTTP_" + response.status }, response.status >= 400 && response.status < 500 ? response.status : 502);
+        }
+        geminiFailure = "HTTP_" + response.status;
+      } else {
+        const payload = await response.json();
+        const candidate = payload?.candidates?.[0];
+        const rawAnswer = candidate?.content?.parts?.map(part => part.text || "").join("") || "";
+        const result = parseProviderJson(rawAnswer);
+        if (!result || !["in_scope", "out_of_scope"].includes(result.scope)) {
+          geminiFailure = "INVALID_RESPONSE";
+        } else if (result.scope === "out_of_scope") {
+          return json({ answer: outOfScopeMessage(), sources: [], provider: "gemini" });
+        } else {
+          const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
+          const answer = normalizeAnswer(result.answer);
+          if (sources.length && answer) return json({ answer, sources, provider: "gemini" });
+          geminiFailure = !sources.length ? "SOURCES_UNAVAILABLE" : "EMPTY_RESPONSE";
         }
       }
-    });
-    let response;
-    // Google recomienda reintentos limitados con espera progresiva para errores transitorios.
-    // Solo repetimos una vez ante 503; no insistimos en errores de clave, permisos o cuota.
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-        // URL Context puede tardar más al recuperar varias páginas. El límite se mantiene acotado para evitar solicitudes colgadas.
-        signal: AbortSignal.timeout(24000),
-        body: requestBody
-      });
-      if (response.status !== 503 || attempt === 1) break;
-      await response.body?.cancel();
-      const retryDelay = 700 + Math.floor(Math.random() * 500);
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    } catch (error) {
+      geminiFailure = error?.name === "AbortError" || error?.name === "TimeoutError" ? "TIMEOUT" : "CONNECTION_ERROR";
+      console.error("Gemini request or response processing failed", { name: error?.name || "Error" });
     }
-    if (!response.ok) {
-      const providerError = await response.json().catch(() => ({}));
-      const providerMessage = providerError?.error?.message || "unknown";
-      console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
-      const providerErrors = {
-        400: "Gemini no pudo procesar la solicitud (HTTP 400). Puede haber un parámetro incompatible o una función no admitida. Si vuelve a ocurrir, revisaremos la configuración del modelo.",
-        401: "La autenticación con Gemini falló (HTTP 401). La clave API no fue aceptada. Revisa GEMINI_API_KEY en los secretos de Cloudflare; no la compartas en el chat.",
-        403: "Gemini denegó el acceso (HTTP 403). La clave puede no tener permisos para este modelo o la API/función necesaria no estar habilitada. Revisa los permisos y la configuración en Google AI Studio y Cloudflare.",
-        404: "Gemini no encontró el modelo solicitado (HTTP 404). Comprueba que GEMINI_MODEL tenga un identificador válido y disponible.",
-        408: "Gemini tardó demasiado en responder (HTTP 408). Espera un momento y vuelve a intentarlo.",
-        429: "Se alcanzó el límite de solicitudes o cuota de Gemini (HTTP 429). Espera a que se restablezca la cuota antes de volver a consultar.",
-        500: "Gemini encontró un error interno (HTTP 500). El servicio tuvo un problema; inténtalo más tarde.",
-        502: "La conexión con Gemini recibió una respuesta no válida (HTTP 502). Inténtalo más tarde.",
-        503: "Gemini está temporalmente sobrecargado o no disponible (HTTP 503). No es un problema con el contenido de tu pregunta. Espera un momento y vuelve a intentarlo.",
-        504: "Gemini no respondió dentro del tiempo esperado (HTTP 504). Puede ser una demora temporal; inténtalo nuevamente más tarde."
-      };
-      if (providerErrors[response.status]) {
-        const httpStatus = [401, 403, 404, 408, 429, 503].includes(response.status) ? response.status : 502;
-        return json({ error: providerErrors[response.status], code: "GEMINI_HTTP_" + response.status }, httpStatus);
-      }
-      return json({ error: "Gemini devolvió un error inesperado (HTTP " + response.status + "). El detalle técnico quedó registrado de forma segura en Cloudflare.", code: "GEMINI_HTTP_UNKNOWN" }, 502);
-    }
-    const payload = await response.json();
-    const candidate = payload?.candidates?.[0];
-    const rawAnswer = candidate?.content?.parts?.map(part => part.text || "").join("") || "";
-    let result;
-    try { result = JSON.parse(rawAnswer); } catch { return json({ error: "No se pudo interpretar la respuesta de Gemini. Inténtalo nuevamente." }, 502); }
-    if (result?.scope !== "in_scope") return json({ answer: outOfScopeMessage(), sources: [] });
-    const sources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
-    if (!sources.length) return json({
-      answer: "No pude recuperar el contenido de las páginas oficiales en este momento. Inténtalo nuevamente o consulta directamente las secciones del sitio.",
-      sources: []
-    });
-    const answer = typeof result.answer === "string" ? result.answer.trim().split(/\s+/).slice(0, MAX_ANSWER_WORDS).join(" ").slice(0, 1100) : "";
-    if (!answer) return json({ error: "No se recibió una respuesta válida." }, 502);
-    return json({ answer, sources });
+  } else {
+    geminiFailure = "MISSING_GEMINI_KEY";
+  }
+
+  // Groq se ejecuta únicamente después de un fallo de Gemini; nunca se usa
+  // para sustituir una clasificación válida de pregunta fuera de alcance.
+  try {
+    const fallback = await callGroqFallback({ env, question, selectedPaths, siteOrigin });
+    return json({ ...fallback, provider: "groq", fallback: true });
   } catch (error) {
-    console.error("Gemini request or response processing failed", { name: error?.name || "Error" });
-    const timedOut = error?.name === "AbortError" || error?.name === "TimeoutError";
+    console.error("Groq fallback unavailable", {
+      reason: geminiFailure || "GEMINI_FAILED",
+      fallbackError: error?.message || "UNKNOWN"
+    });
     return json({
-      error: timedOut
-        ? "La conexión con Gemini agotó el tiempo de espera. Espera unos segundos y vuelve a intentarlo."
-        : "No se pudo establecer comunicación con Gemini. Comprueba la conexión del servicio e inténtalo más tarde.",
-      code: timedOut ? "GEMINI_TIMEOUT" : "GEMINI_CONNECTION_ERROR"
-    }, 502);
+      error: env.GROQ_API_KEY
+        ? "Gemini y el servicio de respaldo están temporalmente no disponibles. Inténtalo nuevamente en unos minutos."
+        : "Gemini no pudo responder y el respaldo Groq aún no está configurado. El equipo administrador debe añadir GROQ_API_KEY en los secretos de Cloudflare.",
+      code: env.GROQ_API_KEY ? "AI_PROVIDERS_UNAVAILABLE" : "GROQ_NOT_CONFIGURED"
+    }, 503);
   }
 }
 
