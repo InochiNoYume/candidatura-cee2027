@@ -206,15 +206,15 @@ try {
   }
   // Prueba real del endpoint Gemini en el Preview: una consulta del proyecto y otra fuera de alcance.
   const assistantTests = [
-    { name: "in-scope", question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length > 0 },
-    { name: "out-of-scope", question: "¿Cuál es la capital de Francia?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && Array.isArray(payload.sources) && payload.sources.length === 0 }
+    { name: "in-scope", question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && !Object.hasOwn(payload, "sources") },
+    { name: "out-of-scope", question: "¿Cuál es la capital de Francia?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && !Object.hasOwn(payload, "sources") }
   ];
   for (const test of assistantTests) {
     try {
       const response = await fetch(new URL("api/asistente", base), { method: "POST", headers: { "Content-Type": "application/json", "Origin": new URL(base).origin }, body: JSON.stringify({ question: test.question }), signal: AbortSignal.timeout(55000) });
       const payload = await response.json().catch(() => ({}));
       const valid = response.ok && test.validate(payload);
-      assistantResults.push({ name: test.name, status: response.status, provider: payload?.provider || null, answerPresent: typeof payload?.answer === "string" && payload.answer.trim().length > 0, sourceCount: Array.isArray(payload?.sources) ? payload.sources.length : 0, code: payload?.code || null, passed: valid });
+      assistantResults.push({ name: test.name, status: response.status, provider: payload?.provider || null, answerPresent: typeof payload?.answer === "string" && payload.answer.trim().length > 0, sourceMetadataExposed: Object.hasOwn(payload || {}, "sources"), code: payload?.code || null, passed: valid });
       if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status + ", provider " + (payload?.provider || "none") + ", code " + (payload?.code || "none"));
     } catch (error) {
       assistantResults.push({ name: test.name, passed: false, error: error.message });
