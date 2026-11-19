@@ -3,6 +3,8 @@ name: Live accessibility and performance audit
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
     inputs:
       base_url:
@@ -25,7 +27,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
       - name: Allow Cloudflare Pages deployment to finish
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         run: sleep 75
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -37,11 +39,11 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Test every page on mobile, tablet and desktop
         env:
-          CEE_AUDIT_BASE_URL: ${{ inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://feat-integrate-axis-referenc.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: node scripts/audit-live-site.mjs
       - name: Run Lighthouse on key pages for mobile and desktop
         env:
-          CEE_AUDIT_BASE_URL: ${{ inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://feat-integrate-axis-referenc.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: |
           mkdir -p audit-results/lighthouse
           export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
