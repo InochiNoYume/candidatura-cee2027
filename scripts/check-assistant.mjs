@@ -40,6 +40,10 @@ if (!endpoint.includes("const OUT_OF_SCOPE_MESSAGES = [") || !endpoint.includes(
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
 for (const item of [
   "env.GROQ_API_KEY", "api.groq.com/openai/v1/chat/completions",
+  "async function fetchWithRetry", "GEMINI_TIMEOUT_MS = 14000",
+  "GROQ_TIMEOUT_MS = 12000", "SOURCE_TIMEOUT_MS = 5000",
+  "PROVIDER_ATTEMPTS = 2", "fetchWithRetry(apiUrl", "fetchWithRetry(\"https://api.groq.com/openai/v1/chat/completions\"",
+  "TRANSIENT_PROVIDER_STATUSES", "Gemini y el servicio de respaldo están temporalmente no disponibles.",
   "llama-3.3-70b-versatile", "callGroqFallback", "TRANSIENT_GEMINI_STATUSES",
   "retrieveGroqContext", "max_completion_tokens: MAX_OUTPUT_TOKENS"
 ]) if (!endpoint.includes(item)) failures.push("Function: falta respaldo Groq o control de fallos: " + item);
