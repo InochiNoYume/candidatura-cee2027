@@ -63,7 +63,7 @@ try {
     candidates: [{
       content: { parts: [{ text: JSON.stringify({
         scope: "in_scope",
-        answer: "La lista está integrada por ocho cargos.\\n\\n- **Presidenta:** Agustina Pérez.\\n- **Vicepresidenta:** Catalina Chandía."
+        answer: "La lista está integrada por ocho cargos.\n\n- **Presidenta:** Agustina Pérez.\n- **Vicepresidenta:** Catalina Chandía."
       }) }] },
       urlContextMetadata: {
         urlMetadata: [{
@@ -86,7 +86,7 @@ try {
   assert.equal(listResult.sources.length, 1, "A list question must return its verified source");
   assert.equal(listResult.sources[0].title, "Nuestra lista");
   assert.equal(listResult.sources[0].url, "https://cee.test/pages/lista");
-  assert.ok(listResult.answer.includes("\\n- **Presidenta:**"), "Structured Markdown line breaks must be preserved");
+  assert.ok(listResult.answer.includes("\n- **Presidenta:**"), "Structured Markdown line breaks must be preserved");
 
   const recovered = await run("Gemini transient error then success", 200, async url => {
     assert.match(String(url), /generativelanguage\.googleapis\.com/);
