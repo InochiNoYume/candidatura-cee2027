@@ -293,7 +293,7 @@
       if (!source || typeof source.url !== "string") return;
       let url;
       try { url = new URL(source.url,window.location.origin); } catch { return; }
-      const sourcePath = url.pathname.replace(/\\.html$/i, "").replace(/\\/+$/, "") || "/";
+      const sourcePath = url.pathname.replace(/\.html$/i, "").replace(/\/+$/, "") || "/";
       if (url.origin !== window.location.origin || !allowedPaths.has(sourcePath)) return;
       const item = document.createElement("li");
       const link = document.createElement("a");
