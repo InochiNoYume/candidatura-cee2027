@@ -326,7 +326,7 @@ export async function onRequestPost({ request, env }) {
     }
     if (result.scope === "out_of_scope") {
       console.info("CEE assistant request completed", { provider: "gemini", scope: "out_of_scope", durationMs: Date.now() - requestStartedAt });
-      return json({ answer: outOfScopeMessage(), sources: [], provider: "gemini" });
+      return json({ answer: outOfScopeMessage(), provider: "gemini" });
     }
 
     const groundedSources = getRetrievedSources(candidate, selectedPaths, siteOrigin);
@@ -344,7 +344,7 @@ export async function onRequestPost({ request, env }) {
       provider: "gemini", scope: "in_scope", model,
       sourceCount: sources.length, durationMs: Date.now() - requestStartedAt
     });
-    return json({ answer, sources, provider: "gemini" });
+    return json({ answer, provider: "gemini" });
   } catch (error) {
     const timedOut = error?.name === "AbortError" || error?.name === "TimeoutError";
     console.error("Gemini request or response processing failed", {
