@@ -140,9 +140,9 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
 
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
-  if (origin && origin !== new URL(request.url).origin) return json({ error: "Origen no permitido." }, 403);
-  if (!request.headers.get("Content-Type")?.toLowerCase().includes("application/json")) return json({ error: "Formato no admitido." }, 415);
-  if (!env.GEMINI_API_KEY) return json({ error: "Asistente no configurado: falta GEMINI_API_KEY en el entorno de Cloudflare que estás probando." }, 503);
+  if (origin && origin !== new URL(request.url).origin) return json({ error: "La solicitud fue bloqueada por seguridad (HTTP 403). Abre el asistente desde la web oficial del CEE y vuelve a intentarlo.", code: "ORIGIN_FORBIDDEN" }, 403);
+  if (!request.headers.get("Content-Type")?.toLowerCase().includes("application/json")) return json({ error: "La solicitud llegó en un formato no compatible (HTTP 415). Recarga la página e inténtalo otra vez.", code: "UNSUPPORTED_MEDIA_TYPE" }, 415);
+  if (!env.GEMINI_API_KEY) return json({ error: "El asistente aún no está configurado en este entorno (HTTP 503). El equipo administrador debe revisar el secreto GEMINI_API_KEY en Cloudflare.", code: "MISSING_API_KEY" }, 503);
   const declaredLength = Number(request.headers.get("Content-Length") || 0);
   if (declaredLength > 2048) return json({ error: "Solicitud demasiado grande." }, 413);
   let rawBody;
@@ -201,11 +201,23 @@ export async function onRequestPost({ request, env }) {
       const providerError = await response.json().catch(() => ({}));
       const providerMessage = providerError?.error?.message || "unknown";
       console.error("Gemini API request failed", { status: response.status, message: String(providerMessage).slice(0, 120) });
-      if (response.status === 503) return json({ error: "Gemini está temporalmente sobrecargado o no disponible (HTTP 503). No es un problema con el contenido de tu pregunta. Espera un momento y vuelve a intentarlo." }, 503);
-      if (response.status === 429) return json({ error: "El asistente alcanzó temporalmente su cuota de Gemini. Inténtalo más tarde." }, 429);
-      if ([400, 401, 403].includes(response.status)) return json({ error: "Gemini rechazó la solicitud (HTTP " + response.status + "). Comprueba la clave, el modelo y que URL Context esté disponible." }, 502);
-      if (response.status === 404) return json({ error: "Gemini no encontró el modelo configurado (HTTP 404). Revisa GEMINI_MODEL en Cloudflare." }, 502);
-      return json({ error: "Gemini devolvió un error HTTP " + response.status + ". Revisa los registros de la Function en Cloudflare." }, 502);
+      const providerErrors = {
+        400: "Gemini no pudo procesar la solicitud (HTTP 400). Puede haber un parámetro incompatible o una función no admitida. Si vuelve a ocurrir, revisaremos la configuración del modelo.",
+        401: "La autenticación con Gemini falló (HTTP 401). La clave API no fue aceptada. Revisa GEMINI_API_KEY en los secretos de Cloudflare; no la compartas en el chat.",
+        403: "Gemini denegó el acceso (HTTP 403). La clave puede no tener permisos para este modelo o la API/función necesaria no estar habilitada. Revisa los permisos y la configuración en Google AI Studio y Cloudflare.",
+        404: "Gemini no encontró el modelo solicitado (HTTP 404). Comprueba que GEMINI_MODEL tenga un identificador válido y disponible.",
+        408: "Gemini tardó demasiado en responder (HTTP 408). Espera un momento y vuelve a intentarlo.",
+        429: "Se alcanzó el límite de solicitudes o cuota de Gemini (HTTP 429). Espera a que se restablezca la cuota antes de volver a consultar.",
+        500: "Gemini encontró un error interno (HTTP 500). El servicio tuvo un problema; inténtalo más tarde.",
+        502: "La conexión con Gemini recibió una respuesta no válida (HTTP 502). Inténtalo más tarde.",
+        503: "Gemini está temporalmente sobrecargado o no disponible (HTTP 503). No es un problema con el contenido de tu pregunta. Espera un momento y vuelve a intentarlo.",
+        504: "Gemini no respondió dentro del tiempo esperado (HTTP 504). Puede ser una demora temporal; inténtalo nuevamente más tarde."
+      };
+      if (providerErrors[response.status]) {
+        const httpStatus = [401, 403, 404, 408, 429, 503].includes(response.status) ? response.status : 502;
+        return json({ error: providerErrors[response.status], code: "GEMINI_HTTP_" + response.status }, httpStatus);
+      }
+      return json({ error: "Gemini devolvió un error inesperado (HTTP " + response.status + "). El detalle técnico quedó registrado de forma segura en Cloudflare.", code: "GEMINI_HTTP_UNKNOWN" }, 502);
     }
     const payload = await response.json();
     const candidate = payload?.candidates?.[0];
@@ -223,7 +235,13 @@ export async function onRequestPost({ request, env }) {
     return json({ answer, sources });
   } catch (error) {
     console.error("Gemini request or response processing failed", { name: error?.name || "Error" });
-    return json({ error: "El servicio de IA no está disponible. Revisa los registros de la Function en Cloudflare." }, 502);
+    const timedOut = error?.name === "AbortError" || error?.name === "TimeoutError";
+    return json({
+      error: timedOut
+        ? "La conexión con Gemini agotó el tiempo de espera. Espera unos segundos y vuelve a intentarlo."
+        : "No se pudo establecer comunicación con Gemini. Comprueba la conexión del servicio e inténtalo más tarde.",
+      code: timedOut ? "GEMINI_TIMEOUT" : "GEMINI_CONNECTION_ERROR"
+    }, 502);
   }
 }
 
