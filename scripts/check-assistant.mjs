@@ -8,14 +8,10 @@ const requiredEndpoint = [
   "env.GEMINI_API_KEY", "gemini-3.5-flash-lite", "generativelanguage.googleapis.com/v1beta/models",
   "tools: [{ url_context: {} }]", "function selectSources(question)", "MAX_ANSWER_WORDS = 130",
   "maxOutputTokens: MAX_OUTPUT_TOKENS", "question.length > 500", "getRetrievedSources(candidate, selectedPaths, siteOrigin)",
-  'Gemini devolvió un error inesperado (HTTP ',
-  "Gemini está temporalmente sobrecargado o no disponible (HTTP 503)",
   "Gemini no encontró el modelo solicitado (HTTP 404)",
   "La autenticación con Gemini falló (HTTP 401)",
   "Gemini denegó el acceso (HTTP 403)",
   "Gemini no pudo procesar la solicitud (HTTP 400)",
-  "Se alcanzó el límite de solicitudes o cuota de Gemini (HTTP 429)",
-  "Gemini no respondió dentro del tiempo esperado (HTTP 504)",
   "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
   "const OUT_OF_SCOPE_MESSAGES = [", "const FALLBACK_SOURCE_PAGES = [",
   "function outOfScopeMessage()", "const hasSiteSignal = SITE_TERMS.some(term => matchesTerm(normalized, term))",
@@ -42,6 +38,12 @@ if (!privacy.includes("Google Gemini API") || !privacy.includes("ai.google.dev/g
 if (endpoint.includes("if (!selectedPaths.length) return json({ answer:")) failures.push("El filtro local no debe rechazar preguntas antes de que Gemini interprete su contexto.");
 if (!endpoint.includes("const OUT_OF_SCOPE_MESSAGES = [") || !endpoint.includes("outOfScopeMessage()")) failures.push("Faltan mensajes alternativos de alcance.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
-if (/GROQ_API_KEY|api.groq.com|GroqCloud/.test(endpoint + privacy)) failures.push("Quedó una referencia activa a Groq.");
+for (const item of [
+  "env.GROQ_API_KEY", "api.groq.com/openai/v1/chat/completions",
+  "llama-3.3-70b-versatile", "callGroqFallback", "TRANSIENT_GEMINI_STATUSES",
+  "retrieveGroqContext", "max_completion_tokens: MAX_OUTPUT_TOKENS"
+]) if (!endpoint.includes(item)) failures.push("Function: falta respaldo Groq o control de fallos: " + item);
+if (!privacy.includes("GroqCloud") || !privacy.includes("trust.groq.com/faq") || !privacy.includes("30 días")) failures.push("Privacidad: falta informar el tratamiento de datos por Groq y su retención.");
+
 if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
-console.log("ASSISTANT CHECKS PASSED: Gemini URL Context, page routing, source links, detailed summaries, privacy and safe rendering.");
+console.log("ASSISTANT CHECKS PASSED: Gemini primary, Groq fallback, source routing, response limits, privacy and safe rendering.");
