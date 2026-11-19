@@ -113,6 +113,22 @@ const requiredPages = [
 ];
 for (const file of requiredPages) if (!fs.existsSync(file)) failures.push(`Falta página requerida: ${file}`);
 
+/* Regresión del asistente Gemini: cobertura de secciones, variantes del filtro y página 404. */
+const assistantSource = read("functions/api/asistente.js");
+for (const term of ['"ejes"', '"elecciones"']) {
+  if (!assistantSource.includes(term)) failures.push(`Asistente Gemini: falta reconocer la variante ${term}`);
+}
+if (/return\s+\[\.\.\.selected\]\.slice\(0,\s*10\)/.test(assistantSource))
+  failures.push("Asistente Gemini: el límite de diez páginas deja fuera secciones de la web.");
+const sourceInventory = assistantSource.match(/const SOURCE_PAGES = \[([\s\S]*?)\];/);
+if (!sourceInventory || (sourceInventory[1].match(/\.html/g) || []).length !== 16)
+  failures.push("Asistente Gemini: el inventario de fuentes debe contener las 16 páginas públicas.");
+if (!/toda la web|resumen general|que ofrece esta web/.test(assistantSource))
+  failures.push("Asistente Gemini: falta reconocer consultas generales sobre toda la web.");
+if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read("404.html")))
+  failures.push("Página 404: debe cargar main.js para mostrar el asistente global.");
+
+
 const navigationSource = read("js/main.js");
 if (!navigationSource.includes("split(/" + String.fromCharCode(92) + "s+/)"))
   failures.push("Filtros: la separación de categorías debe usar espacios en blanco correctamente.");
