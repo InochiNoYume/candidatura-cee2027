@@ -83,9 +83,8 @@ try {
     assert.ok(listPrompt.includes("https://cee.test/pages/privacidad"));
     return providerJson(listPayload);
   }, undefined, "¿Quiénes integran la lista del CEE 2027?");
-  assert.equal(listResult.sources.length, 1, "A list question must return its verified source");
-  assert.equal(listResult.sources[0].title, "Nuestra lista");
-  assert.equal(listResult.sources[0].url, "https://cee.test/pages/lista");
+  assert.equal(Object.hasOwn(listResult, "sources"), false, "The public response must not expose a sources section");
+  assert.ok(listResult.answer.includes("Agustina Pérez"), "The answer must still use the verified list content");
   assert.ok(listResult.answer.includes("\n- **Presidenta:**"), "Structured Markdown line breaks must be preserved");
 
   const recovered = await run("Gemini transient error then success", 200, async url => {
@@ -119,7 +118,7 @@ try {
   }, "GEMINI_REQUEST_FAILED");
   assert.equal(geminiCalls, 2, "A transient error must stop after two attempts");
 
-  console.log("GEMINI RESILIENCE TESTS PASSED: success, list source routing, canonical URL normalization, full page index, transient retry, auth handling, invalid response validation and bounded retry exhaustion.");
+  console.log("GEMINI RESILIENCE TESTS PASSED: success, internal source grounding, canonical URL normalization, full page index, transient retry, auth handling, invalid response validation and bounded retry exhaustion.");
 } finally {
   globalThis.fetch = originalFetch;
 }
