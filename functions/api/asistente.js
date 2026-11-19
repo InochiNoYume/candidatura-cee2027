@@ -30,8 +30,8 @@ const SOURCE_GROUPS = [
 
 const SITE_TERMS = [
   "cee", "ceat", "liceo", "web", "pagina", "paginas", "sitio", "candidatura", "lista", "equipo",
-  "proyecto", "propuesta", "eje", "agenda", "fecha", "dia", "horario", "noviembre", "diciembre",
-  "votacion", "votar", "eleccion", "inscripcion", "difusion", "presentacion", "traspaso",
+  "proyecto", "propuesta", "eje", "ejes", "agenda", "fecha", "fechas", "dia", "dias", "horario", "noviembre", "diciembre",
+  "votacion", "votar", "eleccion", "elecciones", "inscripcion", "difusion", "presentacion", "traspaso",
   "transparencia", "noticia", "galeria", "foto", "imagen", "escucha", "formulario", "pregunta",
   "contacto", "acta", "informe", "comunidad", "memoria", "privacidad", "estudiante", "estudiantes",
   "alumnado", "alumno", "alumna", "medio ambiente", "sustentabilidad", "reciclaje", "infraestructura",
@@ -66,13 +66,13 @@ function matchesTerm(normalized, term) {
 function selectSources(question) {
   const normalized = normalize(question);
   if (!SITE_TERMS.some(term => matchesTerm(normalized, term))) return [];
-  if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|resumen de toda la web|resumen de todo el sitio|sitio completo|web completa)/.test(normalized)) return SOURCE_PAGES;
+  if (/(toda la web|todo el sitio|toda la pagina|todas las secciones|resumen general|resumen de la web|resumen de toda la web|resumen de todo el sitio|sitio completo|web completa|que ofrece esta web|que contiene esta web|de que trata esta web|explicame la web|informacion general|panorama general|como esta organizada la web)/.test(normalized)) return SOURCE_PAGES;
   const selected = new Set(["index.html"]);
   for (const group of SOURCE_GROUPS) {
     if (group.terms.some(term => matchesTerm(normalized, term))) group.paths.forEach(path => selected.add(path));
   }
   if (selected.size === 1) SOURCE_PAGES.forEach(path => selected.add(path));
-  return [...selected].slice(0, 10);
+  return [...selected];
 }
 
 const INSTRUCTIONS = [
