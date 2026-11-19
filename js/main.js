@@ -354,7 +354,8 @@
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({question}),
-        signal: AbortSignal.timeout(39000)
+        // Debe cubrir los dos intentos del servidor (24 s cada uno) y la breve espera entre ellos.
+        signal: AbortSignal.timeout(55000)
       });
       const payload = await response.json().catch(() => ({}));
       window.clearTimeout(pendingTimer);
