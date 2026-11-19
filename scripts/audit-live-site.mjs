@@ -206,16 +206,59 @@ try {
   }
   // Prueba real del endpoint Gemini en el Preview: una consulta del proyecto y otra fuera de alcance.
   const assistantTests = [
-    { name: "in-scope", question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && !Object.hasOwn(payload, "sources") },
-    { name: "out-of-scope", question: "¿Cuál es la capital de Francia?", validate: payload => payload?.provider === "gemini" && typeof payload.answer === "string" && payload.answer.trim().length > 0 && !Object.hasOwn(payload, "sources") }
+    {
+      name: "five-axes",
+      question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?",
+      expectedTopic: /ambiente|sustentabilidad/i
+    },
+    {
+      name: "team-members-and-roles",
+      question: "¿Quiénes integran la lista y qué cargos ocupa cada persona?",
+      expectedTopic: /lista|integrantes|cargo|publicad|información/i
+    },
+    {
+      name: "agenda-and-dates",
+      question: "¿Qué fechas y actividades aparecen en la agenda de la candidatura?",
+      expectedTopic: /agenda|noviembre|diciembre|fecha|calendario/i
+    },
+    {
+      name: "transparency",
+      question: "¿Qué información, actas o informes de transparencia están publicados?",
+      expectedTopic: /transparencia|actas|informes|documentos/i
+    },
+    {
+      name: "student-audience",
+      question: "Soy estudiante: ¿cómo puedo participar, hacer propuestas o comunicar una inquietud?",
+      expectedTopic: /particip|propuesta|voz|escucha|estudiant/i
+    },
+    {
+      name: "teacher-audience",
+      question: "Soy profesor: ¿qué información institucional de la candidatura puedo consultar en esta web?",
+      expectedTopic: /web|cee|información|documentos|propuesta|agenda/i
+    },
+    {
+      name: "out-of-scope",
+      question: "¿Cuál es la capital de Francia?",
+      expectedTopic: /cee 2027|web|sitio|asistente/i
+    }
   ];
   for (const test of assistantTests) {
     try {
       const response = await fetch(new URL("api/asistente", base), { method: "POST", headers: { "Content-Type": "application/json", "Origin": new URL(base).origin }, body: JSON.stringify({ question: test.question }), signal: AbortSignal.timeout(55000) });
       const payload = await response.json().catch(() => ({}));
-      const valid = response.ok && test.validate(payload);
-      assistantResults.push({ name: test.name, status: response.status, provider: payload?.provider || null, answerPresent: typeof payload?.answer === "string" && payload.answer.trim().length > 0, sourceMetadataExposed: Object.hasOwn(payload || {}, "sources"), code: payload?.code || null, passed: valid });
-      if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status + ", provider " + (payload?.provider || "none") + ", code " + (payload?.code || "none"));
+      const answer = typeof payload?.answer === "string" ? payload.answer.trim() : "";
+      const answerMatchesExpectedTopic = test.expectedTopic.test(answer);
+      const valid = response.ok && payload?.provider === "gemini" && answer.length > 0 &&
+        answerMatchesExpectedTopic && !Object.hasOwn(payload || {}, "sources");
+      assistantResults.push({
+        name: test.name, status: response.status, provider: payload?.provider || null,
+        answerPresent: answer.length > 0, answerMatchesExpectedTopic,
+        answerLength: answer.length, sourceMetadataExposed: Object.hasOwn(payload || {}, "sources"),
+        code: payload?.code || null, passed: valid
+      });
+      if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status +
+        ", provider " + (payload?.provider || "none") + ", topicMatch " + answerMatchesExpectedTopic +
+        ", code " + (payload?.code || "none"));
     } catch (error) {
       assistantResults.push({ name: test.name, passed: false, error: error.message });
       failures.push("Gemini Preview " + test.name + ": " + error.message);
