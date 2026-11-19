@@ -28,13 +28,15 @@ for (const status of [400,401,403,404,408,413,415,429,500,502,503,504]) {
 if (!client.includes("fallbackErrors")) failures.push("El cliente debe traducir los errores HTTP a mensajes claros.");
 for (const item of requiredEndpoint) if (!endpoint.includes(item)) failures.push("Function: falta " + item);
 for (const item of [
-  'fetch("/api/asistente"', 'maxlength="500"', "addAssistantSources(payload.sources)",
-  "url.origin !== window.location.origin", "const sourcePath = url.pathname.replace(", "renderAssistantText(message,text,isUser)",
+  'fetch("/api/asistente"', 'maxlength="500"',
+  "renderAssistantText(message,text,isUser)",
   "No compartas datos personales", "fallbackErrors"
 ]) if (!client.includes(item)) failures.push("Cliente: falta " + item);
-if (!styles.includes(".cee-assistant-panel") || !styles.includes(".cee-assistant-sources") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente, fuentes o movimiento reducido.");
+if (!styles.includes(".cee-assistant-panel") || !styles.includes("prefers-reduced-motion: reduce")) failures.push("CSS: falta estilo del asistente o movimiento reducido.");
+if (client.includes("Fuentes consultadas") || client.includes("addAssistantSources") || styles.includes(".cee-assistant-sources")) failures.push("La interfaz no debe mostrar un apartado de fuentes consultadas.");
+if (!endpoint.includes("getRetrievedSources(candidate, selectedPaths, siteOrigin)") || !endpoint.includes("if (!answer || !sources.length)")) failures.push("Gemini debe seguir verificando internamente las fuentes oficiales antes de responder.");
 if (!privacy.includes("Google Gemini API") || !privacy.includes("ai.google.dev/gemini-api/terms") || !privacy.includes("contexto de URL")) failures.push("Privacidad: falta explicar Gemini URL Context y sus condiciones.");
 if (/localStorage|sessionStorage/.test(client)) failures.push("El asistente no debe guardar conversaciones en el navegador.");
 if (!readme.includes("únicamente Google Gemini") || !functionReadme.includes("exclusivamente Gemini")) failures.push("La documentación debe indicar que Gemini es el único proveedor.");
 if (failures.length) { console.error("ASSISTANT CHECKS FAILED"); failures.forEach(x => console.error(" - " + x)); process.exit(1); }
-console.log("ASSISTANT CHECKS PASSED: Gemini-only, URL Context, retry limits, response validation, source routing, privacy and safe rendering.");
+console.log("ASSISTANT CHECKS PASSED: Gemini-only, URL Context, retry limits, internal source verification, clean response UI, privacy and safe rendering.");
