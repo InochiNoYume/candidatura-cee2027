@@ -177,6 +177,7 @@ export async function onRequestPost({ request, env }) {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+      signal: AbortSignal.timeout(25000),
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
         contents: [{ role: "user", parts: [{ text: prompt }] }],
