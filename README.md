@@ -33,7 +33,7 @@ Fotografías reales autorizadas, formulario CEAT Te Escucha, Instagram de candid
 El workflow `.github/workflows/site-checks.yml` valida sintaxis, HTML, enlaces, cabeceras, renderizado seguro y el asistente. No sustituye pruebas visuales en navegador.
 
 ## Asistente IA
-Usa Google Gemini desde Cloudflare Pages Functions. Configura `GEMINI_API_KEY` como Secret. Modelo predeterminado: `gemini-3.5-flash-lite`. Para reducir consumo: contexto compacto, sin historial, máximo 55 palabras por respuesta y 160 tokens de generación. Solo responde sobre la web CEE 2027. No guarda conversaciones. Ver [functions/README.md](functions/README.md) y [Privacidad](pages/privacidad.html).
+Usa Google Gemini desde Cloudflare Pages Functions. Configura `GEMINI_API_KEY` como Secret. Modelo predeterminado: `gemini-3.5-flash-lite`. Para reducir consumo: sin historial, selección temática de páginas y un máximo de 130 palabras por respuesta y 420 tokens de generación. Las preguntas generales pueden consultar las 16 páginas incluidas en el contexto URL. Solo responde sobre la web CEE 2027. No guarda conversaciones. Ver [functions/README.md](functions/README.md) y [Privacidad](pages/privacidad.html).
 
 ## Seguridad
 Cabeceras y CSP en `_headers`; pautas adicionales en `SECURITY.md`. Tecnología: HTML5, CSS3, JavaScript y Cloudflare Pages.
