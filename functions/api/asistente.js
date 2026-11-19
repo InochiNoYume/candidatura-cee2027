@@ -58,7 +58,10 @@ function normalize(value) {
 
 function matchesTerm(normalized, term) {
   if (term.includes(" ")) return normalized.includes(term);
-  return new RegExp("\\\\b" + term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\function selectSources(question) {
+  return normalized.split(/\\s+/).includes(term);
+}
+
+function selectSources(question) {
   const normalized = normalize(question);
   if (!SITE_TERMS.some(term => normalized.includes(term))) return [];") + "\\\\b").test(normalized);
 }
