@@ -187,10 +187,9 @@ async function retrieveGroqContext(selectedPaths, siteOrigin) {
   const results = await Promise.all(selectedPaths.map(async path => {
     const url = new URL(path, siteOrigin + "/");
     try {
-      const response = await fetch(url.href, {
-        headers: { "Accept": "text/html", "User-Agent": "CEE2027-Assistant/1.0" },
-        signal: AbortSignal.timeout(SOURCE_TIMEOUT_MS)
-      });
+      const response = await fetchWithRetry(url.href, {
+        headers: { "Accept": "text/html", "User-Agent": "CEE2027-Assistant/1.0" }
+      }, { timeoutMs: SOURCE_TIMEOUT_MS, attempts: 2 });
       if (!response.ok) return { failure: { path, reason: "HTTP_" + response.status } };
       if (!response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
         return { failure: { path, reason: "INVALID_CONTENT_TYPE" } };
