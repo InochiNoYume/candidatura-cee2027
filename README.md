@@ -90,7 +90,7 @@ Las fechas y los contenidos deben mantenerse alineados con la documentación ofi
 
 ## Fotografías e identidad visual
 
-Las ilustraciones SVG actuales de los ejes y de la portada están en `assets/images/illustrations/`. Son recursos conceptuales de referencia, no fotografías reales. Las cinco imágenes JPEG de los ejes ya están subidas a `assets/images/ejes/` en `main`; sus nombres exactos y el uso previsto están documentados en `assets/images/ejes/README.md`. Aún falta revisar visualmente los archivos e integrarlos en la página Proyecto. Las ilustraciones se conservarán como respaldo hasta validar esa integración. No se reemplazarán por imágenes genéricas ni se presentarán ilustraciones como fotografías.
+Las cinco imágenes JPEG de los ejes están integradas en `pages/proyecto.html` como material estrictamente referencial y llevan un aviso visible que indica que fueron localizadas mediante Google Imágenes y que se actualizarán próximamente. Google Imágenes es un buscador, no el autor ni una licencia de uso: antes de mantener estas imágenes en producción se deben verificar sus fuentes y permisos, o reemplazarlas por fotografías propias autorizadas del CEAT. Las ilustraciones SVG de `assets/images/illustrations/` se conservan como respaldo dentro de cada elemento `<picture>`. La portada y el bloque «Tu voz también construye» siguen pendientes de fotografías reales autorizadas.
 
 ### Carpetas y nombres para las próximas imágenes
 
