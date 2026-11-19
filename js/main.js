@@ -157,7 +157,10 @@
       let visible = 0;
       items.forEach(item => {
         const categories = (item.getAttribute("data-category") || "").split(/\s+/);
-        const show = name === "news" ? value === "all" : value === "all" || categories.includes(value);
+        const searchTerm = name === "commitments" ? (document.querySelector("#commitment-search")?.value || "").trim().toLocaleLowerCase("es") : "";
+        const matchesFilter = name === "news" ? value === "all" : value === "all" || categories.includes(value);
+        const matchesSearch = !searchTerm || item.textContent.toLocaleLowerCase("es").includes(searchTerm);
+        const show = matchesFilter && matchesSearch;
         item.hidden = !show;
         if (show) visible++;
       });
@@ -169,11 +172,45 @@
             : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
         } else empty.hidden = visible > 0;
       }
-      if (result) result.textContent = visible + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : " estados");
+      if (result) result.textContent = visible + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : name === "commitments" ? " iniciativas" : " estados");
     };
     buttons.forEach(button => button.addEventListener("click",() => update(button.getAttribute("data-filter"))));
     update("all");
   });
+
+  const commitmentSearch = document.querySelector("#commitment-search");
+  if (commitmentSearch) commitmentSearch.addEventListener("input",() => document.querySelector('[data-filter-group="commitments"] .filter-chip.is-active')?.click());
+
+  // Calendario mensual basado exclusivamente en las fechas confirmadas de la agenda.
+  const calendar = document.querySelector("#agenda-calendar");
+  if (calendar) {
+    const events = Array.from(document.querySelectorAll(".agenda-event[data-calendar-start]")).map(card => ({start:card.dataset.calendarStart,end:card.dataset.calendarEnd,title:card.querySelector("h3")?.textContent.trim()||"Actividad",detail:card.querySelector(".agenda-event-body p")?.textContent.trim()||""}));
+    let month=new Date(2026,10,1);
+    const title=document.querySelector("#agenda-calendar-title"),detail=document.querySelector("#agenda-calendar-detail");
+    const pad=n=>String(n).padStart(2,"0"),key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+    const render=()=>{
+      calendar.querySelectorAll(".agenda-calendar-day,.agenda-calendar-blank").forEach(n=>n.remove());
+      const y=month.getFullYear(),m=month.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+      title.textContent=new Intl.DateTimeFormat("es-CL",{month:"long",year:"numeric"}).format(month);
+      for(let i=0;i<first;i++){const blank=document.createElement("span");blank.className="agenda-calendar-blank";blank.setAttribute("aria-hidden","true");calendar.appendChild(blank);}
+      for(let day=1;day<=days;day++){
+        const date=key(new Date(y,m,day)),matches=events.filter(ev=>date>=ev.start&&date<=ev.end),button=document.createElement("button");
+        button.type="button";button.className="agenda-calendar-day";button.textContent=String(day);
+        button.setAttribute("aria-label",day+" de "+title.textContent+(matches.length?": "+matches.map(ev=>ev.title).join(", "):""));
+        if(matches.length)button.classList.add("has-event");
+        button.addEventListener("click",()=>{
+          detail.replaceChildren();const heading=document.createElement("strong");
+          heading.textContent=new Intl.DateTimeFormat("es-CL",{dateStyle:"full"}).format(new Date(y,m,day));detail.appendChild(heading);
+          if(!matches.length){detail.appendChild(document.createTextNode(" No hay actividades confirmadas para esta fecha."));return;}
+          matches.forEach(ev=>{const p=document.createElement("p");p.textContent=ev.title+" — "+ev.detail;detail.appendChild(p);});
+        });
+        calendar.appendChild(button);
+      }
+    };
+    document.querySelector("[data-calendar-prev]")?.addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);render();detail.textContent="Selecciona una fecha marcada para consultar su actividad.";});
+    document.querySelector("[data-calendar-next]")?.addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);render();detail.textContent="Selecciona una fecha marcada para consultar su actividad.";});
+    render();
+  }
 
   const progress = document.createElement("div");
   progress.className = "reading-progress";
