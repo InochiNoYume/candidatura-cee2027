@@ -33,12 +33,14 @@ const SITE_TERMS = [
   "proyecto", "propuesta", "eje", "agenda", "fecha", "dia", "horario", "noviembre", "diciembre",
   "votacion", "votar", "eleccion", "inscripcion", "difusion", "presentacion", "traspaso",
   "transparencia", "noticia", "galeria", "foto", "imagen", "escucha", "formulario", "pregunta",
-  "contacto", "acta", "informe", "comunidad", "memoria", "privacidad", "estudiante", "alumnado",
-  "alumno", "alumna", "medio ambiente", "sustentabilidad", "reciclaje", "infraestructura",
+  "contacto", "acta", "informe", "comunidad", "memoria", "privacidad", "estudiante", "estudiantes",
+  "alumnado", "alumno", "alumna", "medio ambiente", "sustentabilidad", "reciclaje", "infraestructura",
   "convivencia", "deporte", "saludable", "tecnico", "profesional", "bienestar", "apoyo",
   "participacion", "integracion", "academico", "reconocimiento", "presidente de curso",
   "profesor", "integrante", "integrantes", "secciones", "contenido", "informacion",
-  "que ofrece", "como funciona", "quienes somos", "resumen", "todo", "general"
+  "centro de estudiantes", "centro de alumnos", "representacion", "representante",
+  "representantes", "compañeros", "compañeras", "candidato", "candidatos", "candidatura",
+  "nuestro", "nuestra", "nuestros", "nuestras", "quienes somos", "resumen", "general"
 ];
 
 const PAGE_TITLES = {
@@ -58,12 +60,7 @@ function normalize(value) {
 
 function matchesTerm(normalized, term) {
   if (term.includes(" ")) return normalized.includes(term);
-  return normalized.split(/\\s+/).includes(term);
-}
-
-function selectSources(question) {
-  const normalized = normalize(question);
-  if (!SITE_TERMS.some(term => normalized.includes(term))) return [];") + "\\\\b").test(normalized);
+  return normalized.split(/\s+/).includes(term);
 }
 
 function selectSources(question) {
