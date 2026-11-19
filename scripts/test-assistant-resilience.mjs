@@ -78,9 +78,9 @@ try {
     if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     const sent = JSON.parse(options.body);
     listPrompt = sent.contents[0].parts[0].text;
-    assert.match(listPrompt, /https:\\/\\/cee\\.test\\/pages\\/lista/);
+    assert.ok(listPrompt.includes("https://cee.test/pages/lista"));
     assert.match(listPrompt, /ÍNDICE COMPLETO DE PÁGINAS OFICIALES/);
-    assert.match(listPrompt, /https:\\/\\/cee\\.test\\/pages\\/privacidad/);
+    assert.ok(listPrompt.includes("https://cee.test/pages/privacidad"));
     return providerJson(listPayload);
   }, undefined, "¿Quiénes integran la lista del CEE 2027?");
   assert.equal(listResult.sources.length, 1, "A list question must return its verified source");
