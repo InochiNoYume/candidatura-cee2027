@@ -149,8 +149,11 @@ for (const [file, expectedTitle] of errorPages) {
  
 const maintenancePage = read("maintenance.html");
 if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
-    !maintenancePage.includes('name="robots" content="noindex,nofollow"')) {
-  failures.push("Mantenimiento: falta el mensaje principal o la directiva noindex.");
+    !maintenancePage.includes('name="robots" content="noindex,nofollow"') ||
+    !maintenancePage.includes("¿Crees que esto es un error?") ||
+    !maintenancePage.includes("Servicio técnico") ||
+    !maintenancePage.includes("https://www.instagram.com/ceat.liceomh/")) {
+  failures.push("Mantenimiento: falta el mensaje principal, la directiva noindex o los canales de contacto.");
 }
 
 const listPage = read("pages/lista.html");
