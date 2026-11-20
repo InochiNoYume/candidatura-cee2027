@@ -145,3 +145,19 @@ La auditoría de Preview de la PR #21 terminó correctamente sobre el commit `5e
 La auditoría responsive queda aprobada. SEO 66–69 en Preview se debe al noindex intencional. El CORS de Cloudflare Web Analytics solo está observado en Preview y no se debe cambiar la aplicación sin validarlo en producción. La regla WAF/rate limiting necesita configuración de la cuenta Cloudflare y no está aplicada por esta auditoría.
 
 Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
+
+
+## Páginas personalizadas de error · 20 de noviembre de 2026
+
+- `403.html`: acceso restringido; el middleware devuelve HTTP 403 cuando se abre directamente o cuando una ruta HTML de Pages responde 403.
+- `404.html`: recurso inexistente; el middleware devuelve HTTP 404 al abrir directamente la página o al recibir un 404 HTML de Pages.
+- `500.html`: error interno; el middleware devuelve HTTP 500 al abrirla directamente, al recibir un 500 HTML o cuando una solicitud HTML de Pages Functions lanza una excepción.
+- `maintenance.html`: mantenimiento temporal HTTP 503, con `Retry-After: 300`; la API conserva respuestas JSON 503.
+
+Las páginas 403/404/500 usan `noindex,nofollow`, `Cache-Control: no-store` y `X-Content-Type-Options: nosniff`. El middleware no convierte errores JSON de la API en HTML. Las respuestas de Cloudflare WAF o de la infraestructura que se bloqueen antes de ejecutar Pages Functions no pueden ser reemplazadas por este middleware y pueden conservar la página de error de Cloudflare.
+
+Las pruebas automatizadas verifican el estado HTTP, las cabeceras, la sustitución de respuestas HTML, las excepciones de servidor, el modo mantenimiento y que los errores de API sigan siendo JSON. La auditoría responsive incluye los tres documentos de error en seis viewports y captura sus pantallas.
+
+La auditoría [44792017001](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44792017001) fue la última ejecución aprobada antes de este cambio; cubrió 108 combinaciones de 18 rutas, 0 infracciones axe, 0 fallos bloqueantes, 72/72 capturas, Gemini 7/7 y Lighthouse de rendimiento 98–100. La auditoría posterior debe aprobar antes de cerrar esta etapa.
+
+La PR #21 permanece abierta y sin fusionar. No publicar en producción sin autorización explícita.
