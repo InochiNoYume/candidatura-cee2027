@@ -17,7 +17,7 @@ const requiredEndpoint = [
   "pages/comunidad-tp.html", "pages/buscar.html", "requestWindows.size > 1000",
   "const OUT_OF_SCOPE_MESSAGES = [", "const FALLBACK_SOURCE_PAGES = [",
   "function outOfScopeMessage()", "async function fetchGeminiWithRetry",
-  "GEMINI_TIMEOUT_MS = 20000", "PROVIDER_ATTEMPTS = 2",
+  "GEMINI_TIMEOUT_MS = 20000", "PROVIDER_ATTEMPTS = 3",
   "TRANSIENT_GEMINI_STATUSES", "AbortSignal.timeout(GEMINI_TIMEOUT_MS)",
   "responseSchema:", "GEMINI_SOURCES_UNAVAILABLE",
   "CEE assistant request completed", "Gemini response validation failed"
