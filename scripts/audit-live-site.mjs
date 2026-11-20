@@ -204,7 +204,7 @@ try {
     }
     await context.close();
   }
-  // Prueba real del endpoint Gemini en el Preview: una consulta del proyecto y otra fuera de alcance.
+  // Siete pruebas reales del endpoint Gemini en Preview: ejes, lista, agenda, transparencia, audiencias estudiantil/docente y fuera de alcance.
   const assistantTests = [
     {
       name: "five-axes",
