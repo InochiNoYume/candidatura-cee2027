@@ -25,11 +25,11 @@ La función `functions/api/asistente.js` conserva un respaldo local por instanci
 
 ## Estado de validación · 20 de noviembre de 2026
 
-- Site quality checks, ejecución 336: aprobada. Incluye validación de 18 páginas, enlaces/anclas locales, sintaxis, seguridad, resiliencia Gemini y modo mantenimiento.
+- La última ejecución completada de Site quality checks está aprobada. Incluye validación de 18 páginas, enlaces/anclas locales, sintaxis, seguridad, resiliencia Gemini y modo mantenimiento.
 - Auditoría responsive 209: encontró seis infracciones axe del mismo tipo en el enlace de marca de mantenimiento; se corrigió el texto accesible.
 - Auditorías responsive 210 y 213: sustituidas por commits posteriores de documentación y ajustes de interfaz antes de completar el recorrido.
 - Se corrigió el solapamiento potencial entre el botón flotante del Asistente CEE y «Volver arriba»: el asistente se eleva cuando el desplazamiento supera 420 px, y su panel se desplaza junto al lanzador.
-- Auditoría responsive 214: iniciada sobre la vista previa del código actualizado; sus resultados de accesibilidad, capturas y Lighthouse aún deben confirmarse.
+- La auditoría responsive más reciente está en curso sobre la vista previa del código actualizado; sus resultados de accesibilidad, capturas y Lighthouse aún deben confirmarse.
 - No activar el modo mantenimiento en Production durante las pruebas. Mantener la variable desactivada en Preview salvo prueba controlada.
 
 ## Publicación
