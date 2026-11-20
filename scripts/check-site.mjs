@@ -57,7 +57,7 @@ for (const file of htmlFiles) {
   if (!/<html\b[^>]*lang=["']es["']/i.test(html)) failures.push(`${file}: falta lang="es" en <html>`);
   if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) failures.push(`${file}: falta meta viewport responsive`);
   if ((html.match(/<main\b/gi) || []).length !== 1) failures.push(`${file}: debe contener exactamente un <main>`);
-  if (file !== "404.html") {
+  if (!["404.html", "maintenance.html"].includes(path.basename(file))) {
     for (const tag of ["header", "footer"]) {
       if ((html.match(new RegExp("<" + tag + "\\b", "gi")) || []).length !== 1)
         failures.push(`${file}: debe contener exactamente un <${tag}>`);
@@ -129,6 +129,12 @@ if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read
   failures.push("Página 404: debe cargar main.js para mostrar el asistente global.");
 
 
+const maintenancePage = read("maintenance.html");
+if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
+    !maintenancePage.includes('name="robots" content="noindex,nofollow"')) {
+  failures.push("Mantenimiento: falta el mensaje principal o la directiva noindex.");
+}
+
 const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
 const faqPage = read("pages/preguntas.html");
@@ -196,7 +202,7 @@ for (const file of htmlFiles) {
     failures.push(`${file}: falta una meta description`);
   if (file !== "404.html" && !/<a\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#contenido["']/i.test(html))
     failures.push(`${file}: falta el enlace para saltar al contenido`);
-  if (file !== "404.html" && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
+  if (!["404.html", "maintenance.html"].includes(path.basename(file)) && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
     failures.push(`${file}: botón de menú sin estado ARIA inicial o controles`);
   for (const link of html.matchAll(/<a\b([^>]*?)>/gi)) {
     const attrs = link[1];
