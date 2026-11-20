@@ -329,13 +329,9 @@ body {
 .cee-assistant-form-foot button { padding:8px 14px; border:0; border-radius:7px; background:#801515; color:#fff; font-size:11px; font-weight:800; cursor:pointer; }
 .cee-assistant-form-foot button:disabled { opacity:.55; cursor:wait; }
 .cee-assistant-privacy { margin:0; padding:0 16px 13px; color:#897d7d; background:#fff; font-size:9px; line-height:1.45; }
-.cee-assistant-launcher.is-raised { bottom: max(78px, calc(env(safe-area-inset-bottom) + 72px)); }
-.cee-assistant-launcher.is-raised + .cee-assistant-panel { bottom: max(140px, calc(env(safe-area-inset-bottom) + 134px)); }
 @media (max-width: 560px) {
   .cee-assistant-launcher { right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); min-height:48px; padding:0 16px; }
   .cee-assistant-panel { right: max(12px, env(safe-area-inset-right)); bottom: max(76px, calc(env(safe-area-inset-bottom) + 68px)); width:calc(100vw - 24px); max-height:min(560px,calc(100dvh - 100px)); border-radius:15px; }
-  .cee-assistant-launcher.is-raised { bottom: max(68px, calc(env(safe-area-inset-bottom) + 62px)); }
-  .cee-assistant-launcher.is-raised + .cee-assistant-panel { bottom: max(126px, calc(env(safe-area-inset-bottom) + 120px)); }
   .cee-assistant-messages { max-height:240px; }
 }
 @media (prefers-reduced-motion: reduce) {
