@@ -28,6 +28,10 @@ Gemini debe basarse exclusivamente en el contenido recuperado, no inventar nombr
 
 El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global. Añade una regla de Rate Limiting administrada en Cloudflare para `/api/asistente` antes de publicar ampliamente.
 
+## Pruebas automatizadas vigentes
+
+El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La ejecución 336 del 20 de noviembre de 2026 pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla, además de revisar posibles solapamientos entre el botón flotante y «Volver arriba». Los resultados de la auditoría visual deben consultarse en el informe de cada ejecución; una prueba unitaria aprobada no reemplaza la comprobación visual en Preview.
+
 ## Seguridad y privacidad
 
 No enviar datos personales, académicos, privados ni sensibles. En el nivel gratuito de Gemini API, Google puede utilizar los datos enviados para mejorar sus productos y los datos pueden ser revisados por personas. Consulta https://ai.google.dev/gemini-api/terms y https://ai.google.dev/gemini-api/docs/url-context.
