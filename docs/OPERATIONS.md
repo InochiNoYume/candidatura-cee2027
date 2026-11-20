@@ -23,6 +23,13 @@ La página de mantenimiento enlaza al sitio institucional del CEAT. El Instagram
 
 La función `functions/api/asistente.js` conserva un respaldo local por instancia (isolate), que no garantiza un límite compartido. También reconoce un binding compatible llamado `CEE_RATE_LIMITER`, pero la documentación de Cloudflare Pages Functions enumera un subconjunto de bindings y no incluye el Rate Limiting API de Workers. No se debe dar por configurado ese binding en Pages sin confirmar soporte en el proyecto. La alternativa directa para Pages es revisar una regla WAF de limitación de solicitudes que coincida con `http.request.uri.path eq "/api/asistente"` y cuente por IP; las condiciones disponibles, períodos y cantidad de reglas dependen del plan de Cloudflare. Los contadores de Cloudflare son aproximados y pueden permitir solicitudes excedentes antes de aplicar la mitigación. Para un límite estricto entre ubicaciones se requiere un contador centralizado, por ejemplo con Durable Objects en un Worker dedicado.
 
+## Estado de validación · 20 de noviembre de 2026
+
+- Site quality checks, ejecución 336: aprobada. Incluye validación de 18 páginas, enlaces/anclas locales, sintaxis, seguridad, resiliencia Gemini y modo mantenimiento.
+- Auditoría responsive 209: encontró seis infracciones axe del mismo tipo en el enlace de marca de mantenimiento; se corrigió el texto accesible.
+- Auditoría responsive 210: iniciada sobre Preview tras el despliegue del commit `8b3f4f4`. Al momento de esta actualización seguía recorriendo páginas y viewports; Lighthouse y los artefactos finales aún estaban pendientes.
+- No activar el modo mantenimiento en Production durante las pruebas. Mantener la variable desactivada en Preview salvo prueba controlada.
+
 ## Publicación
 
 Las vistas previas y las ramas de trabajo no deben considerarse producción. No fusionar PR ni publicar cambios sin la aprobación explícita del responsable del proyecto. El PDF del proyecto no forma parte de los recursos publicables del sitio.
