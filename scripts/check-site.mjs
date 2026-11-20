@@ -92,7 +92,7 @@ for (const file of htmlFiles) {
     let clean;
     try { clean = decodeURIComponent((pathname || "").split("?")[0]); }
     catch { failures.push(`${file}: URL local mal codificada: ${raw}`); continue; }
-    const target = path.resolve(clean.startsWith("/") ? "." : path.dirname(file), clean.replace(/^\\/+/, "") || path.basename(file));
+    const target = path.resolve(clean.startsWith("/") ? "." : path.dirname(file), clean.replace(/^\/+/, "") || path.basename(file));
     if (!fs.existsSync(target)) {
       failures.push(`${file}: destino local inexistente: ${raw}`);
       continue;
