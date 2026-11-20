@@ -51,13 +51,31 @@ async function run(name, expectedStatus, fetchImpl, expectedCode, question = "¿
 }
 try {
   const success = await run("Gemini success", 200, async url => {
-    assert.match(String(url), /generativelanguage\.googleapis\.com/);
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
     geminiCalls += 1;
     return providerJson(successPayload);
   });
   assert.equal(success.provider, "gemini");
   assert.equal(geminiCalls, 1, "A successful request must not retry");
 
+  let multiTopicPrompt = "";
+  await run("Multi-topic source selection", 200, async (url, options) => {
+    if (!String(url).includes("generativelanguage.googleapis.com")) return staticPage();
+    multiTopicPrompt = JSON.parse(options.body).contents[0].parts[0].text;
+    return providerJson({
+      candidates: [{
+        content: { parts: [{ text: JSON.stringify({ scope: "in_scope", answer: "La lista y la fecha se publican en sus secciones correspondientes." }) }] },
+        urlContextMetadata: {
+          urlMetadata: [
+            { retrievedUrl: "https://cee.test/pages/lista.html", urlRetrievalStatus: "URL_RETRIEVAL_STATUS_SUCCESS" },
+            { retrievedUrl: "https://cee.test/pages/agenda.html", urlRetrievalStatus: "URL_RETRIEVAL_STATUS_SUCCESS" }
+          ]
+        }
+      }]
+    });
+  }, undefined, "¿Quiénes integran la lista y qué fechas de votación y presentación tienen?");
+  assert.ok(multiTopicPrompt.includes("https://cee.test/pages/lista"), "A multi-topic question must include the list page");
+  assert.ok(multiTopicPrompt.includes("https://cee.test/pages/agenda"), "A multi-topic question must include the agenda page");
 
   const listPayload = {
     candidates: [{
