@@ -130,3 +130,18 @@ Nuestra lista obtuvo LCP móvil de 4,7 s, pero el desglose de la misma medición
 El SEO bajo en Preview corresponde al bloqueo de indexación intencional; no retirar noindex de Preview. El CORS de Cloudflare Web Analytics solo se observó en Preview; comprobar el dominio de producción antes de modificar analítica. La regla WAF/rate limiting para `/api/asistente` requiere acceso a la cuenta Cloudflare y no se ha aplicado desde el repositorio.
 
 Ejecución: [44787100347](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347). Artefacto: [14655905852](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347/artifacts/14655905852).
+
+
+## Auditoría de seguimiento aprobada · 20 de noviembre de 2026 · ejecución 44789469220
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el commit `5e5602c826a71b5985ba5a2e2d608a9c0de87bb0`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe, 0 errores de página y 0 desbordamientos horizontales.
+- 72/72 capturas generadas; Gemini 7/7 pruebas aprobadas sin exponer metadatos internos.
+- La ruta de control inexistente devolvió HTTP 404.
+- Lighthouse (móvil/escritorio): Inicio 99/100, Nuestra lista 99/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP móvil: Inicio 1,7 s; Nuestra lista 1,8 s; Proyecto 1,2 s; CEAT Te Escucha 1,1 s. Nuestra lista pasó de LCP 4,7 s y rendimiento 83 a LCP 1,8 s y rendimiento 99 en la repetición; no se justifican cambios de recursos ni composición.
+
+La auditoría responsive queda aprobada. SEO 66–69 en Preview se debe al noindex intencional. El CORS de Cloudflare Web Analytics solo está observado en Preview y no se debe cambiar la aplicación sin validarlo en producción. La regla WAF/rate limiting necesita configuración de la cuenta Cloudflare y no está aplicada por esta auditoría.
+
+Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
