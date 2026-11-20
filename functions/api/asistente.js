@@ -253,8 +253,9 @@ export async function onRequestPost({ request, env }) {
   const address = request.headers.get("CF-Connecting-IP") || "unknown";
   const rateLimitKey = address.slice(0, 128);
 
-  // Si Cloudflare tiene configurado el binding CEE_RATE_LIMITER, el límite
-  // se aplica en la infraestructura compartida y no depende del isolate Worker.
+  // Compatibilidad opcional con un binding RateLimit inyectado por el entorno.
+  // En Pages Functions debe confirmarse su soporte; el Rate Limiting API de Workers
+  // sincroniza contadores de forma aproximada por ubicación, no como límite mundial estricto.
   if (env.CEE_RATE_LIMITER && typeof env.CEE_RATE_LIMITER.limit === "function") {
     try {
       const decision = await env.CEE_RATE_LIMITER.limit({ key: rateLimitKey });
