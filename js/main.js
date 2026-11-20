@@ -172,7 +172,7 @@
 
       const term = search ? search.value.trim().toLocaleLowerCase("es") : "";
       const matching = items.filter(element => {
-        const categories = (element.getAttribute("data-category") || "").split(/\\s+/);
+        const categories = (element.getAttribute("data-category") || "").split(/\s+/);
         const matchesFilter = value === "all" || categories.includes(value);
         const matchesSearch = !term || element.textContent.toLocaleLowerCase("es").includes(term);
         return matchesFilter && matchesSearch;
