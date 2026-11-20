@@ -91,3 +91,19 @@ Cloudflare Web Analytics continúa registrando un CORS en `cloudflareinsights.co
 Inicio móvil merece seguimiento por LCP 2,9 s (rendimiento 94). Inspeccionar el elemento LCP y repetir medición antes de hacer cambios. Las sugerencias Lighthouse sobre logo/imágenes quedan fuera del alcance acordado y no se ejecutarán.
 
 Artefacto de informes y capturas: [cee-2027-site-audit · 14651908965](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442/artifacts/14651908965). La revisión visual/funcional manual de formularios y estados especiales sigue pendiente. No fusionar ni publicar sin aprobación explícita.
+
+
+## Seguimiento de auditoría y formulario · 20 de noviembre de 2026
+
+La ejecución [44783535294](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44783535294) terminó con éxito sobre Preview de la PR #21: 108/108 combinaciones de página/viewport, 0 infracciones axe, 0 fallos bloqueantes, 72/72 capturas y Gemini 7/7. Lighthouse: Inicio 94 móvil/100 escritorio, Nuestra lista 99/99, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones. LCP móvil: Inicio 2,9 s, Nuestra lista 1,9 s, Proyecto 1,2 s y CEAT Te Escucha 1,1 s.
+
+### Configuración del formulario
+
+La página `pages/escucha.html` todavía contiene solo el aviso de formulario externo pendiente; no hay formulario HTML, iframe, endpoint ni variable de entorno leída por el sitio. **No configurar una variable de Cloudflare para Google Forms en este momento.** Cuando se confirme el enlace oficial, integrar el enlace o iframe directamente en la página estática y comprobar manualmente que abre y permite enviar una respuesta de prueba. Una URL pública no debe guardarse como Secret. No inventar `GOOGLE_FORM_URL` sin implementar primero su lectura.
+
+Variables existentes, independientes del formulario:
+- `GEMINI_API_KEY`: Secret del asistente, configurado por separado en Preview y Production.
+- `GEMINI_MODEL`: variable opcional del modelo Gemini.
+- `CEE_MAINTENANCE_MODE`: control del modo mantenimiento; mantener desactivado en Production salvo mantenimiento real.
+
+No se ha confirmado todavía el comportamiento del beacon de Cloudflare Web Analytics en producción; el CORS observado corresponde a Preview y no se debe cambiar la analítica sin una prueba específica. La PR #21 sigue abierta y no se fusiona ni publica sin autorización explícita.
