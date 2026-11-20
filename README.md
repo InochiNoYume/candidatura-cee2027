@@ -123,7 +123,7 @@ El asistente de la web utiliza **únicamente Google Gemini** desde `functions/ap
 - Está limitado a consultas relacionadas con la web CEE 2027.
 - No mantiene historial de conversación en el sitio.
 - Máximo de 500 caracteres por pregunta, 130 palabras por respuesta y 420 tokens de salida.
-- El timeout del proveedor es de 20 segundos, con hasta dos intentos ante fallos transitorios.
+- El timeout del proveedor es de 20 segundos, con hasta tres intentos ante fallos transitorios.
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
 - Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
@@ -222,3 +222,20 @@ El lanzador del Asistente CEE permanece en su posición inferior habitual. «Vol
 ### Segunda corrección de auditoría · 20 de noviembre de 2026
 
 La ejecución 227 confirmó que `css/layout.css` se carga después de `css/styles.css` y sobrescribía `.back-to-top` con `z-index: 90`. La jerarquía final de los tres controles se establece ahora al final de `layout.css` para evitar que el archivo posterior revierta el orden: flecha 802, panel 801 y lanzador 800 (excepto mientras el menú está abierto). Además, Gemini ahora reintenta hasta tres veces los estados transitorios 408/429/500/502/503/504, con esperas crecientes. Pendiente ejecutar nuevamente auditoría responsive y Gemini.
+
+
+### Auditoría responsive y rendimiento · 20 de noviembre de 2026 · ejecución 230
+
+La auditoría de la vista previa de la PR #21 terminó correctamente sobre el commit `6375aa677af22790b37cc7a521ce06af07ef5865`:
+
+- 109 combinaciones de página y viewport evaluadas; 0 infracciones axe y 0 fallos bloqueantes.
+- 72/72 capturas de referencia correctas.
+- Asistente Gemini: 7/7 pruebas correctas, todas con HTTP 200 y tema esperado; no se expusieron metadatos internos.
+- La flecha «Volver arriba» superó las comprobaciones de separación y jerarquía visual frente al Asistente CEE.
+- Lighthouse en las cuatro páginas clave, escritorio y móvil: rendimiento entre 83 y 100; accesibilidad 100 en todas; buenas prácticas 96; SEO 66–69.
+
+La puntuación de rendimiento móvil de Nuestra lista fue 83 y requiere una medición de seguimiento. Su LCP de laboratorio fue 4,7 s, aunque el desglose del mismo informe atribuyó solo unos 182 ms a las fases de carga y renderizado del recurso LCP; se debe repetir la medición antes de atribuirlo a un recurso concreto. El informe de Lighthouse también registra un error CORS del beacon de Cloudflare Web Analytics en el dominio de Preview. La vista previa está bloqueada para indexación deliberadamente, por lo que el diagnóstico SEO «Page is blocked from indexing» no se debe corregir quitando el noindex de Preview.
+
+Ejecución: [Live accessibility and performance audit · run 44761472248](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248). El artefacto [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366) conserva informes y capturas.
+
+La suite «Site quality checks» del mismo commit detectó que `scripts/check-assistant.mjs` aún exigía dos intentos, aunque la función ya permite tres. La aserción se ha actualizado a tres; la suite debe volver a ejecutarse para confirmar el arreglo.
