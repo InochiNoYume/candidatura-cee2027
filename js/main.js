@@ -141,116 +141,79 @@
   } else revealItems.forEach(element=>element.classList.add("is-visible"));
 
 
-  // Filtros rápidos de agenda, galería, noticias y transparencia.
+  // Filtros y paginación de iniciativas de Transparencia.
   document.querySelectorAll("[data-filter-group]").forEach(group => {
     const name = group.getAttribute("data-filter-group");
     const buttons = Array.from(group.querySelectorAll("[data-filter]"));
-    const items = Array.from(document.querySelectorAll('[data-filter-item="'+name+'"]'));
-    const empty = document.querySelector('[data-filter-empty="'+name+'"]');
+    const items = Array.from(document.querySelectorAll('[data-filter-item="' + name + '"]'));
+    const empty = document.querySelector('[data-filter-empty="' + name + '"]');
     const result = group.querySelector(".filter-result");
-    let currentPage = 1;
+    const isCommitments = name === "commitments";
     const pageSize = 5;
+    let currentPage = 1;
     let activeFilter = "all";
-    const pagination = name === "commitments" ? document.createElement("nav") : null;
-    if (pagination) {
+    const search = isCommitments ? document.querySelector("#commitment-search") : null;
+    const list = isCommitments ? document.querySelector('[data-filter-list="commitments"]') : null;
+    const pagination = isCommitments ? document.createElement("nav") : null;
+    if (pagination && list) {
       pagination.className = "commitment-pagination";
-      pagination.setAttribute("aria-label", "Paginación de iniciativas");
-      items[0]?.parentElement?.insertAdjacentElement("afterend", pagination);
+      pagination.setAttribute("aria-label", "Páginas de iniciativas");
+      list.insertAdjacentElement("afterend", pagination);
     }
-    const renderPagination = total => {
-      if (!pagination) return;
-      const pageCount = Math.ceil(total / pageSize);
-      pagination.replaceChildren();
-      pagination.hidden = pageCount <= 1;
-      if (pageCount <= 1) return;
-      const previous = document.createElement("button");
-      previous.type = "button";
-      previous.className = "pagination-arrow";
-      previous.textContent = "← Anterior";
-      previous.disabled = currentPage === 1;
-      previous.addEventListener("click", () => {
-        currentPage = Math.max(1, currentPage - 1);
-        update(activeFilter, false);
-      });
-      const status = document.createElement("span");
-      status.className = "pagination-status";
-      status.setAttribute("aria-live", "polite");
-      status.textContent = "Página " + currentPage + " de " + pageCount;
-      const next = document.createElement("button");
-      next.type = "button";
-      next.className = "pagination-arrow";
-      next.textContent = "Siguiente →";
-      next.disabled = currentPage === pageCount;
-      next.addEventListener("click", () => {
-        currentPage = Math.min(pageCount, currentPage + 1);
-        update(activeFilter, false);
-      });
-      pagination.append(previous, status, next);
-    };
+
     const update = (value, resetPage = true) => {
       activeFilter = value;
       if (resetPage) currentPage = 1;
       buttons.forEach(button => {
         const active = button.getAttribute("data-filter") === value;
-        button.classList.toggle("is-active",active);
-        button.setAttribute("aria-pressed",String(active));
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
       });
-      const searchTerm = name === "commitments" ? (document.querySelector("#commitment-search")?.value || "").trim().toLocaleLowerCase("es") : "";
-      const matchingItems = items.filter(item => {
-        const categories = (item.getAttribute("data-category") || "").split(/\s+/);
-        const matchesFilter = name === "news" ? value === "all" : value === "all" || categories.includes(value);
-        const matchesSearch = !searchTerm || item.textContent.toLocaleLowerCase("es").includes(searchTerm);
+
+      const term = search ? search.value.trim().toLocaleLowerCase("es") : "";
+      const matching = items.filter(element => {
+        const categories = (element.getAttribute("data-category") || "").split(/\\s+/);
+        const matchesFilter = value === "all" || categories.includes(value);
+        const matchesSearch = !term || element.textContent.toLocaleLowerCase("es").includes(term);
         return matchesFilter && matchesSearch;
       });
-      const pageCount = Math.max(1, Math.ceil(matchingItems.length / pageSize));
-      currentPage = Math.min(currentPage, pageCount);
-      const startIndex = (currentPage - 1) * pageSize;
-      const visibleItems = name === "commitments" ? new Set(matchingItems.slice(startIndex, startIndex + pageSize)) : null;
-      items.forEach(item => {
-        item.hidden = name === "commitments" ? !visibleItems.has(item) : !matchingItems.includes(item);
-      });
-      if (empty) {
-        if (name === "news") {
-          empty.hidden = value === "all";
-          empty.textContent = value === "all"
-            ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
-            : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
-        } else empty.hidden = matchingItems.length > 0;
-      }
-      if (result) result.textContent = matchingItems.length + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : name === "commitments" ? " iniciativas" : " estados");
-      renderPagination(matchingItems.length);
-    };
-    buttons.forEach(button => {
-        const active = button.getAttribute("data-filter") === value;
-        button.classList.toggle("is-active",active);
-        button.setAttribute("aria-pressed",String(active));
-      });
-      let visible = 0;
-      items.forEach(item => {
-        const categories = (item.getAttribute("data-category") || "").split(/\s+/);
-        const searchTerm = name === "commitments" ? (document.querySelector("#commitment-search")?.value || "").trim().toLocaleLowerCase("es") : "";
-        const matchesFilter = name === "news" ? value === "all" : value === "all" || categories.includes(value);
-        const matchesSearch = !searchTerm || item.textContent.toLocaleLowerCase("es").includes(searchTerm);
-        const show = matchesFilter && matchesSearch;
-        item.hidden = !show;
-        if (show) visible++;
-      });
-      if (empty) {
-        if (name === "news") {
-          empty.hidden = value === "all";
-          empty.textContent = value === "all"
-            ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
-            : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
-        } else empty.hidden = visible > 0;
-      }
-      if (result) result.textContent = visible + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : name === "commitments" ? " iniciativas" : " estados");
-    };
-    buttons.forEach(button => button.addEventListener("click",() => update(button.getAttribute("data-filter"))));
-    update("all");
-  });
 
-  const commitmentSearch = document.querySelector("#commitment-search");
-  if (commitmentSearch) commitmentSearch.addEventListener("input",() => document.querySelector('[data-filter-group="commitments"] .filter-chip.is-active')?.click());
+      const pageCount = Math.max(1, Math.ceil(matching.length / pageSize));
+      currentPage = Math.min(currentPage, pageCount);
+      const first = (currentPage - 1) * pageSize;
+      const visible = new Set(isCommitments ? matching.slice(first, first + pageSize) : matching);
+      items.forEach(element => { element.hidden = !visible.has(element); });
+
+      if (empty) empty.hidden = matching.length !== 0;
+      if (result) result.textContent = matching.length + (name === "commitments" ? " iniciativas" : name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : " estados");
+
+      if (pagination) {
+        pagination.replaceChildren();
+        pagination.hidden = pageCount <= 1;
+        if (pageCount > 1) {
+          const previous = document.createElement("button");
+          previous.type = "button";
+          previous.textContent = "← Anterior";
+          previous.disabled = currentPage === 1;
+          previous.addEventListener("click", () => { currentPage--; update(activeFilter, false); });
+          const status = document.createElement("span");
+          status.className = "pagination-status";
+          status.setAttribute("aria-live", "polite");
+          status.textContent = "Página " + currentPage + " de " + pageCount;
+          const next = document.createElement("button");
+          next.type = "button";
+          next.textContent = "Siguiente →";
+          next.disabled = currentPage === pageCount;
+          next.addEventListener("click", () => { currentPage++; update(activeFilter, false); });
+          pagination.append(previous, status, next);
+        }
+      }
+    };
+
+    buttons.forEach(button => button.addEventListener("click", () => update(button.getAttribute("data-filter"))));
+    update("all");
+    if (search) search.addEventListener("input", () => update(activeFilter));
+  });
 
   // Calendario mensual basado exclusivamente en las fechas confirmadas de la agenda.
   const calendar = document.querySelector("#agenda-calendar");
