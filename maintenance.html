@@ -26,8 +26,17 @@
     .maintenance-status{display:inline-flex;align-items:center;gap:10px;margin:28px 0 30px;padding:10px 15px;border:1px solid #eee2df;border-radius:999px;background:#fcf8f7;color:#655758;font-size:12px;font-weight:700}
     .maintenance-status span{width:8px;height:8px;border-radius:50%;background:#b77942;box-shadow:0 0 0 4px rgba(183,121,66,.12)}
     .maintenance-actions{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}
+    .maintenance-contact{max-width:560px;margin:34px auto 0;padding-top:26px;border-top:1px solid #eee5e2;text-align:left}
+    .maintenance-contact h2{margin:0;color:#321116;font:800 clamp(19px,3vw,23px)/1.25 Manrope,system-ui,sans-serif;letter-spacing:-.025em;text-align:center}
+    .maintenance-contact>p{margin:9px 0 18px;color:#6a5e5f;font-size:14px;line-height:1.6;text-align:center}
+    .maintenance-contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .maintenance-contact-card{display:flex;min-width:0;flex-direction:column;gap:7px;padding:16px;border:1px solid #eee2df;border-radius:15px;background:#fcf8f7;color:#514344;text-decoration:none}
+    .maintenance-contact-card strong{color:#4a171d;font-size:14px}
+    .maintenance-contact-card span{font-size:12px;line-height:1.5}
+    .maintenance-contact-card .contact-action{margin-top:auto;padding-top:5px;color:#801515;font-size:12px;font-weight:800}
+    .maintenance-contact-card.pending{background:#fffdfc}
     .maintenance-footnote{margin:36px 0 0;padding-top:22px;border-top:1px solid #eee5e2;color:#857a7a;font-size:12px;line-height:1.7}
-    @media(max-width:520px){.maintenance-card{padding:30px 22px;border-radius:18px}.maintenance-brand{margin-bottom:34px}.maintenance-actions{gap:14px}.maintenance-actions .button{width:100%}}
+    @media(max-width:520px){.maintenance-card{padding:30px 22px;border-radius:18px}.maintenance-brand{margin-bottom:34px}.maintenance-actions{gap:14px}.maintenance-actions .button{width:100%}.maintenance-contact-grid{grid-template-columns:1fr}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -54,6 +63,22 @@
         <a class="button button-primary" href="/">Volver a intentar <span aria-hidden="true">↻</span></a>
         <a class="arrow-link" href="https://www.ceat.cl/" target="_blank" rel="noopener noreferrer">Sitio institucional del CEAT <span aria-hidden="true">↗</span></a>
       </div>
+      <section class="maintenance-contact" aria-labelledby="maintenance-contact-title">
+        <h2 id="maintenance-contact-title">¿Crees que esto es un error?</h2>
+        <p>Comunícate con nosotros a través de estos medios:</p>
+        <div class="maintenance-contact-grid">
+          <a class="maintenance-contact-card" href="https://www.instagram.com/ceat.liceomh/" target="_blank" rel="noopener noreferrer">
+            <strong>Instagram</strong>
+            <span>Consulta las comunicaciones del CEAT en su cuenta institucional.</span>
+            <span class="contact-action">Visitar Instagram ↗</span>
+          </a>
+          <div class="maintenance-contact-card pending">
+            <strong>Servicio técnico</strong>
+            <span>Correo de soporte técnico pendiente de confirmación.</span>
+            <span class="contact-action">Correo próximamente</span>
+          </div>
+        </div>
+      </section>
       <p class="maintenance-footnote">Gracias por tu comprensión. El contenido del sitio se conserva y volverá a estar disponible cuando finalicen los trabajos.</p>
     </section>
   </main>
