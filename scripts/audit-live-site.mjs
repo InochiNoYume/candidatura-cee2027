@@ -60,11 +60,14 @@ try {
               const value = button.getAttribute("data-filter");
               button.click();
               const visible = items.filter(item => !item.hidden);
-              const expected = items.filter(item => {
+              const matchingItems = items.filter(item => {
                 if (name === "news") return value === "all";
                 const categories = (item.getAttribute("data-category") || "").trim().split(/\s+/).filter(Boolean);
                 return value === "all" || categories.includes(value);
               });
+              // Transparencia muestra cinco compromisos por página; validar la página actual,
+              // no exigir que las quince tarjetas estén visibles simultáneamente.
+              const expected = name === "commitments" ? matchingItems.slice(0, 5) : matchingItems;
               if (visible.length !== expected.length) {
                 errors.push('"' + value + '": visibles ' + visible.length + ', esperados ' + expected.length);
               }
@@ -97,8 +100,7 @@ try {
           if (window.matchMedia("(min-width: 1241px)").matches && nav && nav.scrollWidth > nav.clientWidth + 2) {
             errors.push("la navegación horizontal desborda su espacio disponible");
           }
-          if (dropdown) {
-            const summary = dropdown.querySelector("summary");
+          if (dropdown) {            const summary = dropdown.querySelector("summary");
             const pseudoArrow = summary ? getComputedStyle(summary, "::after").content : "none";
             if (pseudoArrow !== "none" && pseudoArrow !== "normal") errors.push("el desplegable muestra una flecha CSS duplicada");
             dropdown.open = false;
@@ -197,8 +199,7 @@ try {
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
         if (axe.violations.length) failures.push(`${viewport.name} ${route}: ${axe.violations.length} violaciones de accesibilidad (${axe.violations.map(v => v.id).join(", ")})`);
       } catch (error) {
-        failures.push(`${viewport.name} ${route}: ${error.message}`);
-        results.push({ route, viewport: viewport.name, error: error.message });
+        failures.push(`${viewport.name} ${route}: ${error.message}`);        results.push({ route, viewport: viewport.name, error: error.message });
       }
       page.removeAllListeners("pageerror");
     }
@@ -297,8 +298,7 @@ try {
       }
     }
     await context.close();
-  }
-  const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  }  const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
   const missingTitle = await missingPage.title();
   const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
