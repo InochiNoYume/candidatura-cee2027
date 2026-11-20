@@ -148,8 +148,79 @@
     const items = Array.from(document.querySelectorAll('[data-filter-item="'+name+'"]'));
     const empty = document.querySelector('[data-filter-empty="'+name+'"]');
     const result = group.querySelector(".filter-result");
-    const update = value => {
+    let currentPage = 1;
+    const pageSize = 5;
+    let activeFilter = "all";
+    const pagination = name === "commitments" ? document.createElement("nav") : null;
+    if (pagination) {
+      pagination.className = "commitment-pagination";
+      pagination.setAttribute("aria-label", "Paginación de iniciativas");
+      items[0]?.parentElement?.insertAdjacentElement("afterend", pagination);
+    }
+    const renderPagination = total => {
+      if (!pagination) return;
+      const pageCount = Math.ceil(total / pageSize);
+      pagination.replaceChildren();
+      pagination.hidden = pageCount <= 1;
+      if (pageCount <= 1) return;
+      const previous = document.createElement("button");
+      previous.type = "button";
+      previous.className = "pagination-arrow";
+      previous.textContent = "← Anterior";
+      previous.disabled = currentPage === 1;
+      previous.addEventListener("click", () => {
+        currentPage = Math.max(1, currentPage - 1);
+        update(activeFilter, false);
+      });
+      const status = document.createElement("span");
+      status.className = "pagination-status";
+      status.setAttribute("aria-live", "polite");
+      status.textContent = "Página " + currentPage + " de " + pageCount;
+      const next = document.createElement("button");
+      next.type = "button";
+      next.className = "pagination-arrow";
+      next.textContent = "Siguiente →";
+      next.disabled = currentPage === pageCount;
+      next.addEventListener("click", () => {
+        currentPage = Math.min(pageCount, currentPage + 1);
+        update(activeFilter, false);
+      });
+      pagination.append(previous, status, next);
+    };
+    const update = (value, resetPage = true) => {
+      activeFilter = value;
+      if (resetPage) currentPage = 1;
       buttons.forEach(button => {
+        const active = button.getAttribute("data-filter") === value;
+        button.classList.toggle("is-active",active);
+        button.setAttribute("aria-pressed",String(active));
+      });
+      const searchTerm = name === "commitments" ? (document.querySelector("#commitment-search")?.value || "").trim().toLocaleLowerCase("es") : "";
+      const matchingItems = items.filter(item => {
+        const categories = (item.getAttribute("data-category") || "").split(/\\s+/);
+        const matchesFilter = name === "news" ? value === "all" : value === "all" || categories.includes(value);
+        const matchesSearch = !searchTerm || item.textContent.toLocaleLowerCase("es").includes(searchTerm);
+        return matchesFilter && matchesSearch;
+      });
+      const pageCount = Math.max(1, Math.ceil(matchingItems.length / pageSize));
+      currentPage = Math.min(currentPage, pageCount);
+      const startIndex = (currentPage - 1) * pageSize;
+      const visibleItems = name === "commitments" ? new Set(matchingItems.slice(startIndex, startIndex + pageSize)) : null;
+      items.forEach(item => {
+        item.hidden = name === "commitments" ? !visibleItems.has(item) : !matchingItems.includes(item);
+      });
+      if (empty) {
+        if (name === "news") {
+          empty.hidden = value === "all";
+          empty.textContent = value === "all"
+            ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
+            : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
+        } else empty.hidden = matchingItems.length > 0;
+      }
+      if (result) result.textContent = matchingItems.length + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : name === "commitments" ? " iniciativas" : " estados");
+      renderPagination(matchingItems.length);
+    };
+    buttons.forEach(button => {
         const active = button.getAttribute("data-filter") === value;
         button.classList.toggle("is-active",active);
         button.setAttribute("aria-pressed",String(active));
