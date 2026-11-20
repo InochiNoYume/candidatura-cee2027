@@ -2231,3 +2231,65 @@ img{max-width:100%;height:auto}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+/* CEAT Te Escucha: imagen a sangre, sin bandas vacías y adaptable */
+.listen-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, .92fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: clamp(28px, 4vw, 54px);
+  row-gap: 24px;
+}
+.listen-inner > div:first-child {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+.listen-visual {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  align-self: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.listen-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  object-fit: cover;
+  object-position: center;
+}
+.listen-inner > .button {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  width: fit-content;
+}
+@media (max-width: 760px) {
+  .listen-inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    row-gap: 24px;
+  }
+  .listen-inner > div:first-child,
+  .listen-visual,
+  .listen-inner > .button {
+    grid-column: 1;
+  }
+  .listen-inner > div:first-child { grid-row: 1; }
+  .listen-visual {
+    grid-row: 2;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .listen-inner > .button { grid-row: 3; }
+}
