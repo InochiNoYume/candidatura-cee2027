@@ -305,3 +305,18 @@ Nuestra lista obtuvo LCP de laboratorio de 4,7 s en móvil, pero el desglose de 
 El diagnóstico SEO de Preview (bloqueo de indexación) es intencional. Cloudflare Web Analytics sigue pendiente de verificación en un dominio de producción; el error CORS observado en Preview no justifica cambiar la configuración de analítica. La auditoría no verifica ni configura reglas WAF de la cuenta Cloudflare.
 
 Ejecución: [44787100347](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347). Artefacto de informes y capturas: [14655905852](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347/artifacts/14655905852).
+
+
+### Auditoría de seguimiento confirmada · 20 de noviembre de 2026 · ejecución 44789469220
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el HEAD documental `5e5602c826a71b5985ba5a2e2d608a9c0de87bb0`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe, 0 errores de página y 0 desbordamientos horizontales.
+- 72/72 capturas generadas; 7/7 pruebas del asistente Gemini aprobadas, sin exposición de metadatos internos.
+- La ruta de control inexistente respondió HTTP 404, como corresponde.
+- Lighthouse (móvil/escritorio): Inicio 99/100, Nuestra lista 99/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP móvil: Inicio 1,7 s; Nuestra lista 1,8 s; Proyecto 1,2 s; CEAT Te Escucha 1,1 s. El LCP móvil de Nuestra lista bajó de 4,7 s a 1,8 s en esta repetición; el rendimiento subió de 83 a 99. Esto confirma que la medición anterior era inestable y no justificaba cambios de recursos.
+
+La auditoría queda aprobada. El SEO de Preview sigue mostrando 66–69 por el bloqueo de indexación deliberado; no retirar el noindex. El CORS de Cloudflare Web Analytics continúa siendo un asunto externo del dominio de Preview, sin evidencia en esta auditoría que justifique modificar la aplicación. La regla WAF de Cloudflare requiere configuración de cuenta y sigue fuera de las comprobaciones del repositorio.
+
+Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
