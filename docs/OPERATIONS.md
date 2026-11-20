@@ -73,3 +73,21 @@ Artefacto de auditoría: [cee-2027-site-audit · 14642776366](https://github.com
 La hoja de Google Fonts de `pages/proyecto.html` se carga mediante precarga no bloqueante desde `js/main.js`, solo en esa página. Al completar la descarga, el enlace pasa a `stylesheet`; se mantienen DM Sans y Manrope y el CSS conserva las fuentes de respaldo si JavaScript no se ejecuta. El objetivo es evitar que la hoja externa retrase el primer renderizado.
 
 La validación queda pendiente hasta que termine la auditoría responsive/Lighthouse del commit `b590d6d7c829ba1d835f3e293eb06b4530a02dd0` (ejecución 44778879442). Revisar especialmente Proyecto en escritorio y móvil, posibles cambios de distribución al aplicar las fuentes y cualquier aviso de precarga no utilizada. No extender el patrón a otras páginas sin mediciones que lo justifiquen. El error CORS del beacon de Cloudflare Insights en Preview sigue en investigación; no modificar la configuración de analítica sin confirmar su causa.
+
+
+## Auditoría final de Preview · ejecución 44778879442 · 20 de noviembre de 2026
+
+La ejecución [44778879442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442) finalizó correctamente sobre la rama de la PR #21:
+
+- 108 combinaciones página/viewport (18 rutas × 6 viewports), 0 infracciones axe y 0 fallos bloqueantes; la ruta inexistente adicional devolvió HTTP 404.
+- 72/72 capturas generadas; Gemini 7/7 pruebas aprobadas.
+- Lighthouse (móvil/escritorio): Inicio 94/100, Nuestra lista 99/99, Proyecto 100/96 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- Proyecto obtiene LCP de 1,2 s móvil y 1,4 s escritorio tras el cambio de carga tipográfica.
+
+El log antiguo contaba la comprobación de ruta inexistente como si fuera una combinación página/viewport y mostraba 109. El JSON del informe confirma 108; se corrige el mensaje para informar por separado las rutas, viewports y el chequeo 404.
+
+Cloudflare Web Analytics continúa registrando un CORS en `cloudflareinsights.com/cdn-cgi/rum` desde el hostname de Preview, seguido de `net::ERR_FAILED`. Es un error del beacon de analítica de Cloudflare, no un error de ejecución de la aplicación. Confirmar en un entorno de producción antes de modificar su configuración. Los resultados SEO 66–69 corresponden al `noindex` intencional del Preview; no quitarlo.
+
+Inicio móvil merece seguimiento por LCP 2,9 s (rendimiento 94). Inspeccionar el elemento LCP y repetir medición antes de hacer cambios. Las sugerencias Lighthouse sobre logo/imágenes quedan fuera del alcance acordado y no se ejecutarán.
+
+Artefacto de informes y capturas: [cee-2027-site-audit · 14651908965](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442/artifacts/14651908965). La revisión visual/funcional manual de formularios y estados especiales sigue pendiente. No fusionar ni publicar sin aprobación explícita.
