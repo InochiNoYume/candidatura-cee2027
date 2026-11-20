@@ -22,8 +22,10 @@ jobs:
           node --check js/main.js
           node --check js/search.js
           node --check functions/api/asistente.js
+          node --check functions/_middleware.js
           node scripts/check-assistant.mjs
           node scripts/test-assistant-resilience.mjs
+          node scripts/test-maintenance-mode.mjs
           node scripts/test-maintenance-mode.mjs
           node --check scripts/check-security.mjs
       - name: Validate HTML structure and local links
