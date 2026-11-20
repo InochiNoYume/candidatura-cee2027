@@ -151,9 +151,12 @@ const maintenancePage = read("maintenance.html");
 if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
     !maintenancePage.includes('name="robots" content="noindex,nofollow"') ||
     !maintenancePage.includes("¿Crees que esto es un error?") ||
-    !maintenancePage.includes("Servicio técnico") ||
-    !maintenancePage.includes("https://www.instagram.com/ceat.liceomh/")) {
-  failures.push("Mantenimiento: falta el mensaje principal, la directiva noindex o los canales de contacto.");
+    !maintenancePage.includes("Instagram de la candidatura") ||
+    !maintenancePage.includes("Correo de la candidatura") ||
+    !maintenancePage.includes("Próximamente") ||
+    maintenancePage.includes("ceat.liceomh") ||
+    maintenancePage.includes("mailto:")) {
+  failures.push("Mantenimiento: falta el mensaje principal, noindex o los canales provisionales propios de la candidatura.");
 }
 
 const listPage = read("pages/lista.html");
