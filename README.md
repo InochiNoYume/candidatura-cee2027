@@ -284,3 +284,8 @@ El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vig
 El formulario CEAT Te Escucha continúa siendo un espacio de espera: `pages/escucha.html` no contiene todavía un formulario, iframe ni URL de Google Forms. **No existe una variable de entorno de formulario que debas configurar ahora.** Cuando se confirme el enlace oficial, se integrará directamente en la página estática y se probará el destino. No crear una variable ficticia como `GOOGLE_FORM_URL` sin implementar un mecanismo que la lea.
 
 La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
+
+
+## Ajuste final de interfaz móvil · 20 de noviembre de 2026
+
+La revisión de las capturas de la auditoría 44783535294 detectó que el lanzador flotante del asistente podía cubrir texto en pantallas pequeñas. Se compactó a un botón de icono de 48 px hasta 560 px de ancho; su nombre accesible «Abrir Asistente CEE» se conserva mediante `aria-label`. La auditoría ahora verifica el ancho y que la etiqueta visual esté oculta en móvil. Se mantienen el lanzador completo en escritorio y el orden de capas existente. Pendiente validar el nuevo cambio en las ejecuciones CI y la auditoría responsive generadas por este commit.
