@@ -87,6 +87,6 @@ const apiForbidden = makeContext("https://cee.test/api/asistente", {
 });
 const apiForbiddenResponse = await onRequest(apiForbidden);
 assert.equal(apiForbiddenResponse.status, 403, "API errors must preserve their JSON HTTP status");
-assert.match(apiForbiddenResponse.headers.get("Content-Type") || "", /text\/html/, false);
+assert.match(apiForbiddenResponse.headers.get("Content-Type") || "", /application\/json/);
 
 console.log("MIDDLEWARE TESTS PASSED: maintenance, API pause, static assets, HEAD, custom 403/404/500 pages, status preservation and thrown HTML errors.");
