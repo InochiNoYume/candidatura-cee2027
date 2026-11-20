@@ -185,9 +185,9 @@ La auditoría responsive [ejecución 223](https://github.com/InochiNoYume/candid
 - Lighthouse se omitió porque el recorrido responsive terminó con error.
 - Los [73 archivos de resultados y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680/artifacts/14639196925) permiten revisar el detalle.
 
-La revisión del código identificó las causas: el lanzador del asistente se desplazaba hacia arriba al aparecer la flecha, pero la distancia no bastaba; además, el enlace de marca de mantenimiento declaraba un `aria-label` que no coincidía con su texto visible. En la rama se corrigió el comportamiento manteniendo el lanzador abajo, con la flecha en una posición superior y separada; se retiró el `aria-label` redundante para que el nombre accesible proceda del texto visible. También se reforzó la prueba responsive para exigir 8 px de separación y comprobar el orden de capas.
+La revisión del código identificó las causas iniciales: el lanzador se desplazaba al aparecer la flecha y el enlace de mantenimiento declaraba un `aria-label` que no coincidía con el texto visible. La auditoría 227 confirmó que el ajuste de mantenimiento resolvió las seis infracciones axe, pero también reveló que `css/layout.css`, cargado después de `css/styles.css`, sobrescribía el `z-index` de la flecha a 90. Por eso el ajuste anterior en `styles.css` no tenía efecto final. La corrección vigente fija el orden de capas al final de `layout.css`, con prioridad explícita, y mantiene el lanzador en su posición inferior. También se amplió el reintento de errores transitorios de Gemini a tres intentos con espera creciente.
 
-Los cambios están en la rama de la PR #21. La nueva auditoría sobre el HEAD corregido todavía debe ejecutarse y aprobarse; no se declaran resueltos hasta verificar sus resultados y capturas.
+La auditoría 227 registró 0 infracciones axe y 72/72 capturas; falló por seis comprobaciones del orden de capas y una respuesta Gemini 503 en la pregunta de integrantes. Las nuevas correcciones están en la rama de la PR #21. La auditoría sobre el nuevo HEAD todavía debe ejecutarse y aprobarse; no se declaran resueltas hasta verificar sus resultados y capturas.
 
 La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una aprobación de producción.
 
@@ -217,3 +217,8 @@ No se debe afirmar que un cambio está en producción hasta comprobar el desplie
 ### Ajuste de controles flotantes · 20 de noviembre de 2026
 
 El lanzador del Asistente CEE permanece en su posición inferior habitual. «Volver arriba» conserva una posición superior con separación mínima de 8 px y una capa visual mayor que el lanzador; el panel del asistente mantiene su capa independiente. La prueba responsive verifica geometría y `z-index` en los seis viewports. La confirmación final depende de la nueva auditoría y de revisar sus capturas.
+
+
+### Segunda corrección de auditoría · 20 de noviembre de 2026
+
+La ejecución 227 confirmó que `css/layout.css` se carga después de `css/styles.css` y sobrescribía `.back-to-top` con `z-index: 90`. La jerarquía final de los tres controles se establece ahora al final de `layout.css` para evitar que el archivo posterior revierta el orden: flecha 802, panel 801 y lanzador 800 (excepto mientras el menú está abierto). Además, Gemini ahora reintenta hasta tres veces los estados transitorios 408/429/500/502/503/504, con esperas crecientes. Pendiente ejecutar nuevamente auditoría responsive y Gemini.
