@@ -320,3 +320,14 @@ La auditoría de Preview de la PR #21 terminó correctamente sobre el HEAD docum
 La auditoría queda aprobada. El SEO de Preview sigue mostrando 66–69 por el bloqueo de indexación deliberado; no retirar el noindex. El CORS de Cloudflare Web Analytics continúa siendo un asunto externo del dominio de Preview, sin evidencia en esta auditoría que justifique modificar la aplicación. La regla WAF de Cloudflare requiere configuración de cuenta y sigue fuera de las comprobaciones del repositorio.
 
 Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
+
+
+## Páginas de error y auditoría técnica · 20 de noviembre de 2026
+
+El sitio incorpora páginas personalizadas para HTTP 403 (acceso restringido), 404 (página no encontrada) y 500 (error interno), además de la página de mantenimiento HTTP 503. El middleware de Cloudflare Pages conserva los códigos HTTP, sustituye las respuestas HTML de error por su página correspondiente y deja intactas las respuestas JSON de la API. Las solicitudes HTML que fallen dentro del flujo de Pages Functions reciben una página 500 segura. Los bloqueos de Cloudflare WAF que ocurran antes de llegar a Pages pueden seguir mostrando la página de error propia de Cloudflare.
+
+Las páginas de error llevan `noindex,nofollow`, `Cache-Control: no-store` y `X-Content-Type-Options: nosniff`. La suite de calidad comprueba el contenido y los metadatos; la auditoría responsive recorre las páginas de error en los seis viewports, comprueba sus códigos HTTP y genera capturas.
+
+La última auditoría disponible antes de incorporar estas páginas terminó correctamente sobre Preview (run [44792017001](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44792017001)): 108 combinaciones de las 18 rutas anteriores, 0 infracciones axe, 0 fallos bloqueantes, 72/72 capturas, Gemini 7/7 y Lighthouse 98–100 en rendimiento, 100 en accesibilidad y 96 en buenas prácticas. La nueva auditoría se ejecutará automáticamente sobre el commit que incorpora las páginas 403 y 500 y la corrección de estado HTTP 404.
+
+La PR #21 permanece abierta. No fusionar ni publicar sin autorización explícita. El PDF del proyecto sigue excluido del sitio público.
