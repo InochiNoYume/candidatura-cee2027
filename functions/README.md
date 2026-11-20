@@ -19,7 +19,7 @@ Gemini debe basarse exclusivamente en el contenido recuperado, no inventar nombr
 
 ## Estabilidad y diagnóstico
 
-- Las solicitudes a Gemini tienen un timeout de 20 segundos y un máximo de dos intentos.
+- Las solicitudes a Gemini tienen un timeout de 20 segundos y un máximo de tres intentos.
 - Solo se reintentan errores transitorios de red y HTTP 408, 429, 500, 502, 503 y 504, con espera incremental breve.
 - Los errores de autenticación, permisos, modelo y parámetros no se reintentan indefinidamente.
 - Se valida el JSON, el alcance, el texto de respuesta y la presencia de fuentes oficiales antes de mostrar una respuesta.
@@ -30,7 +30,7 @@ El límite básico de diez consultas por hora se mantiene en memoria por instanc
 
 ## Pruebas automatizadas vigentes
 
-El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. El lanzador permanece en su posición inferior; «Volver arriba» queda por encima con al menos 8 px de separación y un `z-index` superior. La auditoría 227 encontró que `css/layout.css`, cargado después de `styles.css`, restablecía el `z-index` de la flecha a 90; el orden final se fija ahora al final de `layout.css` para que prevalezca en todos los viewports. La nueva ejecución en Preview debe confirmarlo.
+El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. El lanzador permanece en su posición inferior; «Volver arriba» queda por encima con al menos 8 px de separación y un `z-index` superior. La auditoría 227 encontró que `css/layout.css`, cargado después de `styles.css`, restablecía el `z-index` de la flecha a 90; el orden final se fija ahora al final de `layout.css` para que prevalezca en todos los viewports. La auditoría 230 en Preview confirmó el orden de capas en los seis viewports, 0 infracciones axe, 0 fallos bloqueantes y 72/72 capturas. Gemini superó 7/7 pruebas. La ejecución Site quality checks detectó una aserción desactualizada que esperaba dos intentos; ya se corrigió en `scripts/check-assistant.mjs` y debe repetirse la suite.
 
 ## Seguridad y privacidad
 
