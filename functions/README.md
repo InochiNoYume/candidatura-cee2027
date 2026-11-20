@@ -76,3 +76,8 @@ Las variables actuales del proyecto siguen siendo independientes del formulario:
 - `CEE_MAINTENANCE_MODE`: variable operativa para mantenimiento, no relacionada con formularios.
 
 La auditoría automatizada no prueba un envío real de Google Forms.
+
+
+### Estado de interfaz y auditoría
+
+La revisión de capturas 44783535294 mostró que el botón flotante podía cubrir texto en pantallas de hasta 560 px. Se ajustó a formato de icono compacto (48 px) en móvil, manteniendo el nombre accesible en `aria-label`. `scripts/audit-live-site.mjs` comprueba ahora que su ancho no supere 64 px y que la etiqueta visual se oculte en ese rango. La nueva ejecución debe aprobar antes de considerar validado este ajuste.
