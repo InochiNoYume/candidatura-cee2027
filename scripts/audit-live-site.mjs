@@ -8,7 +8,7 @@ const routes = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "404.html"
+  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "404.html", "maintenance.html"
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
@@ -158,6 +158,7 @@ try {
         });
         for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
 
+        if (route !== "maintenance.html") {
         // Comprueba la presencia y accesibilidad básica del asistente global y del canvas de partículas.
         const assistantChecks = await page.evaluate(() => {
           const errors = [];
@@ -197,6 +198,7 @@ try {
           return errors;
         });
         for (const error of assistantChecks) failures.push(`${viewport.name} ${route}: asistente/efectos: ${error}`);
+        }
 
         // Comprueba que el buscador devuelve páginas reales y gestiona búsquedas sin resultados.
         if (route === "pages/buscar.html") {
@@ -229,6 +231,7 @@ try {
         const expectedStatus = 200;
         if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
         if (route === "404.html" && !/Página no encontrada/i.test(layout.title)) failures.push(`${viewport.name} 404.html: el título no identifica la página no encontrada`);
+        if (route === "maintenance.html" && (!/mantenimiento/i.test(layout.title) || !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex"))) failures.push(`${viewport.name} maintenance.html: falta el título o la directiva noindex`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
