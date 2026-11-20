@@ -702,3 +702,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .commitment-pagination button { transition: none; }
 }
+
+/* Garantiza que la paginación oculte tarjetas aunque tengan display propio. */
+[data-filter-item="commitments"][hidden] { display: none !important; }
