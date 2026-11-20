@@ -131,6 +131,10 @@ No incluir la clave API en el código del navegador, archivos versionados, commi
 
 Más detalles: [functions/README.md](functions/README.md).
 
+## Modo mantenimiento
+
+La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece canales de contacto. El enlace de Instagram dirige a la cuenta institucional del CEAT (`@ceat.liceomh`). El correo de Servicio Técnico y la cuenta propia de Instagram de la candidatura deben añadirse cuando el equipo confirme sus datos oficiales.
+
 ## Seguridad
 
 - La política CSP y las cabeceras HTTP se mantienen en `_headers`.
