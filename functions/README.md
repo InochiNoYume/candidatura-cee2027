@@ -30,7 +30,7 @@ El límite básico de diez consultas por hora se mantiene en memoria por instanc
 
 ## Pruebas automatizadas vigentes
 
-El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La ejecución 340 del 20 de noviembre de 2026 pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. Para evitar que el botón flotante del asistente se superponga con «Volver arriba», el lanzador se eleva cuando el usuario se desplaza más de 420 px y el panel acompaña ese cambio de posición. La ejecución 214 debe confirmar el comportamiento en Preview; una prueba unitaria aprobada no reemplaza la comprobación visual.
+El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. Para evitar que el botón flotante del asistente se superponga con «Volver arriba», el lanzador se eleva cuando el usuario se desplaza más de 420 px y el panel acompaña ese cambio de posición. La ejecución 214 debe confirmar el comportamiento en Preview; una prueba unitaria aprobada no reemplaza la comprobación visual.
 
 ## Seguridad y privacidad
 
