@@ -302,7 +302,7 @@ try {
   }
 
   // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
-  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }];
+  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }, { name: "maintenance", route: "maintenance.html" }];
   const screenshotViewports = [
     { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
     { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
