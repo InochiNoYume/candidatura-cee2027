@@ -264,7 +264,6 @@
     progressBar.style.width = percent + "%";
     header?.classList.toggle("is-scrolled",window.scrollY > 12);
     backToTop.classList.toggle("visible",window.scrollY > 420);
-    document.querySelector(".cee-assistant-launcher")?.classList.toggle("is-raised",window.scrollY > 420);
   };
   window.addEventListener("scroll",updateScrollUI,{passive:true});
   window.addEventListener("resize",() => {
