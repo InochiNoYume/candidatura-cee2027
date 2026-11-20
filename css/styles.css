@@ -655,3 +655,50 @@ body {
   .cee-assistant-head { padding-left: 12px; padding-right: 12px; }
   .cee-assistant-messages { padding-left: 9px; padding-right: 9px; }
 }
+
+
+/* Transparencia · paginación compacta de iniciativas */
+.commitment-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 28px 0 8px;
+  padding: 14px 16px;
+  border: 1px solid #eee3e1;
+  border-radius: 12px;
+  background: #fff;
+}
+.commitment-pagination[hidden] { display: none; }
+.commitment-pagination button {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid #e7d8d6;
+  border-radius: 8px;
+  background: #fff;
+  color: #78151d;
+  font: 700 12px 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.commitment-pagination button:hover:not(:disabled) {
+  border-color: #b77b7e;
+  background: #fbf2f1;
+}
+.commitment-pagination button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+.commitment-pagination .pagination-status {
+  color: #514446;
+  font: 800 12px 'Manrope', sans-serif;
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  .commitment-pagination { gap: 8px; padding: 12px 8px; }
+  .commitment-pagination button { padding: 8px 9px; font-size: 11px; }
+  .commitment-pagination .pagination-status { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .commitment-pagination button { transition: none; }
+}
