@@ -171,6 +171,11 @@ try {
           if (!reduceMotion && !trail) errors.push("no aparece el canvas de partículas aunque el movimiento está permitido");
           if (reduceMotion && trail && getComputedStyle(trail).display !== "none") errors.push("el rastro de partículas no respeta prefers-reduced-motion");
           if (launcher && !/Asistente CEE/.test(launcher.textContent)) errors.push("el botón no muestra el nombre Asistente CEE");
+          if (launcher && window.matchMedia("(max-width: 560px)").matches) {
+            if (launcher.getBoundingClientRect().width > 64) errors.push("el lanzador móvil no está en formato compacto y puede tapar contenido");
+            const label = [...launcher.children].find(child => !child.classList.contains("cee-assistant-launcher-icon"));
+            if (label && getComputedStyle(label).display !== "none") errors.push("el texto del lanzador debería ocultarse en móvil y conservarse como nombre accesible");
+          }
           if (panel && !/Asistente CEE/.test(panel.querySelector("#cee-assistant-title")?.textContent || "")) errors.push("el panel no muestra el título Asistente CEE");
           if (launcher && panel) {
             window.scrollTo(0, 650);
