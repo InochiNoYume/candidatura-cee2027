@@ -38,6 +38,41 @@ try {
         await page.locator("body").waitFor();
         // Espera a que terminen las animaciones .reveal para auditar los colores finales, no estados transitorios.
         await page.waitForTimeout(850);
+        if (route === "") {
+          const listeningImage = page.locator(".listen-visual img");
+          if (await listeningImage.count()) {
+            await page.locator(".listen-visual").scrollIntoViewIfNeeded();
+            await listeningImage.evaluate(img => { img.loading = "eager"; });
+            await listeningImage.evaluate(img => img.decode());
+            const visual = await page.evaluate(() => {
+              const frame = document.querySelector(".listen-visual");
+              const image = frame?.querySelector("img");
+              const copy = frame?.parentElement?.querySelector(":scope > div:first-child");
+              const button = frame?.parentElement?.querySelector(":scope > .button");
+              if (!frame || !image || !copy || !button) return null;
+              const rect = element => {
+                const box = element.getBoundingClientRect();
+                return { left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: box.width, height: box.height };
+              };
+              return {
+                frame: rect(frame), image: rect(image), copy: rect(copy), button: rect(button),
+                objectFit: getComputedStyle(image).objectFit,
+                naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight
+              };
+            });
+            if (!visual) failures.push("home: no se pudo medir la composición de CEAT Te Escucha");
+            else {
+              if (!visual.naturalWidth || !visual.naturalHeight) failures.push("home: la fotografía de CEAT Te Escucha no cargó");
+              if (visual.objectFit !== "cover") failures.push("home: la fotografía no llena su marco (object-fit distinto de cover)");
+              if (visual.image.width + 2 < visual.frame.width) failures.push("home: la fotografía no ocupa el ancho completo del marco");
+              if (Math.abs(visual.frame.width / visual.frame.height - 4 / 3) > 0.08) failures.push("home: el marco de CEAT Te Escucha no conserva la proporción 4:3");
+              if (viewport.width > 760 && visual.frame.left < visual.copy.right - 2) failures.push("home: en escritorio la fotografía no queda a la derecha del texto");
+              if (viewport.width <= 760 && (visual.frame.top < visual.copy.bottom - 2 || visual.button.top < visual.frame.bottom - 2)) {
+                failures.push("home: en móvil el texto, la fotografía y el botón no quedan apilados correctamente");
+              }
+            }
+          } else failures.push("home: no aparece la fotografía de CEAT Te Escucha");
+        }
         const layout = await page.evaluate(() => ({
           title: document.title,
           viewportWidth: document.documentElement.clientWidth,
