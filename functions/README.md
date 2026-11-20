@@ -30,7 +30,7 @@ El límite básico de diez consultas por hora se mantiene en memoria por instanc
 
 ## Pruebas automatizadas vigentes
 
-El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. El lanzador permanece en su posición inferior; «Volver arriba» queda por encima con al menos 8 px de separación y un `z-index` superior. La auditoría responsive 223 falló al detectar superposición en el código anterior; la corrección está en la rama de la PR y debe confirmarse con una nueva ejecución en Preview.
+El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. El lanzador permanece en su posición inferior; «Volver arriba» queda por encima con al menos 8 px de separación y un `z-index` superior. La auditoría 227 encontró que `css/layout.css`, cargado después de `styles.css`, restablecía el `z-index` de la flecha a 90; el orden final se fija ahora al final de `layout.css` para que prevalezca en todos los viewports. La nueva ejecución en Preview debe confirmarlo.
 
 ## Seguridad y privacidad
 
@@ -43,4 +43,4 @@ No enviar datos personales, académicos, privados ni sensibles. En el nivel grat
 - El lanzador del Asistente CEE usa `z-index: 800`.
 - El panel del asistente usa `z-index: 801`.
 
-Así, la flecha queda físicamente por encima del lanzador, sin desplazarlo cuando aparece al hacer scroll; se exige una separación mínima de 8 px. El panel conserva una capa propia. La prueba automatizada comprueba geometría y orden de capas en móvil, tablet y escritorio; revisar también las capturas de Preview.
+Así, la flecha queda físicamente por encima del lanzador, sin desplazarlo cuando aparece al hacer scroll; se exige una separación mínima de 8 px. El panel conserva una capa propia. La prueba automatizada comprueba geometría y orden de capas en móvil, tablet y escritorio; revisar también las capturas de Preview. El endpoint Gemini reintenta ahora hasta tres veces los estados HTTP transitorios con espera creciente.
