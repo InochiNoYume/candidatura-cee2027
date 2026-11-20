@@ -107,3 +107,8 @@ Variables existentes, independientes del formulario:
 - `CEE_MAINTENANCE_MODE`: control del modo mantenimiento; mantener desactivado en Production salvo mantenimiento real.
 
 No se ha confirmado todavía el comportamiento del beacon de Cloudflare Web Analytics en producción; el CORS observado corresponde a Preview y no se debe cambiar la analítica sin una prueba específica. La PR #21 sigue abierta y no se fusiona ni publica sin autorización explícita.
+
+
+## Ajuste móvil del asistente · 20 de noviembre de 2026
+
+La inspección de capturas de la ejecución 44783535294 encontró que el lanzador flotante del asistente cubría parte del texto en algunas vistas móviles. Se redujo a un botón de icono de 48 px para anchos de hasta 560 px; el nombre accesible se conserva con `aria-label`. La prueba responsive ahora verifica el ancho y la etiqueta. Esperar la auditoría del commit más reciente antes de cerrar esta tarea.
