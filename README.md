@@ -133,7 +133,7 @@ Más detalles: [functions/README.md](functions/README.md).
 
 ## Modo mantenimiento
 
-La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece canales de contacto. El enlace de Instagram dirige a la cuenta institucional del CEAT (`@ceat.liceomh`). El correo de Servicio Técnico y la cuenta propia de Instagram de la candidatura deben añadirse cuando el equipo confirme sus datos oficiales.
+La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece dos canales propios de la candidatura: Instagram y correo de contacto. Ambos aparecen como «Próximamente» hasta que las cuentas oficiales estén creadas y confirmadas; no se muestran enlaces ni direcciones provisionales.
 
 ## Seguridad
 
