@@ -162,3 +162,10 @@ La ejecución [44824227022](https://github.com/InochiNoYume/candidatura-cee2027/
 Artefacto: [14673208892](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022/artifacts/14673208892).
 
 La auditoría automatizada no verifica ajustes privados de Cloudflare ni sustituye la comprobación manual en dispositivos reales. La PR #21 sigue abierta y sin fusionar. El PDF sigue excluido del sitio público.
+
+
+## Contactos y verificación actual · 20 de noviembre de 2026
+
+Los canales de mantenimiento son propios de la candidatura: Instagram y correo, ambos marcados «Próximamente» hasta confirmar las cuentas oficiales. No enlazar el Instagram institucional del CEAT ni inventar un correo.
+
+La suite de calidad [44832265046](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832265046) aprobó sintaxis, estructura HTML, enlaces locales y seguridad sobre el HEAD `56a32814a3294227005360f362b7f948b177b446`. La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) está esperando la finalización del despliegue de Preview. La ejecución anterior 44829543179 falló porque Preview respondió HTTP 503 (`MAINTENANCE_MODE`) para las páginas y la API. Verificar que `CEE_MAINTENANCE_MODE` esté desactivada o ausente en Preview y repetir la auditoría; no cambiar Production para resolver este bloqueo.
