@@ -265,3 +265,22 @@ SEO 66–69 se debe al bloqueo de indexación del Preview (`noindex`), que es in
 Ejecución: [Live accessibility and performance audit · run 44778879442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442). Artefacto: [cee-2027-site-audit · 14651908965](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442/artifacts/14651908965).
 
 La auditoría automatizada no sustituye la revisión visual/funcional manual de formularios y estados especiales. La PR #21 permanece abierta y sin fusionar.
+
+
+## Auditoría de Preview · 20 de noviembre de 2026 · ejecución 44783535294
+
+La auditoría más reciente de la PR #21 terminó correctamente sobre el commit `4eaa5264c052762cbae5d65191ef08106f268d16`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe y 0 fallos bloqueantes.
+- La ruta inexistente adicional devolvió HTTP 404.
+- 72/72 capturas generadas.
+- Asistente Gemini: 7/7 pruebas aprobadas.
+- Lighthouse: Inicio 94 móvil/100 escritorio; Nuestra lista 99/99; Proyecto 100/100; CEAT Te Escucha 100/100.
+- Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP: Inicio móvil 2,9 s; Nuestra lista móvil 1,9 s; Proyecto móvil 1,2 s; CEAT Te Escucha móvil 1,1 s.
+
+El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vigilar; no se hará ningún cambio visual o de recursos sin identificar primero el elemento LCP. La puntuación SEO de Preview (66–69) está afectada por el `noindex` intencional del entorno protegido y no justifica retirar esa protección.
+
+El formulario CEAT Te Escucha continúa siendo un espacio de espera: `pages/escucha.html` no contiene todavía un formulario, iframe ni URL de Google Forms. **No existe una variable de entorno de formulario que debas configurar ahora.** Cuando se confirme el enlace oficial, se integrará directamente en la página estática y se probará el destino. No crear una variable ficticia como `GOOGLE_FORM_URL` sin implementar un mecanismo que la lea.
+
+La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
