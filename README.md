@@ -246,3 +246,22 @@ La suite «Site quality checks» del mismo commit detectó que `scripts/check-as
 La auditoría 44765488112 completó 109 combinaciones responsive con 0 infracciones axe y 0 fallos bloqueantes. Lighthouse obtuvo 72 de rendimiento en Proyecto escritorio, frente a 99 en móvil. El diagnóstico identificó la hoja de Google Fonts como recurso bloqueante (ahorro estimado de 2,19 s en esa ejecución); el LCP fue 2,5 s, el TBT 0 ms y el CLS 0,001. Se cambió únicamente Proyecto para precargar la hoja tipográfica y aplicarla después de descargarla, evitando que bloquee el primer renderizado. Las fuentes mantienen sus familias y pesos; si JavaScript no está disponible, el diseño conserva las fuentes de respaldo del CSS. Se debe repetir Lighthouse y revisar que no haya destello tipográfico ni cambios de distribución. El error CORS de Cloudflare Web Analytics aparece también en consola de Preview y requiere validación separada; no se modifica su configuración sin confirmar primero el origen.
 
 Ejecución: [auditoría responsive y Lighthouse · run 44765488112](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112). [Artefacto de 81 informes y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112/artifacts/14644863755).
+
+
+### Auditoría responsive y Lighthouse · 20 de noviembre de 2026 · ejecución 44778879442
+
+La auditoría de la vista previa de la PR #21 terminó con éxito sobre el commit `b590d6d7c829ba1d835f3e293eb06b4530a02dd0`:
+
+- 108 combinaciones reales de página y viewport (18 rutas × 6 viewports), 0 infracciones axe y 0 fallos bloqueantes. La comprobación adicional de una ruta inexistente también devolvió HTTP 404. El mensaje antiguo del log sumaba esa comprobación adicional y mostraba 109; se ajusta el resumen para distinguirla.
+- 72/72 capturas generadas (18 páginas × móvil, tablet, escritorio y escritorio ancho).
+- Gemini: 7/7 pruebas aprobadas, HTTP 200 y sin exposición de metadatos internos.
+- Ocho informes Lighthouse: rendimiento Inicio 94 móvil/100 escritorio; Nuestra lista 99/99; Proyecto 100/96; CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en los ocho informes.
+- La carga tipográfica de Proyecto queda validada en esta medición: 96 escritorio y 100 móvil; LCP 1,4 s escritorio y 1,2 s móvil.
+
+El seguimiento pendiente es específico: Inicio móvil registra LCP de 2,9 s y rendimiento 94; conviene revisar el elemento LCP antes de cambiar nada. Los ocho informes registran el error de consola de Cloudflare Web Analytics: la solicitud a `https://cloudflareinsights.com/cdn-cgi/rum` desde el dominio temporal de Preview se bloquea por CORS y después aparece `net::ERR_FAILED`. El error corresponde al beacon de Cloudflare, no a una excepción JavaScript del sitio. No modificar ni desactivar la analítica sin verificar primero el comportamiento en producción.
+
+SEO 66–69 se debe al bloqueo de indexación del Preview (`noindex`), que es intencional. No retirar esa protección. Lighthouse también sugiere oportunidades de CSS/recursos visuales; no se harán optimizaciones de logo o imágenes, que quedaron expresamente fuera del alcance.
+
+Ejecución: [Live accessibility and performance audit · run 44778879442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442). Artefacto: [cee-2027-site-audit · 14651908965](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442/artifacts/14651908965).
+
+La auditoría automatizada no sustituye la revisión visual/funcional manual de formularios y estados especiales. La PR #21 permanece abierta y sin fusionar.
