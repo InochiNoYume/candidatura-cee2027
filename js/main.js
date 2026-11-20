@@ -1,5 +1,18 @@
 /* CEE 2027 · CEAT — navegación, accesibilidad e interacciones globales */
 (() => {
+  // Cargar las familias tipográficas de Proyecto sin bloquear el primer renderizado.
+  if (/\/pages\/proyecto(?:\.html)?$/.test(window.location.pathname)) {
+    const projectFonts = document.createElement("link");
+    projectFonts.rel = "preload";
+    projectFonts.as = "style";
+    projectFonts.href = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap";
+    projectFonts.addEventListener("load", () => {
+      projectFonts.rel = "stylesheet";
+      projectFonts.as = "";
+    }, { once: true });
+    document.head.append(projectFonts);
+  }
+
   const inPages = /\/pages\//.test(window.location.pathname);
   const pageBase = inPages ? "" : "pages/";
   const homeHref = inPages ? "../index.html" : "index.html";
