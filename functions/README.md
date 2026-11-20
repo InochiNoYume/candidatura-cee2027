@@ -54,3 +54,25 @@ En pages/proyecto.html, la hoja externa de Google Fonts ya no se declara como st
 ### Auditoría Gemini en Preview · 20 de noviembre de 2026
 
 La ejecución responsive/Lighthouse 44778879442 completó 7/7 pruebas del asistente Gemini con HTTP 200, respuestas del tema esperado y sin exponer metadatos internos. La misma auditoría recorrió 108 combinaciones de 18 rutas y seis viewports, sin infracciones axe ni fallos bloqueantes. Esto valida el comportamiento probado en Preview, no sustituye las comprobaciones manuales ni garantiza disponibilidad futura del proveedor.
+
+
+## Auditoría responsive más reciente · 20 de noviembre de 2026
+
+La ejecución [44783535294](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44783535294) terminó correctamente sobre Preview de la PR #21:
+
+- 108 combinaciones de rutas y viewports, 0 infracciones axe y 0 fallos bloqueantes.
+- 72/72 capturas generadas; 7/7 pruebas Gemini aprobadas.
+- Lighthouse: Inicio 94/100, Nuestra lista 99/99, Proyecto 100/100 y CEAT Te Escucha 100/100 (móvil/escritorio).
+- Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP móvil: Inicio 2,9 s; Nuestra lista 1,9 s; Proyecto 1,2 s; CEAT Te Escucha 1,1 s.
+
+### Formulario CEAT Te Escucha y variables de Cloudflare
+
+La página `pages/escucha.html` aún muestra un aviso de formulario externo pendiente y no implementa `<form>`, iframe, endpoint de envío ni lectura de configuración de formulario. Por tanto, **no se debe crear ninguna variable de entorno para el formulario por ahora**. Al recibir el enlace oficial de Google Forms, se incorporará como destino/enlace de la página estática y se probará manualmente. No almacenar una URL pública de formulario como Secret ni crear `GOOGLE_FORM_URL` hasta que exista código que la consuma.
+
+Las variables actuales del proyecto siguen siendo independientes del formulario:
+- `GEMINI_API_KEY`: Secret obligatorio para el asistente, en Preview y Production.
+- `GEMINI_MODEL`: variable opcional para seleccionar el modelo.
+- `CEE_MAINTENANCE_MODE`: variable operativa para mantenimiento, no relacionada con formularios.
+
+La auditoría automatizada no prueba un envío real de Google Forms.
