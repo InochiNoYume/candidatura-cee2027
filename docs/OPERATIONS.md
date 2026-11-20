@@ -21,7 +21,7 @@ La página de mantenimiento enlaza al sitio institucional del CEAT. El Instagram
 
 ## Limitación de solicitudes del Asistente CEE
 
-La función `functions/api/asistente.js` utiliza el binding `CEE_RATE_LIMITER` cuando está disponible. Si no está configurado, utiliza un respaldo local por instancia (isolate), que no garantiza un límite compartido entre todas las instancias. La configuración definitiva del binding debe completarse en Cloudflare antes de considerar activo el límite global.
+La función `functions/api/asistente.js` conserva un respaldo local por instancia (isolate), que no garantiza un límite compartido. También reconoce un binding compatible llamado `CEE_RATE_LIMITER`, pero la documentación de Cloudflare Pages Functions enumera un subconjunto de bindings y no incluye el Rate Limiting API de Workers. No se debe dar por configurado ese binding en Pages sin confirmar soporte en el proyecto. Como alternativa, revisar una regla de limitación de solicitudes en la capa de seguridad de Cloudflare para `/api/asistente`, o trasladar el endpoint a un Worker dedicado. El Rate Limiting API de Workers es aproximado por ubicación de Cloudflare; para un límite estricto entre ubicaciones se requiere un contador centralizado, por ejemplo con Durable Objects.
 
 ## Publicación
 
