@@ -136,6 +136,17 @@ if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read
   failures.push("Página 404: debe cargar main.js para mostrar el asistente global.");
 
 
+const errorPages = [
+  ["403.html", "Acceso no autorizado"],
+  ["404.html", "Página no encontrada"],
+  ["500.html", "Error del servidor"]
+];
+for (const [file, expectedTitle] of errorPages) {
+  const html = read(file);
+  if (!html.toLowerCase().includes(expectedTitle.toLowerCase())) failures.push(`${file}: falta el mensaje principal esperado`);
+  if (!/<meta\\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) failures.push(`${file}: debe impedir la indexación`);
+}
+ 
 const maintenancePage = read("maintenance.html");
 if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
     !maintenancePage.includes('name="robots" content="noindex,nofollow"')) {
