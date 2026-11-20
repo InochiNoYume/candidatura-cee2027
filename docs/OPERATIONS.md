@@ -64,6 +64,6 @@ El diagnóstico SEO de bloqueo de indexación corresponde al entorno de Preview 
 
 ### Suite de calidad
 
-La ejecución [44761472071](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472071) falló porque scripts/check-assistant.mjs seguía esperando PROVIDER_ATTEMPTS = 2 después de ampliar la función a tres intentos. La aserción fue actualizada a tres en el commit 6f128c35495234c1653c0f6e6a21cd0763e7e076; es obligatorio repetir Site quality checks y comprobar que las suites restantes se ejecuten.
+La ejecución [44761472071](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472071) falló porque scripts/check-assistant.mjs seguía esperando PROVIDER_ATTEMPTS = 2 después de ampliar la función a tres intentos. Se actualizaron ambas expectativas: `scripts/check-assistant.mjs` exige tres intentos y `scripts/test-assistant-resilience.mjs` comprueba que el agotamiento se detiene tras tres llamadas. Cambios en los commits `6f128c35495234c1653c0f6e6a21cd0763e7e076` y `5161e542f65d19a10ccec88db1267a1dbcf5c176`. Es obligatorio repetir Site quality checks y comprobar que las suites restantes se ejecuten.
 
 Artefacto de auditoría: [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366).
