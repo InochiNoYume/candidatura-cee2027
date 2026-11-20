@@ -239,3 +239,10 @@ La puntuación de rendimiento móvil de Nuestra lista fue 83 y requiere una medi
 Ejecución: [Live accessibility and performance audit · run 44761472248](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248). El artefacto [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366) conserva informes y capturas.
 
 La suite «Site quality checks» del mismo commit detectó que `scripts/check-assistant.mjs` aún exigía dos intentos, aunque la función ya permite tres. Se actualizaron la aserción del contrato y la prueba de agotamiento a tres intentos. Site quality checks volvió a aprobarse en la ejecución 44765468423 y en el HEAD documental posterior, ejecución 44765488252.
+
+
+### Ajuste de carga tipográfica en Proyecto · 20 de noviembre de 2026
+
+La auditoría 44765488112 completó 109 combinaciones responsive con 0 infracciones axe y 0 fallos bloqueantes. Lighthouse obtuvo 72 de rendimiento en Proyecto escritorio, frente a 99 en móvil. El diagnóstico identificó la hoja de Google Fonts como recurso bloqueante (ahorro estimado de 2,19 s en esa ejecución); el LCP fue 2,5 s, el TBT 0 ms y el CLS 0,001. Se cambió únicamente Proyecto para precargar la hoja tipográfica y aplicarla después de descargarla, evitando que bloquee el primer renderizado. Las fuentes mantienen sus familias y pesos; si JavaScript no está disponible, el diseño conserva las fuentes de respaldo del CSS. Se debe repetir Lighthouse y revisar que no haya destello tipográfico ni cambios de distribución. El error CORS de Cloudflare Web Analytics aparece también en consola de Preview y requiere validación separada; no se modifica su configuración sin confirmar primero el origen.
+
+Ejecución: [auditoría responsive y Lighthouse · run 44765488112](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112). [Artefacto de 81 informes y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112/artifacts/14644863755).
