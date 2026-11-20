@@ -15,6 +15,13 @@ function walk(dir) {
 }
 walk(".");
 const read = file => fs.readFileSync(file, "utf8");
+const pagesRoutes = JSON.parse(read("_routes.json"));
+if (pagesRoutes.version !== 1 || !pagesRoutes.include?.includes("/*")) {
+  failures.push("Cloudflare Pages: _routes.json debe incluir las rutas dinámicas del sitio.");
+}
+for (const route of ["/assets/*", "/css/*", "/js/*", "/robots.txt", "/sitemap.xml"]) {
+  if (!pagesRoutes.exclude?.includes(route)) failures.push(`Cloudflare Pages: falta excluir el recurso estático ${route} de las invocaciones de Functions.`);
+}
 const idsByFile = new Map();
 
 function checkBalanced(source, file, pairs, label) {
