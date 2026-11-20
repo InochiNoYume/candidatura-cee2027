@@ -44,3 +44,26 @@ El lanzador del Asistente CEE permanece en su posición inferior habitual; «Vol
 
 
 La hoja `css/layout.css` se carga después de `css/styles.css`. Los ajustes globales de capas flotantes deben mantenerse al final de `layout.css`, no solo en `styles.css`, para evitar que una regla posterior los sobrescriba.
+
+
+## Resultado de auditoría 230 · 20 de noviembre de 2026
+
+La ejecución [44761472248](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248) de la PR #21 finalizó correctamente sobre la vista previa:
+
+- 109 combinaciones de página/viewport, 0 infracciones axe y 0 fallos bloqueantes.
+- 72/72 capturas correctas.
+- Gemini: 7/7 pruebas aprobadas con HTTP 200 y sin exposición de metadatos internos.
+- La comprobación de orden de capas y separación de «Volver arriba» frente al lanzador del asistente pasó en todos los viewports.
+- Lighthouse: rendimiento 83–100, accesibilidad 100, buenas prácticas 96 y SEO 66–69 en las cuatro páginas clave, en móvil y escritorio.
+
+### Seguimiento de Lighthouse
+
+Nuestra lista obtuvo 83 en rendimiento móvil y LCP de 4,7 s. Sin embargo, el mismo informe desglosa el LCP en 26 ms de respuesta inicial, 39 ms de demora de recurso, 45 ms de descarga y 72 ms de renderizado (aprox. 182 ms en total), por lo que las cifras no son coherentes entre sí. Repetir Lighthouse en varias ejecuciones antes de modificar la composición o retirar recursos visuales. El informe también registra un error CORS de Cloudflare Web Analytics (cloudflareinsights.com/cdn-cgi/rum) originado en el dominio temporal de Preview; verificarlo en una ejecución de dominio de producción antes de tocar la configuración de analítica.
+
+El diagnóstico SEO de bloqueo de indexación corresponde al entorno de Preview y es intencional. No retirar noindex ni abrir el Preview a indexación para aumentar la puntuación SEO. La publicación debe llevar sus propios metadatos y canonical de producción.
+
+### Suite de calidad
+
+La ejecución [44761472071](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472071) falló porque scripts/check-assistant.mjs seguía esperando PROVIDER_ATTEMPTS = 2 después de ampliar la función a tres intentos. La aserción fue actualizada a tres en el commit 6f128c35495234c1653c0f6e6a21cd0763e7e076; es obligatorio repetir Site quality checks y comprobar que las suites restantes se ejecuten.
+
+Artefacto de auditoría: [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366).
