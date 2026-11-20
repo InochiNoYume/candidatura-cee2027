@@ -748,3 +748,23 @@ body {
 .back-to-top { z-index: 802; }
 .cee-assistant-launcher { z-index: 800; }
 .cee-assistant-panel { z-index: 801; }
+
+
+/* En móvil, el lanzador compacto reduce la superposición sobre el contenido.
+   El nombre accesible se conserva en aria-label del botón. */
+@media (max-width: 560px) {
+  .cee-assistant-launcher {
+    width: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+  .cee-assistant-launcher > span:not(.cee-assistant-launcher-icon) {
+    display: none;
+  }
+  .cee-assistant-launcher-icon {
+    margin: 0;
+  }
+}
