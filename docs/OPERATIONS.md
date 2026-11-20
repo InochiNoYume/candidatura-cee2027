@@ -26,10 +26,11 @@ La función `functions/api/asistente.js` conserva un respaldo local por instanci
 ## Estado de validación · 20 de noviembre de 2026
 
 - La última ejecución completada de Site quality checks está aprobada. Incluye validación de 18 páginas, enlaces/anclas locales, sintaxis, seguridad, resiliencia Gemini y modo mantenimiento.
-- Auditoría responsive 209: encontró seis infracciones axe del mismo tipo en el enlace de marca de mantenimiento; se corrigió el texto accesible.
-- Auditorías responsive 210 y 213: sustituidas por commits posteriores de documentación y ajustes de interfaz antes de completar el recorrido.
-- Se corrigió el solapamiento potencial entre el botón flotante del Asistente CEE y «Volver arriba»: el asistente se eleva cuando el desplazamiento supera 420 px, y su panel se desplaza junto al lanzador.
-- La auditoría responsive más reciente está en curso sobre la vista previa del código actualizado; sus resultados de accesibilidad, capturas y Lighthouse aún deben confirmarse.
+- Auditoría responsive 223 ([ejecución](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680)): completada con error sobre el HEAD `61b9954`; 109 combinaciones, seis infracciones axe `label-content-name-mismatch` en `maintenance.html` y 18 fallos bloqueantes por viewport. Lighthouse se omitió.
+- El artefacto [cee-2027-site-audit](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680/artifacts/14639196925) contiene los informes y capturas.
+- Causa del solapamiento: el lanzador se elevaba al aparecer «Volver arriba», pero la separación era insuficiente. Se eliminó ese desplazamiento; la flecha queda arriba con al menos 8 px de separación y `z-index` superior.
+- Causa de accesibilidad: `maintenance.html` tenía un `aria-label` que no coincidía con el texto visible. Se retiró el atributo redundante y el enlace toma su nombre accesible de su contenido.
+- Las correcciones y una aserción responsive más estricta están en la rama de la PR #21. La nueva auditoría de ese HEAD y la revisión de capturas siguen pendientes.
 - No activar el modo mantenimiento en Production durante las pruebas. Mantener la variable desactivada en Preview salvo prueba controlada.
 
 ## Publicación
@@ -39,4 +40,4 @@ Las vistas previas y las ramas de trabajo no deben considerarse producción. No 
 
 ## Controles flotantes · 20 de noviembre de 2026
 
-Se ajustó el orden de capas de los controles inferiores: «Volver arriba» (`z-index: 802`) queda sobre el lanzador del Asistente CEE (`z-index: 800`), mientras el panel del asistente conserva `z-index: 801`. La auditoría de Preview debe revisar ambos estados —asistente cerrado y abierto— en móvil y escritorio. No dar por terminada la revisión visual hasta comprobar las capturas del último HEAD.
+El lanzador del Asistente CEE permanece en su posición inferior habitual; «Volver arriba» (`z-index: 802`) queda sobre el lanzador (`z-index: 800`) con al menos 8 px de separación. El panel conserva `z-index: 801`. La prueba responsive comprueba la separación y el orden de capas en los seis viewports. No dar por terminada la revisión visual hasta comprobar las capturas de la nueva auditoría.
