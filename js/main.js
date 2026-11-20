@@ -25,7 +25,8 @@
       item("comunidad-tp.html","Comunidad TP","Especialidades y experiencias técnico-profesionales.","08"),
       item("proyecto.html#eje-3","Deportes y vida saludable","Iniciativas del tercer eje.","09"),
       item("proyecto.html#eje-1","Medio ambiente","Sustentabilidad y cuidado del entorno.","10"),
-      item("proyecto.html#eje-2","Convivencia e infraestructura","Cuidado de espacios y convivencia escolar.","11")
+      item("proyecto.html#eje-2","Convivencia e infraestructura","Cuidado de espacios y convivencia escolar.","11"),
+      item("proyecto.html#eje-5","Eje complementario: bienestar","Apoyo, oportunidades y participación estudiantil.","18")
     ]},
     { id:"actualidad", label:"Actualidad y recursos", icon:"⌕", description:"Novedades, ayuda y canales de contacto.", items:[
       item("noticias.html","Noticias y avances","Comunicaciones y novedades.","12"),
@@ -67,6 +68,7 @@
   const closeMenu = () => {
     if (!menuButton || !nav) return;
     nav.classList.remove("open");
+    document.body.classList.remove("menu-open");
     menuButton.setAttribute("aria-expanded","false");
     menuButton.setAttribute("aria-label","Abrir menú");
     menuButton.classList.remove("is-open");
@@ -74,6 +76,7 @@
   if (menuButton && nav) {
     menuButton.addEventListener("click",() => {
       const opened = nav.classList.toggle("open");
+      document.body.classList.toggle("menu-open",opened);
       menuButton.setAttribute("aria-expanded",String(opened));
       menuButton.setAttribute("aria-label",opened ? "Cerrar menú" : "Abrir menú");
       menuButton.classList.toggle("is-open",opened);
@@ -138,39 +141,110 @@
   } else revealItems.forEach(element=>element.classList.add("is-visible"));
 
 
-  // Filtros rápidos de agenda, galería, noticias y transparencia.
+  // Filtros y paginación de iniciativas de Transparencia.
   document.querySelectorAll("[data-filter-group]").forEach(group => {
     const name = group.getAttribute("data-filter-group");
     const buttons = Array.from(group.querySelectorAll("[data-filter]"));
-    const items = Array.from(document.querySelectorAll('[data-filter-item="'+name+'"]'));
-    const empty = document.querySelector('[data-filter-empty="'+name+'"]');
+    const items = Array.from(document.querySelectorAll('[data-filter-item="' + name + '"]'));
+    const empty = document.querySelector('[data-filter-empty="' + name + '"]');
     const result = group.querySelector(".filter-result");
-    const update = value => {
+    const isCommitments = name === "commitments";
+    const pageSize = 5;
+    let currentPage = 1;
+    let activeFilter = "all";
+    const search = isCommitments ? document.querySelector("#commitment-search") : null;
+    const list = isCommitments ? document.querySelector('[data-filter-list="commitments"]') : null;
+    const pagination = isCommitments ? document.createElement("nav") : null;
+    if (pagination && list) {
+      pagination.className = "commitment-pagination";
+      pagination.setAttribute("aria-label", "Páginas de iniciativas");
+      list.insertAdjacentElement("afterend", pagination);
+    }
+
+    const update = (value, resetPage = true) => {
+      activeFilter = value;
+      if (resetPage) currentPage = 1;
       buttons.forEach(button => {
         const active = button.getAttribute("data-filter") === value;
-        button.classList.toggle("is-active",active);
-        button.setAttribute("aria-pressed",String(active));
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
       });
-      let visible = 0;
-      items.forEach(item => {
-        const categories = (item.getAttribute("data-category") || "").split(/\s+/);
-        const show = name === "news" ? value === "all" : value === "all" || categories.includes(value);
-        item.hidden = !show;
-        if (show) visible++;
+
+      const term = search ? search.value.trim().toLocaleLowerCase("es") : "";
+      const matching = items.filter(element => {
+        const categories = (element.getAttribute("data-category") || "").split(/\s+/);
+        const matchesFilter = value === "all" || categories.includes(value);
+        const matchesSearch = !term || element.textContent.toLocaleLowerCase("es").includes(term);
+        return matchesFilter && matchesSearch;
       });
-      if (empty) {
-        if (name === "news") {
-          empty.hidden = value === "all";
-          empty.textContent = value === "all"
-            ? "Todavía no hay publicaciones. Los filtros estarán disponibles para mostrar cada tipo de contenido cuando se publiquen novedades confirmadas."
-            : "Todavía no hay publicaciones de este tipo. Aquí aparecerán cuando exista información confirmada.";
-        } else empty.hidden = visible > 0;
+
+      const pageCount = Math.max(1, Math.ceil(matching.length / pageSize));
+      currentPage = Math.min(currentPage, pageCount);
+      const first = (currentPage - 1) * pageSize;
+      const visible = new Set(isCommitments ? matching.slice(first, first + pageSize) : matching);
+      items.forEach(element => { element.hidden = !visible.has(element); });
+
+      if (empty) empty.hidden = matching.length !== 0;
+      if (result) result.textContent = matching.length + (name === "commitments" ? " iniciativas" : name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : " estados");
+
+      if (pagination) {
+        pagination.replaceChildren();
+        pagination.hidden = pageCount <= 1;
+        if (pageCount > 1) {
+          const previous = document.createElement("button");
+          previous.type = "button";
+          previous.textContent = "← Anterior";
+          previous.disabled = currentPage === 1;
+          previous.addEventListener("click", () => { currentPage--; update(activeFilter, false); });
+          const status = document.createElement("span");
+          status.className = "pagination-status";
+          status.setAttribute("aria-live", "polite");
+          status.textContent = "Página " + currentPage + " de " + pageCount;
+          const next = document.createElement("button");
+          next.type = "button";
+          next.textContent = "Siguiente →";
+          next.disabled = currentPage === pageCount;
+          next.addEventListener("click", () => { currentPage++; update(activeFilter, false); });
+          pagination.append(previous, status, next);
+        }
       }
-      if (result) result.textContent = visible + (name === "gallery" ? " categorías" : name === "agenda" ? " fechas" : " estados");
     };
-    buttons.forEach(button => button.addEventListener("click",() => update(button.getAttribute("data-filter"))));
+
+    buttons.forEach(button => button.addEventListener("click", () => update(button.getAttribute("data-filter"))));
     update("all");
+    if (search) search.addEventListener("input", () => update(activeFilter));
   });
+
+  // Calendario mensual basado exclusivamente en las fechas confirmadas de la agenda.
+  const calendar = document.querySelector("#agenda-calendar");
+  if (calendar) {
+    const events = Array.from(document.querySelectorAll(".agenda-event[data-calendar-start]")).map(card => ({start:card.dataset.calendarStart,end:card.dataset.calendarEnd,title:card.querySelector("h3")?.textContent.trim()||"Actividad",detail:card.querySelector(".agenda-event-body p")?.textContent.trim()||""}));
+    let month=new Date(2026,10,1);
+    const title=document.querySelector("#agenda-calendar-title"),detail=document.querySelector("#agenda-calendar-detail");
+    const pad=n=>String(n).padStart(2,"0"),key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+    const render=()=>{
+      calendar.querySelectorAll(".agenda-calendar-day,.agenda-calendar-blank").forEach(n=>n.remove());
+      const y=month.getFullYear(),m=month.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+      title.textContent=new Intl.DateTimeFormat("es-CL",{month:"long",year:"numeric"}).format(month);
+      for(let i=0;i<first;i++){const blank=document.createElement("span");blank.className="agenda-calendar-blank";blank.setAttribute("aria-hidden","true");calendar.appendChild(blank);}
+      for(let day=1;day<=days;day++){
+        const date=key(new Date(y,m,day)),matches=events.filter(ev=>date>=ev.start&&date<=ev.end),button=document.createElement("button");
+        button.type="button";button.className="agenda-calendar-day";button.textContent=String(day);
+        button.setAttribute("aria-label",day+" de "+title.textContent+(matches.length?": "+matches.map(ev=>ev.title).join(", "):""));
+        if(matches.length)button.classList.add("has-event");
+        button.addEventListener("click",()=>{
+          detail.replaceChildren();const heading=document.createElement("strong");
+          heading.textContent=new Intl.DateTimeFormat("es-CL",{dateStyle:"full"}).format(new Date(y,m,day));detail.appendChild(heading);
+          if(!matches.length){detail.appendChild(document.createTextNode(" No hay actividades confirmadas para esta fecha."));return;}
+          matches.forEach(ev=>{const p=document.createElement("p");p.textContent=ev.title+" — "+ev.detail;detail.appendChild(p);});
+        });
+        calendar.appendChild(button);
+      }
+    };
+    document.querySelector("[data-calendar-prev]")?.addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);render();detail.textContent="Selecciona una fecha marcada para consultar su actividad.";});
+    document.querySelector("[data-calendar-next]")?.addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);render();detail.textContent="Selecciona una fecha marcada para consultar su actividad.";});
+    render();
+  }
 
   const progress = document.createElement("div");
   progress.className = "reading-progress";
@@ -280,38 +354,41 @@
   const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
   const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
   const assistantForm = assistantPanel.querySelector("form");
-  const addAssistantSources = sources => {
-    if (!Array.isArray(sources) || !sources.length) return;
-    const wrapper = document.createElement("div");
-    wrapper.className = "cee-assistant-sources";
-    const heading = document.createElement("strong");
-    heading.textContent = "Fuentes consultadas";
-    wrapper.appendChild(heading);
-    const list = document.createElement("ul");
-    const allowedPaths = new Set(["/","/index.html","/pages/lista.html","/pages/proyecto.html","/pages/agenda.html","/pages/transparencia.html","/pages/noticias.html","/pages/galeria.html","/pages/escucha.html","/pages/preguntas.html","/pages/contacto.html","/pages/actas.html","/pages/informes.html","/pages/comunidad-tp.html","/pages/memoria.html","/pages/privacidad.html","/pages/buscar.html"]);
-    sources.forEach(source => {
-      if (!source || typeof source.url !== "string") return;
-      let url;
-      try { url = new URL(source.url,window.location.origin); } catch { return; }
-      if (url.origin !== window.location.origin || !allowedPaths.has(url.pathname)) return;
-      const item = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = url.href;
-      link.textContent = typeof source.title === "string" ? source.title : "Página oficial";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      item.appendChild(link);
-      list.appendChild(item);
+
+    const appendAssistantInline = (parent, text) => {
+    const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
+    parts.forEach(part => {
+      if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+        const strong = document.createElement("strong");
+        strong.textContent = part.slice(2,-2);
+        parent.appendChild(strong);
+      } else if (part) parent.appendChild(document.createTextNode(part));
     });
-    if (!list.childElementCount) return;
-    wrapper.appendChild(list);
-    assistantMessages.appendChild(wrapper);
-    assistantMessages.scrollTop = assistantMessages.scrollHeight;
   };
-    const addAssistantMessage = (text,isUser=false) => {
-    const message = document.createElement("p");
+  const renderAssistantText = (message, text, isUser) => {
+    const lines = String(text).replace(/\r/g,"").split("\n");
+    let list = null;
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) { list = null; return; }
+      const item = trimmed.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+      if (item && !isUser) {
+        if (!list) { list = document.createElement("ul"); message.appendChild(list); }
+        const li = document.createElement("li");
+        appendAssistantInline(li,item[1]);
+        list.appendChild(li);
+      } else {
+        list = null;
+        const paragraph = document.createElement("p");
+        appendAssistantInline(paragraph,trimmed);
+        message.appendChild(paragraph);
+      }
+    });
+  };
+  const addAssistantMessage = (text,isUser=false) => {
+    const message = document.createElement("div");
     message.className = "cee-assistant-message " + (isUser ? "user" : "assistant");
-    message.textContent = text;
+    renderAssistantText(message,text,isUser);
     assistantMessages.appendChild(message);
     assistantMessages.scrollTop = assistantMessages.scrollHeight;
     return message;
@@ -346,13 +423,19 @@
     const sendButton = assistantForm.querySelector('button[type="submit"]');
     sendButton.disabled = true;
     const pending = addAssistantMessage("Estoy revisando la información del sitio…");
+    const pendingTimer = window.setTimeout(() => {
+      if (pending.isConnected) pending.textContent = "La consulta está tardando un poco más. Estoy intentando completarla…";
+    }, 8000);
     try {
       const response = await fetch("/api/asistente",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({question})
+        body:JSON.stringify({question}),
+        // Cubre el timeout de Gemini y un reintento acotado.
+        signal: AbortSignal.timeout(55000)
       });
       const payload = await response.json().catch(() => ({}));
+      window.clearTimeout(pendingTimer);
       pending.remove();
       if (!response.ok) {
         const safeError = typeof payload.error === "string" ? payload.error : "";
@@ -375,11 +458,14 @@
         addAssistantMessage(typeof payload.answer === "string" && payload.answer
           ? payload.answer
           : "No encontré una respuesta clara en la información publicada. Revisa las secciones oficiales del sitio.");
-        addAssistantSources(payload.sources);
       }
-    } catch {
+    } catch (error) {
+      window.clearTimeout(pendingTimer);
       pending.remove();
-      addAssistantMessage("No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");
+      const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
+      addAssistantMessage(timedOut
+        ? "El asistente está tardando más de lo esperado. Tu mensaje no se perdió; espera un momento y vuelve a intentarlo."
+        : "No se pudo conectar con el asistente. Comprueba tu conexión e inténtalo nuevamente.");
     } finally {
       assistantInput.disabled = false;
       sendButton.disabled = false;
@@ -387,7 +473,8 @@
     }
   });
 
-  // Rastro de partículas equilibrado para mouse y tacto, en todas las páginas.
+  // Rastro de partículas para mouse, lápiz y toques.
+  // El canvas solo anima mientras hay partículas y se detiene al ocultar la página.
   if (!reduceMotion && "requestAnimationFrame" in window) {
     const trailCanvas = document.createElement("canvas");
     trailCanvas.className = "cee-pointer-trail";
@@ -396,51 +483,65 @@
     const trailContext = trailCanvas.getContext("2d");
     if (trailContext) {
       let trailWidth=0,trailHeight=0,trailFrame=0,trailParticles=[];
+      let lastPointerAt=0;
       const resizeTrail=()=>{
-        const dpr=Math.min(window.devicePixelRatio||1,1.5);
+        const dpr=Math.min(window.devicePixelRatio||1,1.25);
         trailWidth=window.innerWidth;trailHeight=window.innerHeight;
         trailCanvas.width=Math.round(trailWidth*dpr);
         trailCanvas.height=Math.round(trailHeight*dpr);
         trailContext.setTransform(dpr,0,0,dpr,0,0);
       };
-      const addTrail=(x,y)=>{
-        const mobile=window.matchMedia("(pointer: coarse)").matches;
-        const count=mobile?2:3;
-        for(let i=0;i<count;i++){
-          if(trailParticles.length>=64)trailParticles.shift();
-          trailParticles.push({
-            x:x+(Math.random()-.5)*7,y:y+(Math.random()-.5)*7,
-            vx:(Math.random()-.5)*.75,vy:(Math.random()-.5)*.75,
-            life:1,r:1.1+Math.random()*(mobile?1.1:1.5)
-          });
-        }
-      };
-      let lastPointerAt=0;
-      document.addEventListener("pointermove",event=>{
-        if(event.pointerType==="mouse" || event.pointerType==="pen" || event.pointerType==="touch"){
-          const now=performance.now();
-          if(now-lastPointerAt>10){addTrail(event.clientX,event.clientY);lastPointerAt=now;}
-        }
-      },{passive:true});
       const drawTrail=()=>{
+        trailFrame=0;
         trailContext.clearRect(0,0,trailWidth,trailHeight);
-        trailParticles=trailParticles.filter(p=>p.life>.035);
+        trailParticles=trailParticles.filter(p=>p.life>.045);
         trailParticles.forEach(p=>{
-          p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=.027;
+          p.x+=p.vx;p.y+=p.vy;p.vx*=.982;p.vy*=.982;p.life-=.035;
           trailContext.beginPath();
           trailContext.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
           trailContext.fillStyle="rgba(128,21,21,"+(.34*p.life)+")";
           trailContext.fill();
         });
-        if(trailParticles.length || !document.hidden)trailFrame=requestAnimationFrame(drawTrail);
+        if(trailParticles.length) scheduleTrail();
       };
-      resizeTrail();trailFrame=requestAnimationFrame(drawTrail);
+      const scheduleTrail=()=>{
+        if (!trailFrame && !document.hidden) trailFrame=requestAnimationFrame(drawTrail);
+      };
+      const addTrail=(x,y,count=3)=>{
+        for(let i=0;i<count;i++){
+          if(trailParticles.length>=54)trailParticles.shift();
+          const angle=Math.random()*Math.PI*2;
+          const speed=.25+Math.random()*.85;
+          trailParticles.push({
+            x:x+(Math.random()-.5)*8,y:y+(Math.random()-.5)*8,
+            vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+            life:.85+Math.random()*.15,r:.9+Math.random()*1.55
+          });
+        }
+        scheduleTrail();
+      };
+      document.addEventListener("pointermove",event=>{
+        if(event.pointerType!=="mouse" && event.pointerType!=="pen" && event.pointerType!=="touch") return;
+        const now=performance.now();
+        if(now-lastPointerAt>=16){
+          addTrail(event.clientX,event.clientY,event.pointerType==="touch"?4:2);
+          lastPointerAt=now;
+        }
+      },{passive:true});
+      document.addEventListener("pointerdown",event=>{
+        if(event.pointerType==="touch" || event.pointerType==="pen" || event.pointerType==="mouse"){
+          addTrail(event.clientX,event.clientY,event.pointerType==="touch"?10:5);
+        }
+      },{passive:true});
+      resizeTrail();
       window.addEventListener("resize",resizeTrail,{passive:true});
       document.addEventListener("visibilitychange",()=>{
         if(document.hidden){cancelAnimationFrame(trailFrame);trailFrame=0;}
-        else if(!trailFrame)trailFrame=requestAnimationFrame(drawTrail);
+        else if(trailParticles.length) scheduleTrail();
       });
-      window.addEventListener("pagehide",()=>cancelAnimationFrame(trailFrame),{once:true});
+      window.addEventListener("pagehide",()=>{
+        cancelAnimationFrame(trailFrame);trailFrame=0;
+      },{once:true});
     } else trailCanvas.remove();
   }
 

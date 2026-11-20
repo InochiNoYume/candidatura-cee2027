@@ -20,7 +20,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - CSS3 con diseño responsive y preferencias de movimiento reducido.
 - JavaScript del navegador, sin framework de interfaz.
 - Cloudflare Pages y Pages Functions.
-- Google Gemini API mediante una función del servidor.
+- Google Gemini API como único motor del asistente mediante una función del servidor.
 - GitHub Actions para validaciones y auditorías automatizadas.
 - Playwright, axe-core y Lighthouse para pruebas.
 
@@ -90,7 +90,7 @@ Las fechas y los contenidos deben mantenerse alineados con la documentación ofi
 
 ## Fotografías e identidad visual
 
-Las ilustraciones SVG actuales de los ejes y de la portada están en `assets/images/illustrations/`. Son recursos conceptuales de referencia, no fotografías reales. Las cinco imágenes JPEG de los ejes ya están subidas a `assets/images/ejes/` en `main`; sus nombres exactos y el uso previsto están documentados en `assets/images/ejes/README.md`. Aún falta revisar visualmente los archivos e integrarlos en la página Proyecto. Las ilustraciones se conservarán como respaldo hasta validar esa integración. No se reemplazarán por imágenes genéricas ni se presentarán ilustraciones como fotografías.
+Las cinco imágenes JPEG de los ejes están integradas en `pages/proyecto.html` como material estrictamente referencial y llevan un aviso visible que indica que fueron localizadas mediante Google Imágenes y que se actualizarán próximamente. Google Imágenes es un buscador, no el autor ni una licencia de uso: antes de mantener estas imágenes en producción se deben verificar sus fuentes y permisos, o reemplazarlas por fotografías propias autorizadas del CEAT. Las ilustraciones SVG de `assets/images/illustrations/` se conservan como respaldo dentro de cada elemento `<picture>`. La portada y el bloque «Tu voz también construye» siguen pendientes de fotografías reales autorizadas.
 
 ### Carpetas y nombres para las próximas imágenes
 
@@ -115,18 +115,19 @@ Las fotografías de estudiantes deben contar con las autorizaciones correspondie
 
 ## Asistente informativo
 
-El asistente de la web utiliza Google Gemini desde `functions/api/asistente.js`.
+El asistente de la web utiliza **únicamente Google Gemini** desde `functions/api/asistente.js`.
 
-- Se configura mediante el Secret `GEMINI_API_KEY` en Cloudflare Pages.
-- Modelo predeterminado configurado en el código: `gemini-3.5-flash-lite`; puede sobrescribirse con `GEMINI_MODEL`.
+- Se configura mediante el Secret `GEMINI_API_KEY`; el modelo predeterminado es `gemini-3.5-flash-lite` y puede sobrescribirse con `GEMINI_MODEL`.
 - Utiliza URL Context para consultar páginas públicas del propio sitio.
-- Selecciona páginas según el tema de la pregunta y puede consultar las 16 páginas informativas para preguntas generales.
+- Selecciona páginas según el tema de la pregunta y puede consultar todas las secciones para preguntas generales.
 - Está limitado a consultas relacionadas con la web CEE 2027.
 - No mantiene historial de conversación en el sitio.
 - Máximo de 500 caracteres por pregunta, 130 palabras por respuesta y 420 tokens de salida.
+- El timeout del proveedor es de 20 segundos, con hasta dos intentos ante fallos transitorios.
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
+- Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
-No incluir claves API en el código del navegador, archivos versionados, commits ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
+No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
 
 Más detalles: [functions/README.md](functions/README.md).
 
@@ -164,14 +165,15 @@ Antes de modificar CSP, comprobar los dominios estrictamente necesarios para las
 | Nuestra lista | 99 | 100 | 92 | 100 |
 | Proyecto | 99 | 100 | 92 | 100 |
 
-En la segunda ejecución, el rendimiento de CEAT Te Escucha subió de 81 a 99 y las cuatro páginas evaluadas marcaron 99 en rendimiento, 100 en accesibilidad y 100 en SEO. El 92 de buenas prácticas se mantuvo.
+En la segunda ejecución, el rendimiento de CEAT Te Escucha subió de 81 a 99 y las cuatro páginas evaluadas marcaron 99 en rendimiento, 100 en accesibilidad y 100 en SEO. El 92 de buenas prácticas se mantuvo en esa medición.
 
-La revisión inicial relacionó el 92 de buenas prácticas con un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero `connect-src` solo permitía el mismo origen. Este PR incorpora el dominio de métricas explícitamente en esa directiva y añade una comprobación automatizada. **La corrección está en esta rama/PR y todavía no está desplegada en producción**, por lo que el 92 debe volver a medirse después de integrar el cambio.
+La revisión inicial relacionó el 92 de buenas prácticas con un error de consola: el beacon de Cloudflare Web Analytics intentaba conectarse a `cloudflareinsights.com`, pero `connect-src` solo permitía el mismo origen. El cambio de CSP ya fue integrado en `main` mediante el PR #19. La auditoría posterior al despliegue, ejecución [44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319), confirmó **100/100 en buenas prácticas para las cuatro páginas evaluadas**, además de 100 en accesibilidad y SEO. El rendimiento registrado fue 95 en Inicio, 100 en CEAT Te Escucha y 99 en Nuestra lista y Proyecto.
 
-Los resultados de Lighthouse pueden variar entre ejecuciones. La mejora de rendimiento ya aparece en la auditoría posterior, pero conviene repetirla tras el despliegue del PR y comparar varias ejecuciones.
+Los resultados de Lighthouse pueden variar entre ejecuciones; conviene comparar mediciones posteriores y no tratar un único puntaje como garantía permanente.
 
 - Auditoría base: [GitHub Actions · ejecución 44520081909](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44520081909).
 - Auditoría posterior: [GitHub Actions · ejecución 44523480582](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44523480582).
+- Auditoría tras la corrección CSP de PR #19: [GitHub Actions · ejecución 44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319).
 
 ### Verificación manual pendiente
 

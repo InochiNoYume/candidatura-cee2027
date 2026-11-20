@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 
-const base = "https://candidatura-cee2027.pages.dev/";
+const base = (process.env.CEE_AUDIT_BASE_URL || "https://candidatura-cee2027.pages.dev/").replace(/\/?$/, "/");
 const routes = [
   "", "pages/lista.html", "pages/proyecto.html", "pages/agenda.html",
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
@@ -21,6 +21,8 @@ const viewports = [
 const browser = await chromium.launch({ headless: true });
 const results = [];
 const failures = [];
+const assistantResults = [];
+const screenshotResults = [];
 
 try {
   for (const viewport of viewports) {
@@ -58,11 +60,14 @@ try {
               const value = button.getAttribute("data-filter");
               button.click();
               const visible = items.filter(item => !item.hidden);
-              const expected = items.filter(item => {
+              const matchingItems = items.filter(item => {
                 if (name === "news") return value === "all";
                 const categories = (item.getAttribute("data-category") || "").trim().split(/\s+/).filter(Boolean);
                 return value === "all" || categories.includes(value);
               });
+              // Transparencia muestra cinco compromisos por página; validar la página actual,
+              // no exigir que las quince tarjetas estén visibles simultáneamente.
+              const expected = name === "commitments" ? matchingItems.slice(0, 5) : matchingItems;
               if (visible.length !== expected.length) {
                 errors.push('"' + value + '": visibles ' + visible.length + ', esperados ' + expected.length);
               }
@@ -95,8 +100,7 @@ try {
           if (window.matchMedia("(min-width: 1241px)").matches && nav && nav.scrollWidth > nav.clientWidth + 2) {
             errors.push("la navegación horizontal desborda su espacio disponible");
           }
-          if (dropdown) {
-            const summary = dropdown.querySelector("summary");
+          if (dropdown) {            const summary = dropdown.querySelector("summary");
             const pseudoArrow = summary ? getComputedStyle(summary, "::after").content : "none";
             if (pseudoArrow !== "none" && pseudoArrow !== "normal") errors.push("el desplegable muestra una flecha CSS duplicada");
             dropdown.open = false;
@@ -195,14 +199,106 @@ try {
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
         if (axe.violations.length) failures.push(`${viewport.name} ${route}: ${axe.violations.length} violaciones de accesibilidad (${axe.violations.map(v => v.id).join(", ")})`);
       } catch (error) {
-        failures.push(`${viewport.name} ${route}: ${error.message}`);
-        results.push({ route, viewport: viewport.name, error: error.message });
+        failures.push(`${viewport.name} ${route}: ${error.message}`);        results.push({ route, viewport: viewport.name, error: error.message });
       }
       page.removeAllListeners("pageerror");
     }
     await context.close();
   }
-  const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  // Siete pruebas reales del endpoint Gemini en Preview: ejes, lista, agenda, transparencia, audiencias estudiantil/docente y fuera de alcance.
+  const assistantTests = [
+    {
+      name: "five-axes",
+      question: "¿Cuáles son los cinco ejes del proyecto CEE 2027?",
+      expectedTopic: /ambiente|sustentabilidad/i
+    },
+    {
+      name: "team-members-and-roles",
+      question: "¿Quiénes integran la lista y qué cargos ocupa cada persona?",
+      expectedTopic: /lista|integrantes|cargo|publicad|información/i
+    },
+    {
+      name: "agenda-and-dates",
+      question: "¿Qué fechas y actividades aparecen en la agenda de la candidatura?",
+      expectedTopic: /agenda|noviembre|diciembre|fecha|calendario/i
+    },
+    {
+      name: "transparency",
+      question: "¿Qué información, actas o informes de transparencia están publicados?",
+      expectedTopic: /transparencia|actas|informes|documentos/i
+    },
+    {
+      name: "student-audience",
+      question: "Soy estudiante: ¿cómo puedo participar, hacer propuestas o comunicar una inquietud?",
+      expectedTopic: /particip|propuesta|voz|escucha|estudiant/i
+    },
+    {
+      name: "teacher-audience",
+      question: "Soy profesor: ¿qué información institucional de la candidatura puedo consultar en esta web?",
+      expectedTopic: /web|cee|información|documentos|propuesta|agenda/i
+    },
+    {
+      name: "out-of-scope",
+      question: "¿Cuál es la capital de Francia?",
+      expectedTopic: /cee 2027|web|sitio|asistente/i
+    }
+  ];
+  for (const test of assistantTests) {
+    try {
+      const response = await fetch(new URL("api/asistente", base), { method: "POST", headers: { "Content-Type": "application/json", "Origin": new URL(base).origin }, body: JSON.stringify({ question: test.question }), signal: AbortSignal.timeout(55000) });
+      const payload = await response.json().catch(() => ({}));
+      const answer = typeof payload?.answer === "string" ? payload.answer.trim() : "";
+      const answerMatchesExpectedTopic = test.expectedTopic.test(answer);
+      const valid = response.ok && payload?.provider === "gemini" && answer.length > 0 &&
+        answerMatchesExpectedTopic && !Object.hasOwn(payload || {}, "sources");
+      assistantResults.push({
+        name: test.name, status: response.status, provider: payload?.provider || null,
+        answerPresent: answer.length > 0, answerMatchesExpectedTopic,
+        answerLength: answer.length, sourceMetadataExposed: Object.hasOwn(payload || {}, "sources"),
+        code: payload?.code || null, passed: valid
+      });
+      if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status +
+        ", provider " + (payload?.provider || "none") + ", topicMatch " + answerMatchesExpectedTopic +
+        ", code " + (payload?.code || "none"));
+    } catch (error) {
+      assistantResults.push({ name: test.name, passed: false, error: error.message });
+      failures.push("Gemini Preview " + test.name + ": " + error.message);
+    }
+  }
+
+  // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
+  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }];
+  const screenshotViewports = [
+    { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
+    { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
+    { name: "desktop", width: 1280, height: 900, isMobile: false, hasTouch: false },
+    { name: "wide-desktop", width: 1440, height: 900, isMobile: false, hasTouch: false }
+  ];
+  fs.mkdirSync("audit-results/screenshots", { recursive: true });
+  for (const viewport of screenshotViewports) {
+    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, isMobile: viewport.isMobile, hasTouch: viewport.hasTouch });
+    const page = await context.newPage();
+    for (const route of screenshotRoutes) {
+      try {
+        await page.goto(new URL(route.route, base).href, { waitUntil: "networkidle", timeout: 45000 });
+        // Activa los elementos con reveal/IntersectionObserver antes de capturar la página completa.
+        const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+        for (let y = 0; y < pageHeight; y += Math.max(500, viewport.height - 120)) {
+          await page.evaluate(scrollY => window.scrollTo(0, scrollY), y);
+          await page.waitForTimeout(120);
+        }
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.waitForTimeout(500);
+        const file = "audit-results/screenshots/" + route.name + "-" + viewport.name + ".png";
+        await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
+        screenshotResults.push({ page: route.name, viewport: viewport.name, file, passed: true });
+      } catch (error) {
+        screenshotResults.push({ page: route.name, viewport: viewport.name, passed: false, error: error.message });
+        failures.push("Captura visual " + route.name + " " + viewport.name + ": " + error.message);
+      }
+    }
+    await context.close();
+  }  const missingPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
   const missingTitle = await missingPage.title();
   const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
@@ -222,8 +318,14 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
     missingRouteStatus: results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? null,
     accessibilityViolations: results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0),
     pagesWithAccessibilityIssues: results.filter(item => (item.accessibility?.violations || 0) > 0).length,
+    geminiTestsPassed: assistantResults.filter(item => item.passed).length,
+    geminiTestsTotal: assistantResults.length,
+    screenshotsPassed: screenshotResults.filter(item => item.passed).length,
+    screenshotsTotal: screenshotResults.length,
     failures
   },
+  assistantResults,
+  screenshotResults,
   results
 }, null, 2));
 console.log(`Responsive audit: ${results.length} page/viewport combinations; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);

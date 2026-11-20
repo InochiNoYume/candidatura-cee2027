@@ -129,6 +129,19 @@ if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read
   failures.push("Página 404: debe cargar main.js para mostrar el asistente global.");
 
 
+const listPage = read("pages/lista.html");
+const projectPage = read("pages/proyecto.html");
+const faqPage = read("pages/preguntas.html");
+const homePage = read("index.html");
+if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Almirón") || !listPage.includes('aria-hidden="true">AP</div><span class="role">Presidenta</span>'))
+  failures.push("La tarjeta pública debe respetar el nombre preferido de la presidenta (Agustina Pérez).");
+if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
+  failures.push("Proyecto: el eje 5 debe estar identificado como complementario y separado de los cuatro ejes oficiales.");
+if (!faqPage.includes("cuatro ejes") || !faqPage.includes("quinto eje complementario"))
+  failures.push("Preguntas frecuentes: debe distinguir los cuatro ejes oficiales del quinto complementario.");
+if (!homePage.includes("04 + 01") || !homePage.includes("Cuatro ejes oficiales y uno complementario"))
+  failures.push("Inicio: debe mostrar cuatro ejes oficiales y uno complementario.");
+
 const navigationSource = read("js/main.js");
 if (!navigationSource.includes("split(/" + String.fromCharCode(92) + "s+/)"))
   failures.push("Filtros: la separación de categorías debe usar espacios en blanco correctamente.");
@@ -144,12 +157,12 @@ for (const file of requiredNavigationPages) {
 for (const label of ["La candidatura","Gestión y transparencia","Comunidad estudiantil","Actualidad y recursos"]) {
   if (!navigationSource.includes(label)) failures.push(`Menú: falta la categoría "${label}"`);
 }
-for (const token of ['nav.classList.toggle("open")','menuButton.setAttribute("aria-expanded",String(opened))','event.key === "Escape"']) {
+for (const token of ['nav.classList.toggle("open")','document.body.classList.toggle("menu-open",opened)','document.body.classList.remove("menu-open")','menuButton.setAttribute("aria-expanded",String(opened))','event.key === "Escape"']) {
   if (!navigationSource.includes(token)) failures.push(`Menú: falta comportamiento requerido ${token}`);
 }
 
 const layoutSource = read("css/layout.css");
-for (const selector of [".nav-dropdown-panel",".nav-panel-items",".menu-toggle.is-open",".footer-group"]) {
+for (const selector of [".nav-dropdown-panel",".nav-panel-items",".menu-toggle.is-open",".footer-group","body.menu-open",".site-footer .footer-links"]) {
   if (!layoutSource.includes(selector)) failures.push(`Estilos de navegación: falta ${selector}`);
 }
 if (!/\.site-header \.menu-toggle span\s*\{[^}]*margin:\s*0\s*!important/s.test(layoutSource))

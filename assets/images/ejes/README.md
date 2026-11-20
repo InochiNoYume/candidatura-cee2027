@@ -1,6 +1,6 @@
 # Fotografías y recursos visuales de los ejes
 
-Esta carpeta contiene los cinco archivos de imagen que ya fueron subidos a `main`. La página Proyecto todavía conserva sus ilustraciones SVG de `../illustrations/`; estas fotografías deben revisarse visualmente y conectarse a la página en una tarea posterior, sin reemplazar recursos hasta validar el diseño.
+Esta carpeta contiene los cinco JPEG integrados en la página `pages/proyecto.html` como imágenes referenciales. Cada imagen tiene un aviso visible de que fue localizada mediante Google Imágenes y que se actualizará próximamente. Las ilustraciones SVG de `../illustrations/` permanecen como respaldo dentro de los elementos `<picture>`.
 
 ## Archivos existentes
 
@@ -17,9 +17,9 @@ Esta carpeta contiene los cinco archivos de imagen que ya fueron subidos a `main
 - Mantener la correspondencia entre cada imagen y el eje indicado.
 - No presentar propuestas como logros ya realizados.
 - El quinto eje es complementario y no debe atribuirse al documento oficial original.
-- Antes de conectarlas a la web, revisar su contenido, resolución, peso, encuadre y permisos de publicación.
+- Las imágenes están conectadas como referencias temporales; revisar su procedencia y permisos antes de mantenerlas publicadas.
 - Optimizar a WebP solo si se realiza una conversión real; no cambiar la extensión mediante un simple renombrado.
-- Al integrarlas, actualizar las referencias de la página Proyecto y comprobar escritorio, tableta y móvil.
+- Comprobar el encuadre y el aviso en escritorio, tableta y móvil.
 
 ## Ilustraciones actuales
 

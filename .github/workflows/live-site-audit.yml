@@ -3,7 +3,14 @@ name: Live accessibility and performance audit
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      base_url:
+        description: "URL de producción o preview de Cloudflare Pages"
+        required: false
+        default: "https://candidatura-cee2027.pages.dev/"
 
 permissions:
   contents: read
@@ -20,7 +27,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
       - name: Allow Cloudflare Pages deployment to finish
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         run: sleep 75
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -30,20 +37,40 @@ jobs:
         run: |
           npm install --no-save playwright @axe-core/playwright lighthouse
           npx playwright install --with-deps chromium
-      - name: Test every page on mobile and desktop
+      - name: Test every page on mobile, tablet and desktop
+        env:
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://feat-integrate-axis-referenc.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: node scripts/audit-live-site.mjs
-      - name: Run Lighthouse on key pages
+      - name: Run Lighthouse on key pages for mobile and desktop
+        env:
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://feat-integrate-axis-referenc.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: |
           mkdir -p audit-results/lighthouse
           export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
+          BASE_URL="${CEE_AUDIT_BASE_URL%/}"
           echo "Lighthouse Chrome: $CHROME_PATH"
-          for page in "" "pages/lista" "pages/proyecto" "pages/escucha"; do
-            name=$(printf '%s' "${page:-home}" | tr '/.' '--')
-            npx lighthouse "https://candidatura-cee2027.pages.dev/${page}" \
-              --chrome-flags="--headless --no-sandbox" \
-              --only-categories=performance,accessibility,best-practices,seo \
-              --output=json --output-path="audit-results/lighthouse/${name}.json" \
-              --quiet
+          for device in mobile desktop; do
+            if [ "$device" = "mobile" ]; then
+              DEVICE_FLAGS=(
+                --form-factor=mobile
+                --screenEmulation.mobile=true
+                --screenEmulation.width=390
+                --screenEmulation.height=844
+                --screenEmulation.deviceScaleFactor=2
+              )
+            else
+              DEVICE_FLAGS=(--preset=desktop)
+            fi
+
+            for page in "" "pages/lista" "pages/proyecto" "pages/escucha"; do
+              name=$(printf '%s-%s' "$device" "${page:-home}" | tr '/.' '--')
+              npx lighthouse "${BASE_URL}/${page}" \
+                "${DEVICE_FLAGS[@]}" \
+                --chrome-flags="--headless --no-sandbox" \
+                --only-categories=performance,accessibility,best-practices,seo \
+                --output=json --output-path="audit-results/lighthouse/${name}.json" \
+                --quiet
+            done
           done
       - name: Print Lighthouse score summary
         if: always()
