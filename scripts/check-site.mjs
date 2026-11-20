@@ -144,7 +144,7 @@ const errorPages = [
 for (const [file, expectedTitle] of errorPages) {
   const html = read(file);
   if (!html.toLowerCase().includes(expectedTitle.toLowerCase())) failures.push(`${file}: falta el mensaje principal esperado`);
-  if (!/<meta\\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) failures.push(`${file}: debe impedir la indexación`);
+  if (!/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) failures.push(`${file}: debe impedir la indexación`);
 }
  
 const maintenancePage = read("maintenance.html");
