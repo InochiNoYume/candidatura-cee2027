@@ -91,7 +91,7 @@ function selectSources(question) {
   // Se limita el número de secciones para controlar latencia y contexto enviado a Gemini.
   const ranked = [...scored].sort((a, b) => b.score - a.score);
   const maxScore = ranked[0].score;
-  const relevant = ranked.filter(group => group.score >= Math.max(2, maxScore * 0.3)).slice(0, 5);
+  const relevant = ranked.filter(group => group.score >= Math.max(1, maxScore * 0.2)).slice(0, 5);
   const selected = new Set();
   for (const group of relevant) group.paths.forEach(path => selected.add(path));
   return [...selected];
