@@ -238,4 +238,4 @@ La puntuación de rendimiento móvil de Nuestra lista fue 83 y requiere una medi
 
 Ejecución: [Live accessibility and performance audit · run 44761472248](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248). El artefacto [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366) conserva informes y capturas.
 
-La suite «Site quality checks» del mismo commit detectó que `scripts/check-assistant.mjs` aún exigía dos intentos, aunque la función ya permite tres. La aserción se ha actualizado a tres; la suite debe volver a ejecutarse para confirmar el arreglo.
+La suite «Site quality checks» del mismo commit detectó que `scripts/check-assistant.mjs` aún exigía dos intentos, aunque la función ya permite tres. Se actualizaron la aserción del contrato y la prueba de agotamiento a tres intentos. Site quality checks volvió a aprobarse en la ejecución 44765468423 y en el HEAD documental posterior, ejecución 44765488252.
