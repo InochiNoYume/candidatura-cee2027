@@ -186,7 +186,10 @@ try {
               if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
                 errors.push("el botón Asistente CEE se superpone con Volver arriba");
               }
-              if (b.bottom > a.top) errors.push("Volver arriba no está visualmente encima del Asistente CEE");
+              if (a.top - b.bottom < 8) errors.push("Volver arriba no mantiene 8 px de separación sobre el Asistente CEE");
+              if (Number(getComputedStyle(topButton).zIndex) <= Number(getComputedStyle(launcher).zIndex)) {
+                errors.push("Volver arriba no tiene una capa visual superior al Asistente CEE");
+              }
             }
             if (!launcher.querySelector(".cee-assistant-launcher-icon svg")) errors.push("falta la mascota gatito del Asistente CEE");
             if (launcher.querySelector(".cee-assistant-launcher-icon svg") &&
