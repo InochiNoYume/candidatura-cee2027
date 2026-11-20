@@ -197,7 +197,7 @@
       });
       const searchTerm = name === "commitments" ? (document.querySelector("#commitment-search")?.value || "").trim().toLocaleLowerCase("es") : "";
       const matchingItems = items.filter(item => {
-        const categories = (item.getAttribute("data-category") || "").split(/\\s+/);
+        const categories = (item.getAttribute("data-category") || "").split(/\s+/);
         const matchesFilter = name === "news" ? value === "all" : value === "all" || categories.includes(value);
         const matchesSearch = !searchTerm || item.textContent.toLocaleLowerCase("es").includes(searchTerm);
         return matchesFilter && matchesSearch;
