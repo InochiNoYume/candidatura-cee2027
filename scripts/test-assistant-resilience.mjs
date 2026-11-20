@@ -134,7 +134,7 @@ try {
     geminiCalls += 1;
     return providerJson({ error: { status: "UNAVAILABLE" } }, 503);
   }, "GEMINI_REQUEST_FAILED");
-  assert.equal(geminiCalls, 2, "A transient error must stop after two attempts");
+  assert.equal(geminiCalls, 3, "A transient error must stop after three attempts");
 
   console.log("GEMINI RESILIENCE TESTS PASSED: success, internal source grounding, canonical URL normalization, full page index, transient retry, auth handling, invalid response validation and bounded retry exhaustion.");
 } finally {
