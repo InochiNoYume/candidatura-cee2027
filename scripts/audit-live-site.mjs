@@ -8,7 +8,7 @@ const routes = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "404.html"
+  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "403.html", "404.html", "500.html", "maintenance.html"
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
@@ -158,6 +158,7 @@ try {
         });
         for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
 
+        if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(route)) {
         // Comprueba la presencia y accesibilidad básica del asistente global y del canvas de partículas.
         const assistantChecks = await page.evaluate(() => {
           const errors = [];
@@ -170,6 +171,11 @@ try {
           if (!reduceMotion && !trail) errors.push("no aparece el canvas de partículas aunque el movimiento está permitido");
           if (reduceMotion && trail && getComputedStyle(trail).display !== "none") errors.push("el rastro de partículas no respeta prefers-reduced-motion");
           if (launcher && !/Asistente CEE/.test(launcher.textContent)) errors.push("el botón no muestra el nombre Asistente CEE");
+          if (launcher && window.matchMedia("(max-width: 560px)").matches) {
+            if (launcher.getBoundingClientRect().width > 64) errors.push("el lanzador móvil no está en formato compacto y puede tapar contenido");
+            const label = [...launcher.children].find(child => !child.classList.contains("cee-assistant-launcher-icon"));
+            if (label && getComputedStyle(label).display !== "none") errors.push("el texto del lanzador debería ocultarse en móvil y conservarse como nombre accesible");
+          }
           if (panel && !/Asistente CEE/.test(panel.querySelector("#cee-assistant-title")?.textContent || "")) errors.push("el panel no muestra el título Asistente CEE");
           if (launcher && panel) {
             window.scrollTo(0, 650);
@@ -185,7 +191,10 @@ try {
               if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
                 errors.push("el botón Asistente CEE se superpone con Volver arriba");
               }
-              if (b.bottom > a.top) errors.push("Volver arriba no está visualmente encima del Asistente CEE");
+              if (a.top - b.bottom < 8) errors.push("Volver arriba no mantiene 8 px de separación sobre el Asistente CEE");
+              if (Number(getComputedStyle(topButton).zIndex) <= Number(getComputedStyle(launcher).zIndex)) {
+                errors.push("Volver arriba no tiene una capa visual superior al Asistente CEE");
+              }
             }
             if (!launcher.querySelector(".cee-assistant-launcher-icon svg")) errors.push("falta la mascota gatito del Asistente CEE");
             if (launcher.querySelector(".cee-assistant-launcher-icon svg") &&
@@ -197,6 +206,7 @@ try {
           return errors;
         });
         for (const error of assistantChecks) failures.push(`${viewport.name} ${route}: asistente/efectos: ${error}`);
+        }
 
         // Comprueba que el buscador devuelve páginas reales y gestiona búsquedas sin resultados.
         if (route === "pages/buscar.html") {
@@ -226,9 +236,13 @@ try {
           }
         };
         results.push(item);
-        const expectedStatus = 200;
+        const expectedStatus = ({ "403.html": 403, "404.html": 404, "500.html": 500 })[route] ?? 200;
         if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
+        if (route === "403.html" && !/Acceso no autorizado/i.test(layout.title)) failures.push(`${viewport.name} 403.html: el título no identifica el acceso restringido`);
         if (route === "404.html" && !/Página no encontrada/i.test(layout.title)) failures.push(`${viewport.name} 404.html: el título no identifica la página no encontrada`);
+        if (route === "500.html" && !/Error del servidor/i.test(layout.title)) failures.push(`${viewport.name} 500.html: el título no identifica el error del servidor`);
+        if (["403.html", "404.html", "500.html"].includes(route) && !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex")) failures.push(`${viewport.name} ${route}: falta la directiva noindex`);
+        if (route === "maintenance.html" && (!/mantenimiento/i.test(layout.title) || !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex"))) failures.push(`${viewport.name} maintenance.html: falta el título o la directiva noindex`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
@@ -302,7 +316,28 @@ try {
   }
 
   // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
-  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }];
+  const screenshotRoutes = [
+    { name: "home", route: "" },
+    { name: "lista", route: "pages/lista.html" },
+    { name: "proyecto", route: "pages/proyecto.html" },
+    { name: "agenda", route: "pages/agenda.html" },
+    { name: "transparencia", route: "pages/transparencia.html" },
+    { name: "noticias", route: "pages/noticias.html" },
+    { name: "galeria", route: "pages/galeria.html" },
+    { name: "escucha", route: "pages/escucha.html" },
+    { name: "preguntas", route: "pages/preguntas.html" },
+    { name: "contacto", route: "pages/contacto.html" },
+    { name: "actas", route: "pages/actas.html" },
+    { name: "informes", route: "pages/informes.html" },
+    { name: "comunidad-tp", route: "pages/comunidad-tp.html" },
+    { name: "memoria", route: "pages/memoria.html" },
+    { name: "privacidad", route: "pages/privacidad.html" },
+    { name: "buscar", route: "pages/buscar.html" },
+    { name: "403", route: "403.html" },
+    { name: "404", route: "404.html" },
+    { name: "500", route: "500.html" },
+    { name: "maintenance", route: "maintenance.html" }
+  ];
   const screenshotViewports = [
     { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
     { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
@@ -363,7 +398,7 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
   screenshotResults,
   results
 }, null, 2));
-console.log(`Responsive audit: ${results.length} page/viewport combinations; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
+console.log(`Responsive audit: ${results.length - 1} page/viewport combinations across ${routes.length} routes and ${viewports.length} viewports; missing-route check HTTP ${results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? "unknown"}; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
 if (failures.length) {
   for (const failure of failures) console.error(" - " + failure);
   process.exitCode = 1;

@@ -15,6 +15,13 @@ function walk(dir) {
 }
 walk(".");
 const read = file => fs.readFileSync(file, "utf8");
+const pagesRoutes = JSON.parse(read("_routes.json"));
+if (pagesRoutes.version !== 1 || !pagesRoutes.include?.includes("/*")) {
+  failures.push("Cloudflare Pages: _routes.json debe incluir las rutas dinámicas del sitio.");
+}
+for (const route of ["/assets/*", "/css/*", "/js/*", "/robots.txt", "/sitemap.xml"]) {
+  if (!pagesRoutes.exclude?.includes(route)) failures.push(`Cloudflare Pages: falta excluir el recurso estático ${route} de las invocaciones de Functions.`);
+}
 const idsByFile = new Map();
 
 function checkBalanced(source, file, pairs, label) {
@@ -57,7 +64,7 @@ for (const file of htmlFiles) {
   if (!/<html\b[^>]*lang=["']es["']/i.test(html)) failures.push(`${file}: falta lang="es" en <html>`);
   if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) failures.push(`${file}: falta meta viewport responsive`);
   if ((html.match(/<main\b/gi) || []).length !== 1) failures.push(`${file}: debe contener exactamente un <main>`);
-  if (file !== "404.html") {
+  if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(path.basename(file))) {
     for (const tag of ["header", "footer"]) {
       if ((html.match(new RegExp("<" + tag + "\\b", "gi")) || []).length !== 1)
         failures.push(`${file}: debe contener exactamente un <${tag}>`);
@@ -92,7 +99,7 @@ for (const file of htmlFiles) {
     let clean;
     try { clean = decodeURIComponent((pathname || "").split("?")[0]); }
     catch { failures.push(`${file}: URL local mal codificada: ${raw}`); continue; }
-    const target = path.resolve(path.dirname(file), clean || path.basename(file));
+    const target = path.resolve(clean.startsWith("/") ? "." : path.dirname(file), clean.replace(/^\/+/, "") || path.basename(file));
     if (!fs.existsSync(target)) {
       failures.push(`${file}: destino local inexistente: ${raw}`);
       continue;
@@ -128,6 +135,29 @@ if (!/toda la web|resumen general|que ofrece esta web/.test(assistantSource))
 if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read("404.html")))
   failures.push("Página 404: debe cargar main.js para mostrar el asistente global.");
 
+
+const errorPages = [
+  ["403.html", "Acceso no autorizado"],
+  ["404.html", "Página no encontrada"],
+  ["500.html", "Error del servidor"]
+];
+for (const [file, expectedTitle] of errorPages) {
+  const html = read(file);
+  if (!html.toLowerCase().includes(expectedTitle.toLowerCase())) failures.push(`${file}: falta el mensaje principal esperado`);
+  if (!/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) failures.push(`${file}: debe impedir la indexación`);
+}
+ 
+const maintenancePage = read("maintenance.html");
+if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
+    !maintenancePage.includes('name="robots" content="noindex,nofollow"') ||
+    !maintenancePage.includes("¿Crees que esto es un error?") ||
+    !maintenancePage.includes("Instagram de la candidatura") ||
+    !maintenancePage.includes("Correo de la candidatura") ||
+    !maintenancePage.includes("Próximamente") ||
+    maintenancePage.includes("ceat.liceomh") ||
+    maintenancePage.includes("mailto:")) {
+  failures.push("Mantenimiento: falta el mensaje principal, noindex o los canales provisionales propios de la candidatura.");
+}
 
 const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
@@ -196,7 +226,7 @@ for (const file of htmlFiles) {
     failures.push(`${file}: falta una meta description`);
   if (file !== "404.html" && !/<a\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#contenido["']/i.test(html))
     failures.push(`${file}: falta el enlace para saltar al contenido`);
-  if (file !== "404.html" && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
+  if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(path.basename(file)) && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
     failures.push(`${file}: botón de menú sin estado ARIA inicial o controles`);
   for (const link of html.matchAll(/<a\b([^>]*?)>/gi)) {
     const attrs = link[1];

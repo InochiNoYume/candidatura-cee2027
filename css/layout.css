@@ -2293,3 +2293,8 @@ img{max-width:100%;height:auto}
   }
   .listen-inner > .button { grid-row: 3; }
 }
+
+/* Controles flotantes: este archivo se carga después de styles.css y define la capa final. */
+body:not(.menu-open) .back-to-top { z-index: 802 !important; }
+body:not(.menu-open) .cee-assistant-panel { z-index: 801 !important; }
+body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }

@@ -1,5 +1,18 @@
 /* CEE 2027 · CEAT — navegación, accesibilidad e interacciones globales */
 (() => {
+  // Cargar las familias tipográficas de Proyecto sin bloquear el primer renderizado.
+  if (/\/pages\/proyecto(?:\.html)?$/.test(window.location.pathname)) {
+    const projectFonts = document.createElement("link");
+    projectFonts.rel = "preload";
+    projectFonts.as = "style";
+    projectFonts.href = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap";
+    projectFonts.addEventListener("load", () => {
+      projectFonts.rel = "stylesheet";
+      projectFonts.as = "";
+    }, { once: true });
+    document.head.append(projectFonts);
+  }
+
   const inPages = /\/pages\//.test(window.location.pathname);
   const pageBase = inPages ? "" : "pages/";
   const homeHref = inPages ? "../index.html" : "index.html";
@@ -351,6 +364,7 @@
     '<div class="cee-assistant-form-foot"><span>Máximo 500 caracteres</span><button type="submit">Enviar <span aria-hidden="true">↑</span></button></div></form>' +
     '<p class="cee-assistant-privacy">No compartas datos personales. Las preguntas se envían a Cloudflare para generar la respuesta y no se guardan en este sitio.</p>';
   document.body.append(assistantLauncher,assistantPanel);
+  updateScrollUI();
   const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
   const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
   const assistantForm = assistantPanel.querySelector("form");
