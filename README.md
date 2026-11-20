@@ -175,6 +175,18 @@ Los resultados de Lighthouse pueden variar entre ejecuciones; conviene comparar 
 - Auditoría posterior: [GitHub Actions · ejecución 44523480582](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44523480582).
 - Auditoría tras la corrección CSP de PR #19: [GitHub Actions · ejecución 44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319).
 
+### Auditoría de la PR #21 · 20 de noviembre de 2026
+
+La auditoría en vivo más reciente se está ejecutando sobre la vista previa de la PR #21, no sobre producción:
+
+- La ejecución 209 detectó seis incidencias axe `label-content-name-mismatch`, todas en el enlace de marca de `maintenance.html` (una por viewport). Se corrigió el nombre accesible para que incluya el texto visible.
+- La corrección se publicó correctamente en Cloudflare Pages Preview mediante el commit `8b3f4f4`.
+- La ejecución 210 está recorriendo las 18 rutas en seis tamaños de pantalla (108 combinaciones); al actualizar este README, el paso responsive seguía en curso y Lighthouse todavía no había comenzado.
+- La ejecución 336 de Site quality checks terminó correctamente: sintaxis, estructura y enlaces de 18 páginas, Gemini/resiliencia, modo mantenimiento y controles de seguridad de 89 archivos.
+- No se deben presentar como aprobados los resultados de la ejecución 210 hasta que termine y se revisen sus artefactos.
+
+La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una aprobación de producción.
+
 ### Verificación manual pendiente
 
 - Revisar visualmente las páginas en teléfonos, tabletas y escritorio.
