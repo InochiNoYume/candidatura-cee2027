@@ -264,6 +264,7 @@
     progressBar.style.width = percent + "%";
     header?.classList.toggle("is-scrolled",window.scrollY > 12);
     backToTop.classList.toggle("visible",window.scrollY > 420);
+    document.querySelector(".cee-assistant-launcher")?.classList.toggle("is-raised",window.scrollY > 420);
   };
   window.addEventListener("scroll",updateScrollUI,{passive:true});
   window.addEventListener("resize",() => {
@@ -351,6 +352,7 @@
     '<div class="cee-assistant-form-foot"><span>Máximo 500 caracteres</span><button type="submit">Enviar <span aria-hidden="true">↑</span></button></div></form>' +
     '<p class="cee-assistant-privacy">No compartas datos personales. Las preguntas se envían a Cloudflare para generar la respuesta y no se guardan en este sitio.</p>';
   document.body.append(assistantLauncher,assistantPanel);
+  updateScrollUI();
   const assistantMessages = assistantPanel.querySelector(".cee-assistant-messages");
   const assistantInput = assistantPanel.querySelector("#cee-assistant-input");
   const assistantForm = assistantPanel.querySelector("form");
