@@ -67,3 +67,9 @@ El diagnóstico SEO de bloqueo de indexación corresponde al entorno de Preview 
 La ejecución [44761472071](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472071) falló porque scripts/check-assistant.mjs seguía esperando PROVIDER_ATTEMPTS = 2 después de ampliar la función a tres intentos. Se actualizaron ambas expectativas: `scripts/check-assistant.mjs` exige tres intentos y `scripts/test-assistant-resilience.mjs` comprueba que el agotamiento se detiene tras tres llamadas. Cambios en los commits `6f128c35495234c1653c0f6e6a21cd0763e7e076` y `5161e542f65d19a10ccec88db1267a1dbcf5c176`. La suite Site quality checks volvió a aprobarse en las ejecuciones 44765468423 y 44765488252: contrato del asistente, resiliencia Gemini, mantenimiento, estructura/enlaces y seguridad.
 
 Artefacto de auditoría: [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366).
+
+## Ajuste tipográfico de Proyecto · 20 de noviembre de 2026
+
+La hoja de Google Fonts de `pages/proyecto.html` se carga mediante precarga no bloqueante desde `js/main.js`, solo en esa página. Al completar la descarga, el enlace pasa a `stylesheet`; se mantienen DM Sans y Manrope y el CSS conserva las fuentes de respaldo si JavaScript no se ejecuta. El objetivo es evitar que la hoja externa retrase el primer renderizado.
+
+La validación queda pendiente hasta que termine la auditoría responsive/Lighthouse del commit `b590d6d7c829ba1d835f3e293eb06b4530a02dd0` (ejecución 44778879442). Revisar especialmente Proyecto en escritorio y móvil, posibles cambios de distribución al aplicar las fuentes y cualquier aviso de precarga no utilizada. No extender el patrón a otras páginas sin mediciones que lo justifiquen. El error CORS del beacon de Cloudflare Insights en Preview sigue en investigación; no modificar la configuración de analítica sin confirmar su causa.
