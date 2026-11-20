@@ -322,12 +322,20 @@ La auditoría queda aprobada. El SEO de Preview sigue mostrando 66–69 por el b
 Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
 
 
-## Páginas de error y auditoría técnica · 20 de noviembre de 2026
+## Auditoría responsive final aprobada · 20 de noviembre de 2026
 
-El sitio incorpora páginas personalizadas para HTTP 403 (acceso restringido), 404 (página no encontrada) y 500 (error interno), además de la página de mantenimiento HTTP 503. El middleware de Cloudflare Pages conserva los códigos HTTP, sustituye las respuestas HTML de error por su página correspondiente y deja intactas las respuestas JSON de la API. Las solicitudes HTML que fallen dentro del flujo de Pages Functions reciben una página 500 segura. Los bloqueos de Cloudflare WAF que ocurran antes de llegar a Pages pueden seguir mostrando la página de error propia de Cloudflare.
+La auditoría [44824227022](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022) finalizó correctamente sobre el Preview del commit `6f84b34ddab1a69f00579d78f0ff51907b45bb91`.
 
-Las páginas de error llevan `noindex,nofollow`, `Cache-Control: no-store` y `X-Content-Type-Options: nosniff`. La suite de calidad comprueba el contenido y los metadatos; la auditoría responsive recorre las páginas de error en los seis viewports, comprueba sus códigos HTTP y genera capturas.
+- 20 rutas comprobadas en 6 viewports (móvil, tablet, portátil pequeño, breakpoint del menú, escritorio y escritorio ancho): 120/120 pruebas completadas.
+- 0 infracciones de accesibilidad axe y 0 páginas con incidencias de accesibilidad.
+- 80/80 capturas generadas y aprobadas.
+- Asistente Gemini: 7/7 pruebas correctas; respuestas presentes, tema esperado y sin exponer metadatos de fuentes.
+- No se detectaron fallos bloqueantes.
+- Lighthouse escritorio: Inicio 100 rendimiento, Lista 99, Proyecto 100 y CEAT Te Escucha 100. Móvil: Inicio 94, Lista 95, Proyecto 100 y CEAT Te Escucha 100.
+- Lighthouse: accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
 
-La última auditoría disponible antes de incorporar estas páginas terminó correctamente sobre Preview (run [44792017001](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44792017001)): 108 combinaciones de las 18 rutas anteriores, 0 infracciones axe, 0 fallos bloqueantes, 72/72 capturas, Gemini 7/7 y Lighthouse 98–100 en rendimiento, 100 en accesibilidad y 96 en buenas prácticas. La nueva auditoría se ejecutará automáticamente sobre el commit que incorpora las páginas 403 y 500 y la corrección de estado HTTP 404.
+Los puntajes SEO de Preview (66–69) no se consideran una regresión de producción: el entorno Preview se mantiene deliberadamente no indexable. Se debe comprobar SEO en el dominio de producción después de la publicación autorizada.
 
-La PR #21 permanece abierta. No fusionar ni publicar sin autorización explícita. El PDF del proyecto sigue excluido del sitio público.
+Artefacto descargable de la auditoría: [cee-2027-site-audit.zip](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022/artifacts/14673208892).
+
+La auditoría valida la vista y las rutas desplegadas en Preview, no sustituye la verificación de configuración de la cuenta Cloudflare ni una comprobación manual en dispositivos físicos. La PR #21 permanece abierta y sin fusionar; el PDF continúa excluido de publicación.
