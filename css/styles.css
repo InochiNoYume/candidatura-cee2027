@@ -422,24 +422,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cee-assistant-launcher { transition: none; }
   .cee-assistant-launcher-icon svg { animation: none; }
-}
-
-
-/* Fuentes oficiales mostradas bajo las respuestas del asistente */
-.cee-assistant-sources {
-  margin: .25rem 0 .8rem;
-  padding: .65rem .8rem;
-  border-left: 3px solid var(--color-primary, #801515);
-  border-radius: 0 .55rem .55rem 0;
-  background: rgba(128,21,21,.055);
-  font-size: .82rem;
-}
-.cee-assistant-sources strong { display: block; margin-bottom: .25rem; }
-.cee-assistant-sources ul { margin: 0; padding-left: 1.15rem; }
-.cee-assistant-sources a { text-decoration: underline; text-underline-offset: 2px; }
-
-
-/* Asistente CEE · mejora visual de conversación y respuestas */
+}/* Asistente CEE · mejora visual de conversación y respuestas */
 .cee-assistant-panel {
   background: #fffdfd;
   border-color: rgba(128,21,21,.22);
@@ -491,67 +474,7 @@ body {
 .cee-assistant-message.user::before {
   content: "TÚ";
   color: rgba(255,255,255,.78);
-}
-.cee-assistant-sources {
-  align-self: flex-start;
-  width: min(94%, 340px);
-  margin: -5px 0 3px;
-  padding: 11px 13px 12px;
-  border: 1px solid #ead8d6;
-  border-left: 3px solid #8d3038;
-  border-radius: 5px 13px 13px 13px;
-  background: linear-gradient(145deg,#fff,#faf3f2);
-  color: #493638;
-  font-size: 11px;
-  box-shadow: 0 4px 14px rgba(49,20,22,.045);
-}
-.cee-assistant-sources strong {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 7px;
-  color: #76232c;
-  font-size: 10px;
-  letter-spacing: .045em;
-  text-transform: uppercase;
-}
-.cee-assistant-sources strong::before {
-  content: "↗";
-  display: inline-grid;
-  width: 19px;
-  height: 19px;
-  place-items: center;
-  border-radius: 6px;
-  background: rgba(128,21,21,.09);
-  font-size: 12px;
-}
-.cee-assistant-sources ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0;
-  list-style: none;
-}
-.cee-assistant-sources li a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 27px;
-  padding: 4px 9px;
-  border: 1px solid #eadbd9;
-  border-radius: 999px;
-  background: #fff;
-  color: #713039;
-  font-size: 10px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background .18s ease, border-color .18s ease, transform .18s ease;
-}
-.cee-assistant-sources li a:hover {
-  transform: translateY(-1px);
-  border-color: #c99b9e;
-  background: #f8e9e8;
-}
-.cee-assistant-form {
+}.cee-assistant-form {
   padding: 13px 15px 9px;
   background: #fff;
 }
@@ -581,12 +504,8 @@ body {
 }
 @media (max-width: 560px) {
   .cee-assistant-messages { padding: 15px 12px; }
-  .cee-assistant-message { max-width: 96%; font-size: 12.5px; }
-  .cee-assistant-sources { width: 96%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cee-assistant-sources li a { transition: none; }
-}
+  .cee-assistant-message { max-width: 96%; font-size: 12.5px; }}
+@media (prefers-reduced-motion: reduce) {}
 
 
 /* ── Proyecto: jerarquía editorial y lectura por ejes ── */
@@ -663,3 +582,136 @@ body {
 @media(prefers-reduced-motion:reduce){
  .axis-index a,.axis-visual img{transition:none!important}
 }
+
+
+
+/* Asistente CEE · panel móvil compacto, legible y adaptable */
+.cee-assistant-panel {
+  width: min(430px, calc(100vw - 36px));
+  height: min(650px, calc(100dvh - 112px));
+  max-height: calc(100dvh - 112px);
+  min-height: 0;
+  display: flex;
+}
+.cee-assistant-head { flex: 0 0 auto; }
+.cee-assistant-intro { flex: 0 0 auto; }
+.cee-assistant-messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.cee-assistant-message {
+  width: fit-content;
+  max-width: min(94%, 390px);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+.cee-assistant-message p { margin: 0 0 .55em; }
+.cee-assistant-message p:last-child { margin-bottom: 0; }
+.cee-assistant-message ul { margin: .25em 0 .15em; padding-left: 1.15em; }
+.cee-assistant-message li { margin: .22em 0; padding-left: .12em; }
+.cee-assistant-message strong { font-weight: 800; }
+.cee-assistant-form { flex: 0 0 auto; }
+.cee-assistant-form textarea { box-sizing: border-box; width: 100%; min-height: 58px; max-height: 96px; resize: vertical; }
+.cee-assistant-privacy { flex: 0 0 auto; }
+@media (max-width: 560px) {
+  .cee-assistant-launcher {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    min-height: 46px;
+    padding: 0 13px 0 9px;
+    gap: 8px;
+    font-size: 12px;
+    border-radius: 15px 15px 15px 5px;
+  }
+  .cee-assistant-launcher-icon { width: 29px; height: 29px; flex-basis: 29px; }
+  .cee-assistant-launcher-icon svg { width: 22px; height: 22px; }
+  .cee-assistant-panel {
+    left: 12px;
+    right: 12px;
+    bottom: max(70px, calc(env(safe-area-inset-bottom) + 66px));
+    width: auto;
+    height: min(76dvh, 590px);
+    max-height: min(76dvh, 590px);
+    border-radius: 18px 18px 18px 6px;
+  }
+  .cee-assistant-head { padding: 14px 15px 10px; gap: 10px; }
+  .cee-assistant-head h2 { font-size: 18px; }
+  .cee-assistant-close { width: 32px; height: 32px; flex-basis: 32px; }
+  .cee-assistant-intro { padding: 0 15px 10px; font-size: 11px; }
+  .cee-assistant-messages { padding: 13px 11px; gap: 10px; }
+  .cee-assistant-message { max-width: 97%; padding: 10px 12px; font-size: 12.5px; line-height: 1.58; }.cee-assistant-form { padding: 10px 11px 7px; }
+  .cee-assistant-form textarea { min-height: 54px; max-height: 82px; padding: 10px 11px; font-size: 13px; }
+  .cee-assistant-form-foot { padding-top: 7px; }
+  .cee-assistant-form-foot button { min-height: 36px; padding: 8px 14px; }
+  .cee-assistant-privacy { padding: 1px 12px 9px; font-size: 8.5px; line-height: 1.4; }
+}
+@media (max-width: 380px) {
+  .cee-assistant-panel { left: 8px; right: 8px; }
+  .cee-assistant-head { padding-left: 12px; padding-right: 12px; }
+  .cee-assistant-messages { padding-left: 9px; padding-right: 9px; }
+}
+
+
+/* Transparencia · paginación compacta de iniciativas */
+.commitment-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 28px 0 8px;
+  padding: 14px 16px;
+  border: 1px solid #eee3e1;
+  border-radius: 12px;
+  background: #fff;
+}
+.commitment-pagination[hidden] { display: none; }
+.commitment-pagination button {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid #e7d8d6;
+  border-radius: 8px;
+  background: #fff;
+  color: #78151d;
+  font: 700 12px 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.commitment-pagination button:hover:not(:disabled) {
+  border-color: #b77b7e;
+  background: #fbf2f1;
+}
+.commitment-pagination button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+.commitment-pagination .pagination-status {
+  color: #514446;
+  font: 800 12px 'Manrope', sans-serif;
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  .commitment-pagination { gap: 8px; padding: 12px 8px; }
+  .commitment-pagination button { padding: 8px 9px; font-size: 11px; }
+  .commitment-pagination .pagination-status { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .commitment-pagination button { transition: none; }
+}
+
+/* Garantiza que la paginación oculte tarjetas aunque tengan display propio. */
+[data-filter-item="commitments"][hidden] { display: none !important; }
+
+
+/* Imágenes referenciales del equipo y experiencia optimizada del asistente en escritorio */
+.team-avatar-image{display:block;object-fit:cover;overflow:hidden;border-radius:16px 16px 16px 5px;background:#f5e9e8;box-shadow:0 8px 18px rgba(80,20,24,.12)}
+.team-group-illustration{margin:0 0 38px;overflow:hidden;border:1px solid #eee3e1;border-radius:14px;background:#fbf5f3}
+.team-group-illustration img{display:block;width:100%;height:auto;aspect-ratio:1400/620;object-fit:cover}
+.team-group-illustration figcaption{padding:10px 15px;color:#79696a;font-size:11px;line-height:1.5}
+@media(min-width:900px){.cee-assistant-panel{width:min(440px,calc(100vw - 48px));max-height:min(680px,calc(100dvh - 128px));right:max(28px,env(safe-area-inset-right));bottom:max(94px,calc(env(safe-area-inset-bottom) + 88px))}.cee-assistant-head{padding:22px 23px 15px}.cee-assistant-intro{padding:0 23px 16px;font-size:12px}.cee-assistant-messages{min-height:210px;max-height:360px;padding:21px 19px}.cee-assistant-message{font-size:13px;line-height:1.6}.cee-assistant-form{padding:15px 18px 10px}.cee-assistant-form textarea{min-height:66px;max-height:140px;font-size:13px}.cee-assistant-form-foot{font-size:11px}.cee-assistant-privacy{padding:0 19px 15px;font-size:10px}}
+@media(max-width:760px){.team-avatar-image{width:54px;height:54px}}
+@media(prefers-reduced-motion:reduce){.team-avatar-image{transition:none}}
