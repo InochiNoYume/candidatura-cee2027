@@ -209,3 +209,8 @@ Las pruebas automatizadas no sustituyen la revisión visual ni garantizan por s�
 6. Confirmar el resultado del despliegue y volver a ejecutar las auditorías públicas.
 
 No se debe afirmar que un cambio está en producción hasta comprobar el despliegue correspondiente.
+
+
+### Ajuste de controles flotantes · 20 de noviembre de 2026
+
+Se corrigió la jerarquía de capas para que el botón «Volver arriba» quede por encima del lanzador del Asistente CEE cuando ambos coinciden en la esquina inferior derecha. El panel del asistente mantiene su propia capa. La auditoría responsive de Preview debe confirmar la visualización final en móvil y escritorio; no se considera validación visual hasta revisar sus capturas.
