@@ -112,3 +112,21 @@ No se ha confirmado todavía el comportamiento del beacon de Cloudflare Web Anal
 ## Ajuste móvil del asistente · 20 de noviembre de 2026
 
 La inspección de capturas de la ejecución 44783535294 encontró que el lanzador flotante del asistente cubría parte del texto en algunas vistas móviles. Se redujo a un botón de icono de 48 px para anchos de hasta 560 px; el nombre accesible se conserva con `aria-label`. La prueba responsive ahora verifica el ancho y la etiqueta. Esperar la auditoría del commit más reciente antes de cerrar esta tarea.
+
+
+## Auditoría responsive más reciente · ejecución 44787100347 · 20 de noviembre de 2026
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el commit `9d81b640cb3aee1ee332ab0b0db5810f2e15f6e3`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe y 0 fallos bloqueantes; la ruta inexistente de control devolvió HTTP 404.
+- 72/72 capturas generadas; Gemini 7/7 pruebas aprobadas.
+- El lanzador móvil compacto de 48 px (hasta 560 px) pasó su comprobación responsive y conserva el nombre accesible.
+- Lighthouse (móvil/escritorio): Inicio 94/100, Nuestra lista 83/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+
+### Seguimiento de rendimiento y servicios externos
+
+Nuestra lista obtuvo LCP móvil de 4,7 s, pero el desglose de la misma medición suma aproximadamente 223 ms entre TTFB, demora/descarga del recurso y renderizado. El elemento LCP fue la ilustración grupal SVG referencial, ya precargada, con prioridad alta y carga eager. Las cifras no son coherentes: no modificar recursos ni composición por esta única medición; repetir Lighthouse y comparar antes de atribuir causa. La optimización de logos e imágenes está expresamente fuera del alcance.
+
+El SEO bajo en Preview corresponde al bloqueo de indexación intencional; no retirar noindex de Preview. El CORS de Cloudflare Web Analytics solo se observó en Preview; comprobar el dominio de producción antes de modificar analítica. La regla WAF/rate limiting para `/api/asistente` requiere acceso a la cuenta Cloudflare y no se ha aplicado desde el repositorio.
+
+Ejecución: [44787100347](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347). Artefacto: [14655905852](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347/artifacts/14655905852).
