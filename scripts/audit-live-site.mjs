@@ -8,7 +8,7 @@ const routes = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "404.html", "maintenance.html"
+  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "403.html", "404.html", "500.html", "maintenance.html"
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
@@ -158,7 +158,7 @@ try {
         });
         for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
 
-        if (route !== "maintenance.html") {
+        if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(route)) {
         // Comprueba la presencia y accesibilidad básica del asistente global y del canvas de partículas.
         const assistantChecks = await page.evaluate(() => {
           const errors = [];
@@ -236,9 +236,12 @@ try {
           }
         };
         results.push(item);
-        const expectedStatus = 200;
+        const expectedStatus = ({ "403.html": 403, "404.html": 404, "500.html": 500 })[route] ?? 200;
         if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
+        if (route === "403.html" && !/Acceso no autorizado/i.test(layout.title)) failures.push(`${viewport.name} 403.html: el título no identifica el acceso restringido`);
         if (route === "404.html" && !/Página no encontrada/i.test(layout.title)) failures.push(`${viewport.name} 404.html: el título no identifica la página no encontrada`);
+        if (route === "500.html" && !/Error del servidor/i.test(layout.title)) failures.push(`${viewport.name} 500.html: el título no identifica el error del servidor`);
+        if (["403.html", "404.html", "500.html"].includes(route) && !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex")) failures.push(`${viewport.name} ${route}: falta la directiva noindex`);
         if (route === "maintenance.html" && (!/mantenimiento/i.test(layout.title) || !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex"))) failures.push(`${viewport.name} maintenance.html: falta el título o la directiva noindex`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
@@ -330,7 +333,9 @@ try {
     { name: "memoria", route: "pages/memoria.html" },
     { name: "privacidad", route: "pages/privacidad.html" },
     { name: "buscar", route: "pages/buscar.html" },
+    { name: "403", route: "403.html" },
     { name: "404", route: "404.html" },
+    { name: "500", route: "500.html" },
     { name: "maintenance", route: "maintenance.html" }
   ];
   const screenshotViewports = [
