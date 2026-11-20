@@ -28,9 +28,9 @@ La función `functions/api/asistente.js` conserva un respaldo local por instanci
 - La última ejecución completada de Site quality checks está aprobada. Incluye validación de 18 páginas, enlaces/anclas locales, sintaxis, seguridad, resiliencia Gemini y modo mantenimiento.
 - Auditoría responsive 223 ([ejecución](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680)): completada con error sobre el HEAD `61b9954`; 109 combinaciones, seis infracciones axe `label-content-name-mismatch` en `maintenance.html` y 18 fallos bloqueantes por viewport. Lighthouse se omitió.
 - El artefacto [cee-2027-site-audit](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680/artifacts/14639196925) contiene los informes y capturas.
-- Causa del solapamiento: el lanzador se elevaba al aparecer «Volver arriba», pero la separación era insuficiente. Se eliminó ese desplazamiento; la flecha queda arriba con al menos 8 px de separación y `z-index` superior.
+- Causa persistente detectada en la auditoría 227: `css/layout.css` se carga después de `css/styles.css` y sobrescribía la flecha con `z-index: 90`, anulando el cambio previo. La jerarquía final se define ahora al final de `layout.css`: flecha 802, panel 801 y lanzador 800 (fuera del estado de menú abierto).
 - Causa de accesibilidad: `maintenance.html` tenía un `aria-label` que no coincidía con el texto visible. Se retiró el atributo redundante y el enlace toma su nombre accesible de su contenido.
-- Las correcciones y una aserción responsive más estricta están en la rama de la PR #21. La nueva auditoría de ese HEAD y la revisión de capturas siguen pendientes.
+- La auditoría 227 confirmó 0 infracciones axe y 72/72 capturas; quedaron seis fallos de orden de capas y uno de Gemini (HTTP 503 en la prueba de integrantes). Se amplió el reintento de errores transitorios de Gemini a tres intentos con espera creciente. Las nuevas correcciones están en la rama de la PR #21; falta la nueva auditoría.
 - No activar el modo mantenimiento en Production durante las pruebas. Mantener la variable desactivada en Preview salvo prueba controlada.
 
 ## Publicación
@@ -41,3 +41,6 @@ Las vistas previas y las ramas de trabajo no deben considerarse producción. No 
 ## Controles flotantes · 20 de noviembre de 2026
 
 El lanzador del Asistente CEE permanece en su posición inferior habitual; «Volver arriba» (`z-index: 802`) queda sobre el lanzador (`z-index: 800`) con al menos 8 px de separación. El panel conserva `z-index: 801`. La prueba responsive comprueba la separación y el orden de capas en los seis viewports. No dar por terminada la revisión visual hasta comprobar las capturas de la nueva auditoría.
+
+
+La hoja `css/layout.css` se carga después de `css/styles.css`. Los ajustes globales de capas flotantes deben mantenerse al final de `layout.css`, no solo en `styles.css`, para evitar que una regla posterior los sobrescriba.
