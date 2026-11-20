@@ -193,7 +193,7 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
 
 const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 const GEMINI_TIMEOUT_MS = 20000;
-const PROVIDER_ATTEMPTS = 2;
+const PROVIDER_ATTEMPTS = 3;
 
 async function fetchGeminiWithRetry(url, options) {
   let lastError;
@@ -206,7 +206,8 @@ async function fetchGeminiWithRetry(url, options) {
       lastError = error;
       if (attempt === PROVIDER_ATTEMPTS - 1) throw error;
     }
-    await new Promise(resolve => setTimeout(resolve, 450 * (attempt + 1) + Math.floor(Math.random() * 200)));
+    // Los errores 503/UNAVAILABLE de Gemini pueden ser transitorios; usar espera creciente.
+    await new Promise(resolve => setTimeout(resolve, 900 * (attempt + 1)));
   }
   throw lastError || new Error("GEMINI_REQUEST_FAILED");
 }
