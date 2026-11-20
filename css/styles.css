@@ -746,3 +746,9 @@ body {
 @media(max-width:760px){.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.team-card{padding:22px 19px}.team-card .team-avatar{width:96px;height:96px}.team-section .lead-copy{padding:18px 19px}}
 @media(max-width:520px){.team-grid{grid-template-columns:1fr;gap:14px}.team-card{padding:22px}.team-card .team-avatar{width:104px;height:104px}.team-card p{min-height:0}.team-group-illustration{margin-bottom:34px}}
 @media(prefers-reduced-motion:reduce){.team-card,.team-card .team-avatar{transition:none!important}}
+
+
+/* Capas de controles flotantes: la flecha debe quedar sobre el lanzador del asistente. */
+.back-to-top { z-index: 802; }
+.cee-assistant-launcher { z-index: 800; }
+.cee-assistant-panel { z-index: 801; }
