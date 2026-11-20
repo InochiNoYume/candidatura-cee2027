@@ -17,7 +17,7 @@ Mantener `CEE_MAINTENANCE_MODE=false` en el entorno **Preview** para revisar el 
 
 ### Canales de contacto
 
-La página de mantenimiento incluye una sección «¿Crees que esto es un error?» con enlace a Instagram institucional del CEAT (@ceat.liceomh). El correo de Servicio Técnico y el Instagram propio de la candidatura siguen pendientes de confirmación; no publicar direcciones ni cuentas sin validar.
+La página de mantenimiento incluye una sección «¿Crees que esto es un error?» con dos tarjetas propias de la candidatura: «Instagram de la candidatura» y «Correo de la candidatura». Ambas muestran «Próximamente» hasta que las cuentas oficiales estén creadas y confirmadas. No usar cuentas institucionales del CEAT ni publicar direcciones o enlaces sin validar.
 
 ## Limitación de solicitudes del Asistente CEE
 
