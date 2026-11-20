@@ -81,3 +81,12 @@ La auditoría automatizada no prueba un envío real de Google Forms.
 ### Estado de interfaz y auditoría
 
 La revisión de capturas 44783535294 mostró que el botón flotante podía cubrir texto en pantallas de hasta 560 px. Se ajustó a formato de icono compacto (48 px) en móvil, manteniendo el nombre accesible en `aria-label`. `scripts/audit-live-site.mjs` comprueba ahora que su ancho no supere 64 px y que la etiqueta visual se oculte en ese rango. La nueva ejecución debe aprobar antes de considerar validado este ajuste.
+
+
+## Páginas personalizadas de error
+
+El middleware global `functions/_middleware.js` gestiona los errores HTML con documentos propios: `403.html`, `404.html` y `500.html`. Mantiene los códigos HTTP correspondientes, devuelve `500.html` si una solicitud HTML de Pages Functions lanza una excepción y no transforma las respuestas JSON de `/api/*`. El modo mantenimiento sigue devolviendo `maintenance.html` con HTTP 503 y pausa la API con JSON 503.
+
+Las páginas de error están marcadas `noindex,nofollow`, no se almacenan en caché y añaden `X-Content-Type-Options: nosniff`. Las reglas WAF o los errores de infraestructura que se produzcan antes de que la solicitud llegue a Pages Functions permanecen bajo el control de Cloudflare.
+
+`scripts/test-maintenance-mode.mjs` ahora comprueba 403, 404, 500, excepciones HTML, cabeceras y conservación del tipo JSON en la API. `scripts/audit-live-site.mjs` incluye las páginas de error en las comprobaciones responsive y en las capturas.
