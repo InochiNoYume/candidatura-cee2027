@@ -49,3 +49,8 @@ Así, la flecha queda físicamente por encima del lanzador, sin desplazarlo cuan
 ### Carga de tipografías y diagnóstico de Lighthouse
 
 En pages/proyecto.html, la hoja externa de Google Fonts ya no se declara como stylesheet bloqueante. js/main.js la precarga y cambia a stylesheet al terminar su descarga, solo en Proyecto. Se conservan DM Sans y Manrope; si JavaScript no se ejecuta, el CSS mantiene Arial como respaldo. Verificar visualmente el intercambio de fuente y repetir Lighthouse antes de extender el patrón a otras páginas. La auditoría 44765488112 completó 109 combinaciones responsive sin fallos bloqueantes ni infracciones axe; Proyecto escritorio obtuvo 72 en rendimiento y móvil 99. Lighthouse señaló la hoja de Google Fonts como recurso bloqueante, con ahorro estimado de 2,19 s. También registró un error CORS del beacon de Cloudflare Web Analytics en Preview; no cambiar la configuración de analítica sin verificar primero su causa.
+
+
+### Auditoría Gemini en Preview · 20 de noviembre de 2026
+
+La ejecución responsive/Lighthouse 44778879442 completó 7/7 pruebas del asistente Gemini con HTTP 200, respuestas del tema esperado y sin exponer metadatos internos. La misma auditoría recorrió 108 combinaciones de 18 rutas y seis viewports, sin infracciones axe ni fallos bloqueantes. Esto valida el comportamiento probado en Preview, no sustituye las comprobaciones manuales ni garantiza disponibilidad futura del proveedor.
