@@ -302,7 +302,26 @@ try {
   }
 
   // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
-  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }, { name: "maintenance", route: "maintenance.html" }];
+  const screenshotRoutes = [
+    { name: "home", route: "" },
+    { name: "lista", route: "pages/lista.html" },
+    { name: "proyecto", route: "pages/proyecto.html" },
+    { name: "agenda", route: "pages/agenda.html" },
+    { name: "transparencia", route: "pages/transparencia.html" },
+    { name: "noticias", route: "pages/noticias.html" },
+    { name: "galeria", route: "pages/galeria.html" },
+    { name: "escucha", route: "pages/escucha.html" },
+    { name: "preguntas", route: "pages/preguntas.html" },
+    { name: "contacto", route: "pages/contacto.html" },
+    { name: "actas", route: "pages/actas.html" },
+    { name: "informes", route: "pages/informes.html" },
+    { name: "comunidad-tp", route: "pages/comunidad-tp.html" },
+    { name: "memoria", route: "pages/memoria.html" },
+    { name: "privacidad", route: "pages/privacidad.html" },
+    { name: "buscar", route: "pages/buscar.html" },
+    { name: "404", route: "404.html" },
+    { name: "maintenance", route: "maintenance.html" }
+  ];
   const screenshotViewports = [
     { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
     { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
