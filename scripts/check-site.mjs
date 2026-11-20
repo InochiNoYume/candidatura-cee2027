@@ -64,7 +64,7 @@ for (const file of htmlFiles) {
   if (!/<html\b[^>]*lang=["']es["']/i.test(html)) failures.push(`${file}: falta lang="es" en <html>`);
   if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) failures.push(`${file}: falta meta viewport responsive`);
   if ((html.match(/<main\b/gi) || []).length !== 1) failures.push(`${file}: debe contener exactamente un <main>`);
-  if (!["404.html", "maintenance.html"].includes(path.basename(file))) {
+  if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(path.basename(file))) {
     for (const tag of ["header", "footer"]) {
       if ((html.match(new RegExp("<" + tag + "\\b", "gi")) || []).length !== 1)
         failures.push(`${file}: debe contener exactamente un <${tag}>`);
