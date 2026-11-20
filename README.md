@@ -345,3 +345,27 @@ Los puntajes SEO de Preview (66–69) no se consideran una regresión de producc
 Artefacto descargable de la auditoría: [cee-2027-site-audit.zip](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022/artifacts/14673208892).
 
 La auditoría valida la vista y las rutas desplegadas en Preview, no sustituye la verificación de configuración de la cuenta Cloudflare ni una comprobación manual en dispositivos físicos. La PR #21 permanece abierta y sin fusionar; el PDF continúa excluido de publicación.
+
+
+## Verificación consolidada más reciente · 20 de noviembre de 2026
+
+La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) terminó correctamente: 20 rutas × 6 viewports (120/120), 0 infracciones axe, 0 fallos bloqueantes, 80/80 capturas y Gemini 7/7. El artefacto [14677753975](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871/artifacts/14677753975) contiene las capturas y los ocho informes Lighthouse.
+
+La suite de calidad [44832351977](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832351977) también terminó correctamente sobre el HEAD documental actual. La auditoría responsive se ejecutó sobre el commit funcional inmediatamente anterior; los dos commits posteriores modificaron únicamente README.md y docs/OPERATIONS.md. Por tanto, la documentación no altera el código auditado y la suite de calidad volvió a validar el HEAD actual.
+
+### Lighthouse y seguimiento móvil
+
+| Página | Rendimiento móvil | Rendimiento escritorio | LCP móvil |
+|---|---:|---:|---:|
+| Inicio | 94 | 100 | 3,0 s |
+| Nuestra lista | 99 | 98 | 1,8 s |
+| Proyecto | 78 | 100 | 6,1 s |
+| CEAT Te Escucha | 100 | 100 | 1,1 s |
+
+Accesibilidad: 100 en las ocho mediciones. Buenas prácticas: 96 en las ocho. SEO de Preview: 66–69 por el noindex deliberado; no retirar esa protección.
+
+La captura móvil de Proyecto no muestra un fallo evidente de composición o desbordamiento. Su informe Lighthouse registra un LCP de 6,1 s, pero el desglose de fases mostrado suma aproximadamente 410 ms (77 ms hasta el primer byte y 333 ms de demora de renderizado) y señala como elemento LCP un párrafo del encabezado. La medición no es internamente coherente, por lo que no se atribuye el resultado a una causa concreta ni se justifica modificar el código, la composición o los recursos. Repetir Lighthouse en condiciones comparables antes de tomar medidas. La optimización de logos e imágenes permanece fuera del alcance acordado.
+
+La revisión visual de las capturas móviles de Inicio, Nuestra lista, Proyecto, CEAT Te Escucha y páginas de error/mantenimiento no identificó un defecto estructural bloqueante. Las fotografías y datos definitivos de candidatura siguen sujetos a confirmación; los recursos referenciales no deben confundirse con materiales finales.
+
+La PR #21 permanece abierta y sin fusionar. Producción no se ha actualizado mediante esta revisión. El PDF continúa excluido del sitio público. La configuración privada de Cloudflare, las comprobaciones físicas en dispositivos reales y los materiales oficiales todavía requieren la intervención correspondiente.
