@@ -30,8 +30,17 @@ El límite básico de diez consultas por hora se mantiene en memoria por instanc
 
 ## Pruebas automatizadas vigentes
 
-El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. Para evitar que el botón flotante del asistente se superponga con «Volver arriba», el lanzador se eleva cuando el usuario se desplaza más de 420 px y el panel acompaña ese cambio de posición. La ejecución 214 debe confirmar el comportamiento en Preview; una prueba unitaria aprobada no reemplaza la comprobación visual.
+El workflow `.github/workflows/site-checks.yml` ejecuta las pruebas de resiliencia de Gemini y el modo mantenimiento. La última ejecución completada de Site quality checks pasó ambas suites. La auditoría en vivo también comprueba la presencia, apertura/cierre y accesibilidad básica del asistente en los distintos tamaños de pantalla. Para evitar que el botón flotante del asistente se superponga con «Volver arriba», el lanzador se eleva cuando el usuario se desplaza más de 420 px y el panel acompaña ese cambio de posición. La auditoría responsive vigente debe confirmar el comportamiento en Preview; una prueba automatizada aprobada no reemplaza la comprobación visual.
 
 ## Seguridad y privacidad
 
 No enviar datos personales, académicos, privados ni sensibles. En el nivel gratuito de Gemini API, Google puede utilizar los datos enviados para mejorar sus productos y los datos pueden ser revisados por personas. Consulta https://ai.google.dev/gemini-api/terms y https://ai.google.dev/gemini-api/docs/url-context.
+
+
+### Orden de capas de los controles flotantes
+
+- «Volver arriba» usa `z-index: 802`.
+- El lanzador del Asistente CEE usa `z-index: 800`.
+- El panel del asistente usa `z-index: 801`.
+
+Así, cuando ambos controles coinciden en la esquina inferior derecha, la flecha queda visualmente por encima del lanzador; el panel conserva una capa propia. Verificar el resultado en móvil y escritorio mediante la auditoría visual de Preview.
