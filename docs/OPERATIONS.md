@@ -169,3 +169,29 @@ La auditoría automatizada no verifica ajustes privados de Cloudflare ni sustitu
 Los canales de mantenimiento son propios de la candidatura: Instagram y correo, ambos marcados «Próximamente» hasta confirmar las cuentas oficiales. No enlazar el Instagram institucional del CEAT ni inventar un correo.
 
 La suite de calidad [44832265046](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832265046) aprobó sintaxis, estructura HTML, enlaces locales y seguridad sobre el HEAD `56a32814a3294227005360f362b7f948b177b446`. La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) está esperando la finalización del despliegue de Preview. La ejecución anterior 44829543179 falló porque Preview respondió HTTP 503 (`MAINTENANCE_MODE`) para las páginas y la API. Verificar que `CEE_MAINTENANCE_MODE` esté desactivada o ausente en Preview y repetir la auditoría; no cambiar Production para resolver este bloqueo.
+
+
+## Verificación consolidada más reciente · 20 de noviembre de 2026
+
+- Auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871): 20 rutas × 6 viewports, 120/120; 0 infracciones axe; 0 fallos bloqueantes; 80/80 capturas; Gemini 7/7.
+- Suite de calidad [44832351977](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832351977): aprobada sobre el HEAD documental actual. Los dos commits entre el HEAD auditado y el actual solo modifican README.md y docs/OPERATIONS.md.
+- Artefacto de capturas e informes Lighthouse: [14677753975](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871/artifacts/14677753975).
+
+### Lighthouse
+
+| Página | Móvil | Escritorio | LCP móvil |
+|---|---:|---:|---:|
+| Inicio | 94 | 100 | 3,0 s |
+| Nuestra lista | 99 | 98 | 1,8 s |
+| Proyecto | 78 | 100 | 6,1 s |
+| CEAT Te Escucha | 100 | 100 | 1,1 s |
+
+Accesibilidad: 100 en las ocho mediciones. Buenas prácticas: 96 en las ocho. SEO Preview 66–69 por noindex intencional; no quitarlo.
+
+### Incidencia de medición en Proyecto móvil
+
+La captura de móvil no muestra desbordamiento ni un defecto estructural evidente. El LCP de 6,1 s no concuerda con el desglose Lighthouse (aprox. 77 ms TTFB + 333 ms de demora de renderizado); el elemento LCP informado es un párrafo del encabezado. No hay evidencia suficiente para atribuirlo a un recurso o a una regla concreta. No realizar cambios especulativos de código, composición o recursos: repetir la medición en condiciones comparables y analizar el nuevo desglose. La optimización de logos e imágenes sigue expresamente excluida.
+
+La revisión visual de las capturas móviles de Inicio, Nuestra lista, Proyecto, CEAT Te Escucha, errores y mantenimiento no detectó defectos estructurales bloqueantes. Las fotografías y datos definitivos siguen pendientes de confirmación por la candidatura.
+
+La PR #21 sigue abierta, sin fusionar; producción no se ha actualizado mediante esta revisión. El PDF sigue excluido de publicación. Configuración privada de Cloudflare y pruebas físicas en dispositivos reales siguen pendientes de sus respectivos accesos/acciones.
