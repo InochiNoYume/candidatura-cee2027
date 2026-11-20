@@ -209,7 +209,7 @@ for (const file of htmlFiles) {
     failures.push(`${file}: falta una meta description`);
   if (file !== "404.html" && !/<a\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*href=["']#contenido["']/i.test(html))
     failures.push(`${file}: falta el enlace para saltar al contenido`);
-  if (!["404.html", "maintenance.html"].includes(path.basename(file)) && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
+  if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(path.basename(file)) && !/<button\b[^>]*class=[^>]*menu-toggle[^>]*aria-expanded=["']false["'][^>]*aria-controls=["']site-nav["']/i.test(html))
     failures.push(`${file}: botón de menú sin estado ARIA inicial o controles`);
   for (const link of html.matchAll(/<a\b([^>]*?)>/gi)) {
     const attrs = link[1];
