@@ -289,3 +289,19 @@ La auditoría automatizada no envía respuestas reales al formulario. La comprob
 ## Ajuste final de interfaz móvil · 20 de noviembre de 2026
 
 La revisión de las capturas de la auditoría 44783535294 detectó que el lanzador flotante del asistente podía cubrir texto en pantallas pequeñas. Se compactó a un botón de icono de 48 px hasta 560 px de ancho; su nombre accesible «Abrir Asistente CEE» se conserva mediante `aria-label`. La auditoría ahora verifica el ancho y que la etiqueta visual esté oculta en móvil. Se mantienen el lanzador completo en escritorio y el orden de capas existente. Pendiente validar el nuevo cambio en las ejecuciones CI y la auditoría responsive generadas por este commit.
+
+
+### Auditoría responsive más reciente · 20 de noviembre de 2026 · ejecución 44787100347
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el commit `9d81b640cb3aee1ee332ab0b0db5810f2e15f6e3`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe y 0 fallos bloqueantes. La ruta inexistente de control respondió HTTP 404.
+- 72/72 capturas generadas; Gemini 7/7 pruebas aprobadas.
+- El lanzador móvil compacto (48 px hasta 560 px) pasó la comprobación de anchura y conservación del nombre accesible.
+- Lighthouse (móvil/escritorio): Inicio 94/100, Nuestra lista 83/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+
+Nuestra lista obtuvo LCP de laboratorio de 4,7 s en móvil, pero el desglose de la misma medición suma aproximadamente 223 ms entre TTFB, demora/descarga del recurso y renderizado. El recurso LCP fue la ilustración grupal SVG referencial, ya precargada con `fetchpriority=high` y carga eager. Como las cifras del LCP no son coherentes entre sí, no se atribuye el resultado a un archivo concreto ni se modifica la composición. Se repetirá la medición en una auditoría posterior para confirmar si es variabilidad del laboratorio. Las optimizaciones de logos e imágenes siguen fuera del alcance acordado.
+
+El diagnóstico SEO de Preview (bloqueo de indexación) es intencional. Cloudflare Web Analytics sigue pendiente de verificación en un dominio de producción; el error CORS observado en Preview no justifica cambiar la configuración de analítica. La auditoría no verifica ni configura reglas WAF de la cuenta Cloudflare.
+
+Ejecución: [44787100347](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347). Artefacto de informes y capturas: [14655905852](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347/artifacts/14655905852).
