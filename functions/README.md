@@ -44,3 +44,8 @@ No enviar datos personales, académicos, privados ni sensibles. En el nivel grat
 - El panel del asistente usa `z-index: 801`.
 
 Así, la flecha queda físicamente por encima del lanzador, sin desplazarlo cuando aparece al hacer scroll; se exige una separación mínima de 8 px. El panel conserva una capa propia. La prueba automatizada comprueba geometría y orden de capas en móvil, tablet y escritorio; revisar también las capturas de Preview. El endpoint Gemini reintenta ahora hasta tres veces los estados HTTP transitorios con espera creciente.
+
+
+### Carga de tipografías y diagnóstico de Lighthouse
+
+En pages/proyecto.html, la hoja externa de Google Fonts ya no se declara como stylesheet bloqueante. js/main.js la precarga y cambia a stylesheet al terminar su descarga, solo en Proyecto. Se conservan DM Sans y Manrope; si JavaScript no se ejecuta, el CSS mantiene Arial como respaldo. Verificar visualmente el intercambio de fuente y repetir Lighthouse antes de extender el patrón a otras páginas. La auditoría 44765488112 completó 109 combinaciones responsive sin fallos bloqueantes ni infracciones axe; Proyecto escritorio obtuvo 72 en rendimiento y móvil 99. Lighthouse señaló la hoja de Google Fonts como recurso bloqueante, con ahorro estimado de 2,19 s. También registró un error CORS del beacon de Cloudflare Web Analytics en Preview; no cambiar la configuración de analítica sin verificar primero su causa.
