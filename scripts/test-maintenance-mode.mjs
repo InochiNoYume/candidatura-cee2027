@@ -18,7 +18,7 @@ function makeContext(url, {
       if (throwOnOriginal && pathname === new URL(url).pathname) throw new Error("simulated page failure");
       return new Response(`<!doctype html><main>Page for ${pathname}</main>`, {
         status: pathname === new URL(url).pathname ? nextStatus : 200,
-        headers: { "Content-Type": "text/html; charset=utf-8" }
+        headers: { "Content-Type": pathname.startsWith("/api/") ? "application/json; charset=utf-8" : "text/html; charset=utf-8" }
       });
     }
   };
