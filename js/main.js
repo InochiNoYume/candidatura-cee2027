@@ -393,15 +393,20 @@
     assistantMessages.scrollTop = assistantMessages.scrollHeight;
     return message;
   };
-  const setAssistantOpen = opened => {
+  const setAssistantOpen = (opened,restoreFocus = true) => {
     assistantPanel.hidden = !opened;
     assistantLauncher.setAttribute("aria-expanded",String(opened));
     assistantLauncher.setAttribute("aria-label",opened ? "Cerrar Asistente CEE" : "Abrir Asistente CEE");
     if (opened) assistantInput.focus();
-    else assistantLauncher.focus();
+    else if (restoreFocus) assistantLauncher.focus();
   };
   assistantLauncher.addEventListener("click",() => setAssistantOpen(assistantPanel.hidden));
   assistantPanel.querySelector(".cee-assistant-close").addEventListener("click",() => setAssistantOpen(false));
+  // Oculta el chat al interactuar con cualquier zona externa, sin robar el foco.
+  document.addEventListener("pointerdown",event => {
+    if (assistantPanel.hidden || assistantPanel.contains(event.target) || assistantLauncher.contains(event.target)) return;
+    setAssistantOpen(false,false);
+  },{capture:true});
   document.addEventListener("keydown",event => {
     if (event.key === "Escape" && !assistantPanel.hidden) setAssistantOpen(false);
   });

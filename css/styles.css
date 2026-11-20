@@ -705,3 +705,13 @@ body {
 
 /* Garantiza que la paginación oculte tarjetas aunque tengan display propio. */
 [data-filter-item="commitments"][hidden] { display: none !important; }
+
+
+/* Imágenes referenciales del equipo y experiencia optimizada del asistente en escritorio */
+.team-avatar-image{display:block;object-fit:cover;overflow:hidden;border-radius:16px 16px 16px 5px;background:#f5e9e8;box-shadow:0 8px 18px rgba(80,20,24,.12)}
+.team-group-illustration{margin:0 0 38px;overflow:hidden;border:1px solid #eee3e1;border-radius:14px;background:#fbf5f3}
+.team-group-illustration img{display:block;width:100%;height:auto;aspect-ratio:1400/620;object-fit:cover}
+.team-group-illustration figcaption{padding:10px 15px;color:#79696a;font-size:11px;line-height:1.5}
+@media(min-width:900px){.cee-assistant-panel{width:min(440px,calc(100vw - 48px));max-height:min(680px,calc(100dvh - 128px));right:max(28px,env(safe-area-inset-right));bottom:max(94px,calc(env(safe-area-inset-bottom) + 88px))}.cee-assistant-head{padding:22px 23px 15px}.cee-assistant-intro{padding:0 23px 16px;font-size:12px}.cee-assistant-messages{min-height:210px;max-height:360px;padding:21px 19px}.cee-assistant-message{font-size:13px;line-height:1.6}.cee-assistant-form{padding:15px 18px 10px}.cee-assistant-form textarea{min-height:66px;max-height:140px;font-size:13px}.cee-assistant-form-foot{font-size:11px}.cee-assistant-privacy{padding:0 19px 15px;font-size:10px}}
+@media(max-width:760px){.team-avatar-image{width:54px;height:54px}}
+@media(prefers-reduced-motion:reduce){.team-avatar-image{transition:none}}

@@ -20,7 +20,7 @@ En Inicio y Proyecto se muestra el aviso: «Imagen referencial · localizada med
 
 | Nombre exacto | Uso | Estado |
 | --- | --- | --- |
-| `portada-inicio.webp` | Imagen principal de la portada de Inicio. | Pendiente de fotografía real autorizada. |
-| `tu-voz-tambien-construye.webp` | Imagen del bloque «Tu voz también construye» / CEAT Te Escucha. | Pendiente de fotografía real autorizada. |
+| `portada-cee-2027-referencial.svg` | Ilustración vectorial temporal de la portada principal. | Incorporada; pendiente de fotografía real autorizada. |
+| `tu-voz-tambien-construye.jpeg` | Imagen del bloque «Tu voz también construye» / CEAT Te Escucha. | Ya existe en el repositorio; ahora se muestra en Inicio. |
 
 Para estas fotografías adicionales, se recomienda formato WebP optimizado y orientación horizontal. Confirma los permisos correspondientes de las personas que aparezcan.
