@@ -388,7 +388,7 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
   screenshotResults,
   results
 }, null, 2));
-console.log(`Responsive audit: ${results.length} page/viewport combinations; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
+console.log(`Responsive audit: ${results.length - 1} page/viewport combinations across ${routes.length} routes and ${viewports.length} viewports; missing-route check HTTP ${results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? "unknown"}; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
 if (failures.length) {
   for (const failure of failures) console.error(" - " + failure);
   process.exitCode = 1;
