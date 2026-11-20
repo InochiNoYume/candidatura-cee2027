@@ -181,9 +181,10 @@ La auditoría en vivo más reciente se está ejecutando sobre la vista previa de
 
 - La ejecución 209 detectó seis incidencias axe `label-content-name-mismatch`, todas en el enlace de marca de `maintenance.html` (una por viewport). Se corrigió el nombre accesible para que incluya el texto visible.
 - La corrección se publicó correctamente en Cloudflare Pages Preview mediante el commit `8b3f4f4`.
-- La ejecución 210 está recorriendo las 18 rutas en seis tamaños de pantalla (108 combinaciones); al actualizar este README, el paso responsive seguía en curso y Lighthouse todavía no había comenzado.
-- La ejecución 336 de Site quality checks terminó correctamente: sintaxis, estructura y enlaces de 18 páginas, Gemini/resiliencia, modo mantenimiento y controles de seguridad de 89 archivos.
-- No se deben presentar como aprobados los resultados de la ejecución 210 hasta que termine y se revisen sus artefactos.
+- La ejecución 210 quedó sustituida al actualizar documentación; la ejecución 213 también fue reemplazada por cambios posteriores en el mismo PR.
+- Se ajustó el botón flotante «Asistente CEE»: al aparecer «Volver arriba» después de desplazarse, el asistente sube su posición y su panel acompaña el desplazamiento, evitando que ambos controles se tapen.
+- La ejecución 340 de Site quality checks terminó correctamente sobre el código actualizado.
+- La ejecución 214 de la auditoría en vivo se inició sobre la vista previa; sus resultados responsive y Lighthouse todavía están pendientes. No se deben presentar como aprobados hasta revisar el informe final.
 
 La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una aprobación de producción.
 
