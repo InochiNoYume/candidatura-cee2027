@@ -35,3 +35,8 @@ La función `functions/api/asistente.js` conserva un respaldo local por instanci
 ## Publicación
 
 Las vistas previas y las ramas de trabajo no deben considerarse producción. No fusionar PR ni publicar cambios sin la aprobación explícita del responsable del proyecto. El PDF del proyecto no forma parte de los recursos publicables del sitio.
+
+
+## Controles flotantes · 20 de noviembre de 2026
+
+Se ajustó el orden de capas de los controles inferiores: «Volver arriba» (`z-index: 802`) queda sobre el lanzador del Asistente CEE (`z-index: 800`), mientras el panel del asistente conserva `z-index: 801`. La auditoría de Preview debe revisar ambos estados —asistente cerrado y abierto— en móvil y escritorio. No dar por terminada la revisión visual hasta comprobar las capturas del último HEAD.
