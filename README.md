@@ -177,14 +177,17 @@ Los resultados de Lighthouse pueden variar entre ejecuciones; conviene comparar 
 
 ### Auditoría de la PR #21 · 20 de noviembre de 2026
 
-La auditoría en vivo más reciente se está ejecutando sobre la vista previa de la PR #21, no sobre producción:
+La auditoría responsive [ejecución 223](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680) se completó con error sobre el HEAD `61b9954` de la vista previa de la PR #21, no sobre producción:
 
-- La ejecución 209 detectó seis incidencias axe `label-content-name-mismatch`, todas en el enlace de marca de `maintenance.html` (una por viewport). Se corrigió el nombre accesible para que incluya el texto visible.
-- La corrección se publicó correctamente en Cloudflare Pages Preview mediante el commit `8b3f4f4`.
-- Las ejecuciones responsive anteriores fueron sustituidas por commits posteriores antes de completar sus recorridos.
-- Se ajustó el botón flotante «Asistente CEE»: al aparecer «Volver arriba» después de desplazarse, el asistente sube su posición y su panel acompaña el desplazamiento, evitando que ambos controles se tapen.
-- La última ejecución de Site quality checks sobre el HEAD actual terminó correctamente.
-- La auditoría en vivo más reciente se encuentra en curso sobre Preview; sus resultados responsive y Lighthouse todavía están pendientes. No se deben presentar como aprobados hasta revisar el informe final.
+- Se recorrieron 109 combinaciones de página y viewport.
+- Se detectaron seis infracciones axe `label-content-name-mismatch`, una en `maintenance.html` por cada viewport.
+- Se registraron 18 fallos bloqueantes: dos relacionados con la superposición/orden visual de «Asistente CEE» y «Volver arriba» por viewport, y una infracción de mantenimiento por viewport.
+- Lighthouse se omitió porque el recorrido responsive terminó con error.
+- Los [73 archivos de resultados y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680/artifacts/14639196925) permiten revisar el detalle.
+
+La revisión del código identificó las causas: el lanzador del asistente se desplazaba hacia arriba al aparecer la flecha, pero la distancia no bastaba; además, el enlace de marca de mantenimiento declaraba un `aria-label` que no coincidía con su texto visible. En la rama se corrigió el comportamiento manteniendo el lanzador abajo, con la flecha en una posición superior y separada; se retiró el `aria-label` redundante para que el nombre accesible proceda del texto visible. También se reforzó la prueba responsive para exigir 8 px de separación y comprobar el orden de capas.
+
+Los cambios están en la rama de la PR #21. La nueva auditoría sobre el HEAD corregido todavía debe ejecutarse y aprobarse; no se declaran resueltos hasta verificar sus resultados y capturas.
 
 La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una aprobación de producción.
 
@@ -213,4 +216,4 @@ No se debe afirmar que un cambio está en producción hasta comprobar el desplie
 
 ### Ajuste de controles flotantes · 20 de noviembre de 2026
 
-Se corrigió la jerarquía de capas para que el botón «Volver arriba» quede por encima del lanzador del Asistente CEE cuando ambos coinciden en la esquina inferior derecha. El panel del asistente mantiene su propia capa. La auditoría responsive de Preview debe confirmar la visualización final en móvil y escritorio; no se considera validación visual hasta revisar sus capturas.
+El lanzador del Asistente CEE permanece en su posición inferior habitual. «Volver arriba» conserva una posición superior con separación mínima de 8 px y una capa visual mayor que el lanzador; el panel del asistente mantiene su capa independiente. La prueba responsive verifica geometría y `z-index` en los seis viewports. La confirmación final depende de la nueva auditoría y de revisar sus capturas.
