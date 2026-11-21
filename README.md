@@ -376,3 +376,8 @@ La PR #21 permanece abierta y sin fusionar. Producción no se ha actualizado med
 Cuando el Asistente CEE está abierto en pantallas de hasta 760 px, la flecha «Volver arriba» se oculta y no recibe interacción. Al cerrar el panel, el estado se retira y la flecha vuelve a mostrarse según su visibilidad por scroll. En escritorio se conservan ambos controles. La auditoría responsive comprueba este comportamiento abierto/cerrado; falta ejecutar CI y revisar Preview antes de considerar la corrección verificada.
 ### Corrección del test móvil del asistente · 21 de noviembre de 2026
 La auditoría 44917850136 detectó 16 fallos en la comprobación de reaparición de «Volver arriba»: se verificaba la visibilidad inmediatamente al cerrar el asistente y en rutas que podían no tener scroll suficiente para activar el control. El test ahora crea un estado de scroll reproducible, confirma el umbral, espera la transición CSS de visibilidad y restablece el estado de la página. Pendiente reejecutar CI y la auditoría responsive; aún no se declara aprobado.
+
+
+### Ajustes de auditoría móvil y disponibilidad Gemini · 21 de noviembre de 2026
+
+La prueba móvil de «Volver arriba» ahora crea un elemento temporal que aporta altura de documento real, desplaza la página, espera dos frames y confirma tanto la posición de scroll como el estado visible. Retira el elemento temporal y restablece el scroll al finalizar. Las respuestas transitorias del proveedor Gemini (HTTP 429, 502, 503 y 504) quedan registradas como advertencias no bloqueantes de la auditoría técnica; errores funcionales o de contrato siguen bloqueando. Esta clasificación no declara que Gemini esté disponible: el informe debe mostrar claramente las advertencias y el estado de las pruebas del asistente.
