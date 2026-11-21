@@ -21,6 +21,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check js/main.js
+          node --check scripts/audit-live-site.mjs
           node --check js/search.js
           node --check functions/api/asistente.js
           node --check functions/_middleware.js
