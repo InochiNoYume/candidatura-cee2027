@@ -369,3 +369,8 @@ La captura móvil de Proyecto no muestra un fallo evidente de composición o des
 La revisión visual de las capturas móviles de Inicio, Nuestra lista, Proyecto, CEAT Te Escucha y páginas de error/mantenimiento no identificó un defecto estructural bloqueante. Las fotografías y datos definitivos de candidatura siguen sujetos a confirmación; los recursos referenciales no deben confundirse con materiales finales.
 
 La PR #21 permanece abierta y sin fusionar. Producción no se ha actualizado mediante esta revisión. El PDF continúa excluido del sitio público. La configuración privada de Cloudflare, las comprobaciones físicas en dispositivos reales y los materiales oficiales todavía requieren la intervención correspondiente.
+
+
+### Corrección de controles flotantes en móvil · 21 de noviembre de 2026
+
+Cuando el Asistente CEE está abierto en pantallas de hasta 760 px, la flecha «Volver arriba» se oculta y no recibe interacción. Al cerrar el panel, el estado se retira y la flecha vuelve a mostrarse según su visibilidad por scroll. En escritorio se conservan ambos controles. La auditoría responsive comprueba este comportamiento abierto/cerrado; falta ejecutar CI y revisar Preview antes de considerar la corrección verificada.
