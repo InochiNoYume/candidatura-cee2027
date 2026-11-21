@@ -768,3 +768,8 @@ body {
     margin: 0;
   }
 }
+
+/* Evita que el control de volver arriba invada el asistente abierto en teléfonos. */
+@media(max-width:760px){
+  body.assistant-open .back-to-top{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+}
