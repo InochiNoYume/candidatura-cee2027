@@ -184,23 +184,28 @@ try {
             // Prepara un estado de scroll reproducible: algunas páginas no alcanzan 420 px
             // y la prueba anterior esperaba que el botón estuviera visible en todas.
             let scrollFixture = null;
+            const originalScrollBehavior = document.documentElement.style.scrollBehavior;
             if (isMobile && topButton) {
-              // Add actual document scroll height; html min-height alone is unreliable on mobile Chromium.
+              // Disable smooth-scroll for the test and use a transparent layout fixture with measurable height.
+              // Otherwise two animation frames can occur before smooth scrolling crosses the threshold.
+              document.documentElement.style.scrollBehavior = "auto";
               scrollFixture = document.createElement("div");
               scrollFixture.setAttribute("aria-hidden", "true");
-              scrollFixture.style.cssText = "height:1800px;pointer-events:none;visibility:hidden";
+              scrollFixture.style.cssText = "display:block;position:relative;width:1px;height:2200px;opacity:0;pointer-events:none;overflow:hidden";
               document.body.appendChild(scrollFixture);
-              window.scrollTo(0, 650);
+              window.scrollTo(0, Math.min(650, document.documentElement.scrollHeight - window.innerHeight));
               window.dispatchEvent(new Event("scroll"));
               await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
               if (window.scrollY <= 420 || !topButton.classList.contains("visible")) {
-                errors.push("el botón Volver arriba no aparece tras superar el umbral de scroll");
+                errors.push(`el botón Volver arriba no aparece tras scroll real (scrollY=${window.scrollY}, scrollHeight=${document.documentElement.scrollHeight}, maxScroll=${document.documentElement.scrollHeight-window.innerHeight}, visibleClass=${topButton.classList.contains("visible")})`);
               }
             }
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
+            // The button's visibility transition is 200 ms; wait before checking computed styles.
+            await new Promise(resolve => setTimeout(resolve, 250));
             if (isMobile && topButton && getComputedStyle(topButton).visibility !== "hidden") {
-              errors.push("en móvil, Volver arriba debe ocultarse mientras el asistente está abierto");
+              errors.push(`en móvil, Volver arriba debe ocultarse mientras el asistente está abierto (visibility=${getComputedStyle(topButton).visibility}, assistantOpen=${document.body.classList.contains("assistant-open")})`);
             }
             if (isMobile && !document.body.classList.contains("assistant-open")) {
               errors.push("el estado assistant-open no se activa al abrir el panel");
@@ -222,13 +227,14 @@ try {
               }
             }
             if (isMobile && topButton && getComputedStyle(topButton).visibility !== "visible") {
-              errors.push("en móvil, Volver arriba debe volver a mostrarse al cerrar el asistente");
+              errors.push(`en móvil, Volver arriba debe volver a mostrarse al cerrar el asistente (visibility=${getComputedStyle(topButton).visibility})`);
             }
             if (isMobile && document.body.classList.contains("assistant-open")) {
               errors.push("assistant-open debe retirarse al cerrar el panel");
             }
             if (isMobile) {
               scrollFixture?.remove();
+              document.documentElement.style.scrollBehavior = originalScrollBehavior;
               window.scrollTo(0, 0);
               window.dispatchEvent(new Event("scroll"));
             }
