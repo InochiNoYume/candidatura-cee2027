@@ -181,12 +181,19 @@ try {
             window.scrollTo(0, 650);
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
+            const topButton = document.querySelector(".back-to-top");
+            const isMobile = window.matchMedia("(max-width:760px)").matches;
+            if (isMobile && topButton && getComputedStyle(topButton).visibility !== "hidden") {
+              errors.push("en móvil, Volver arriba debe ocultarse mientras el asistente está abierto");
+            }
+            if (isMobile && !document.body.classList.contains("assistant-open")) {
+              errors.push("el estado assistant-open no se activa al abrir el panel");
+            }
             const input = panel.querySelector("#cee-assistant-input");
             if (!input || Number(input.getAttribute("maxlength")) !== 500) errors.push("el campo del asistente no limita la pregunta a 500 caracteres");
             panel.querySelector(".cee-assistant-close")?.click();
             if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
-            const topButton = document.querySelector(".back-to-top");
-            if (topButton && getComputedStyle(topButton).visibility === "visible") {
+            if (!isMobile && topButton && getComputedStyle(topButton).visibility === "visible") {
               const a = launcher.getBoundingClientRect(), b = topButton.getBoundingClientRect();
               if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
                 errors.push("el botón Asistente CEE se superpone con Volver arriba");
@@ -195,6 +202,12 @@ try {
               if (Number(getComputedStyle(topButton).zIndex) <= Number(getComputedStyle(launcher).zIndex)) {
                 errors.push("Volver arriba no tiene una capa visual superior al Asistente CEE");
               }
+            }
+            if (isMobile && topButton && getComputedStyle(topButton).visibility !== "visible") {
+              errors.push("en móvil, Volver arriba debe volver a mostrarse al cerrar el asistente");
+            }
+            if (isMobile && document.body.classList.contains("assistant-open")) {
+              errors.push("assistant-open debe retirarse al cerrar el panel");
             }
             if (!launcher.querySelector(".cee-assistant-launcher-icon svg")) errors.push("falta la mascota gatito del Asistente CEE");
             if (launcher.querySelector(".cee-assistant-launcher-icon svg") &&
