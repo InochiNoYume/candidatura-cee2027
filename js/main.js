@@ -409,6 +409,7 @@
   };
   const setAssistantOpen = (opened,restoreFocus = true) => {
     assistantPanel.hidden = !opened;
+    document.body.classList.toggle("assistant-open",opened);
     assistantLauncher.setAttribute("aria-expanded",String(opened));
     assistantLauncher.setAttribute("aria-label",opened ? "Cerrar Asistente CEE" : "Abrir Asistente CEE");
     if (opened) assistantInput.focus();
