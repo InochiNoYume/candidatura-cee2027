@@ -200,3 +200,5 @@ La PR #21 sigue abierta, sin fusionar; producción no se ha actualizado mediante
 ### Corrección de controles flotantes en móvil · 21 de noviembre de 2026
 
 Cuando el Asistente CEE está abierto en pantallas de hasta 760 px, la flecha «Volver arriba» se oculta y no recibe interacción. Al cerrar el panel, el estado se retira y la flecha vuelve a mostrarse según su visibilidad por scroll. En escritorio se conservan ambos controles. La auditoría responsive comprueba este comportamiento abierto/cerrado; falta ejecutar CI y revisar Preview antes de considerar la corrección verificada.
+## Seguimiento · 21 de noviembre de 2026
+La ejecución 44917850136 falló por 16 comprobaciones de «Volver arriba» al abrir/cerrar el asistente en móvil. Se ajustó el test para forzar un estado de scroll reproducible y esperar la transición CSS antes de comprobar la visibilidad; también restaura el estado de scroll/min-height de la página. Pendiente CI y nueva auditoría responsive; no considerar aprobado hasta que termine.
