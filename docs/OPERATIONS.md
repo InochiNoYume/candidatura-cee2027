@@ -207,3 +207,8 @@ La ejecución 44917850136 falló por 16 comprobaciones de «Volver arriba» al a
 ### Auditoría responsive · fixture de scroll y Gemini transitorio · 21/11/2026
 
 La comprobación de la flecha móvil usa un elemento temporal con altura real en el documento para que Chromium móvil tenga scroll reproducible; tras desplazarse espera dos frames y valida el umbral y la clase visible. El fixture se elimina y la página vuelve al inicio. Los HTTP 429, 502, 503 y 504 de Gemini se registran como advertencias no bloqueantes de la auditoría técnica, diferenciándolos de fallos de código o contrato. El informe debe conservar el detalle de las advertencias; esto no equivale a validar la disponibilidad del proveedor.
+
+
+### Auditoría responsive · sincronización real de scroll móvil · 21/11/2026
+
+La ejecución 44958694349 confirmó que la prueba de «Volver arriba» aún fallaba en 15 páginas móviles: el fixture oculto y el desplazamiento suave no garantizaban que el scroll superara 420 px antes de dos frames. Se cambió el fixture a un bloque temporal transparente con altura real, se desactiva scroll suave solo durante el test, se verifica el scroll efectivo y se incluyen métricas diagnósticas en el error. También se espera la transición de visibilidad al abrir/cerrar el asistente, evitando leer un estado CSS transitorio. Se restaura el comportamiento de scroll y se elimina el fixture. Pendiente ejecutar la auditoría completa y confirmar Lighthouse; no declarar aprobación hasta que el nuevo run finalice.
