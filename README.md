@@ -403,3 +403,8 @@ La auditoría 45162295543 detectó una única falla: Gemini respondió HTTP 200,
 ### Responsive visual fix — home work-plan pillars (PR #21)
 
 The homepage's five work-plan pillar cards use responsive columns to prevent narrow text wrapping on intermediate tablet/desktop widths: three columns up to 1180px, two columns up to 900px, and one column on small mobile widths (560px and below). The section heading/link also stacks at narrower widths. Validate visually in Preview on tablet and desktop after the CSS change; content and card imagery are unchanged.
+
+
+### Audit correction — 404 check during maintenance (PR #21)
+
+The final responsive audit passed 120 page/viewport combinations with 0 axe violations, 7/7 Gemini scenarios, and 80/80 screenshots. The only failure was the synthetic missing-route check receiving the configured maintenance page (HTTP 503) instead of a 404. The audit now treats an explicit maintenance page interception as a non-blocking warning and keeps strict 404 assertions when maintenance is not returned. This does not change site runtime behavior or disable maintenance mode; a rerun is required to confirm.
