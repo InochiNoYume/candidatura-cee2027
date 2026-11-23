@@ -393,3 +393,8 @@ La validación más reciente se ejecutó sobre el HEAD actual `960b3316d656e56b8
 - [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): sintaxis, pruebas de Gemini y mantenimiento, HTML/enlaces y seguridad, todo aprobado.
 
 Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas, datos oficiales, Instagram, correo y formulario quedan reservados para PR #22. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
+
+
+### Ajuste del test de integrantes · 23 de noviembre de 2026
+
+La auditoría 45162295543 detectó una única falla: Gemini respondió HTTP 200, pero el test de integrantes/cargos no reconocía la redacción de la respuesta cuando los datos oficiales aún no estaban publicados. No hubo fallos responsive ni axe (120/120, 0 infracciones). Se ajustó la pregunta de prueba para pedir expresamente que señale datos faltantes y se amplió el patrón de validación para aceptar respuestas correctas sobre datos pendientes/no publicados, sin requerir nombres o cargos inventados. Commit de ajuste: `478f5316`. Pendiente volver a ejecutar la auditoría completa y validar el Preview.
