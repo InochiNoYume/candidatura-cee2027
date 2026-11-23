@@ -398,3 +398,8 @@ Estos resultados reemplazan las notas anteriores que indicaban que la auditoría
 ### Ajuste del test de integrantes · 23 de noviembre de 2026
 
 La auditoría 45162295543 detectó una única falla: Gemini respondió HTTP 200, pero el test de integrantes/cargos no reconocía la redacción de la respuesta cuando los datos oficiales aún no estaban publicados. No hubo fallos responsive ni axe (120/120, 0 infracciones). Se ajustó la pregunta de prueba para pedir expresamente que señale datos faltantes y se amplió el patrón de validación para aceptar respuestas correctas sobre datos pendientes/no publicados, sin requerir nombres o cargos inventados. Commit de ajuste: `478f5316`. Pendiente volver a ejecutar la auditoría completa y validar el Preview.
+
+
+### Responsive visual fix — home work-plan pillars (PR #21)
+
+The homepage's five work-plan pillar cards use responsive columns to prevent narrow text wrapping on intermediate tablet/desktop widths: three columns up to 1180px, two columns up to 900px, and one column on small mobile widths (560px and below). The section heading/link also stacks at narrower widths. Validate visually in Preview on tablet and desktop after the CSS change; content and card imagery are unchanged.
