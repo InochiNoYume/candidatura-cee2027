@@ -384,3 +384,12 @@ La prueba móvil de «Volver arriba» ahora crea un elemento temporal que aporta
 
 
 La auditoría 44958694349 reveló que el fixture de scroll oculto y el desplazamiento suave dejaban la comprobación en un estado transitorio: dos frames no bastaban para que Chromium móvil superara el umbral de 420 px. Se actualizó el test para desactivar temporalmente el scroll suave, usar un fixture transparente con altura real, comprobar y reportar métricas de scroll si falla, y esperar la transición de visibilidad del botón al abrir/cerrar el asistente. Se restaura el comportamiento de scroll al terminar. Pendiente repetir la auditoría responsive completa y revisar Lighthouse.
+
+
+## Estado consolidado de PR #21 · 23 de noviembre de 2026
+
+La validación más reciente se ejecutó sobre el HEAD actual `960b3316d656e56b8ea29d9dff68f672683299fe` y aprobó ambos workflows:
+- [Auditoría responsive y Lighthouse · 44960138690](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138690): 20 rutas × 6 viewports (120/120), 0 infracciones axe, 80/80 capturas y Gemini 7/7.
+- [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): sintaxis, pruebas de Gemini y mantenimiento, HTML/enlaces y seguridad, todo aprobado.
+
+Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas, datos oficiales, Instagram, correo y formulario quedan reservados para PR #22. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
