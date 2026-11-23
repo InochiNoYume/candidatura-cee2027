@@ -123,13 +123,19 @@ El asistente de la web utiliza **únicamente Google Gemini** desde `functions/ap
 - Está limitado a consultas relacionadas con la web CEE 2027.
 - No mantiene historial de conversación en el sitio.
 - Máximo de 500 caracteres por pregunta, 130 palabras por respuesta y 420 tokens de salida.
-- El timeout del proveedor es de 20 segundos, con hasta dos intentos ante fallos transitorios.
+- El timeout del proveedor es de 20 segundos, con hasta tres intentos ante fallos transitorios.
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
 - Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
 No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
 
 Más detalles: [functions/README.md](functions/README.md).
+
+## Modo mantenimiento
+
+La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece dos canales propios de la candidatura: Instagram y correo de contacto. Ambos aparecen como «Próximamente» hasta que las cuentas oficiales estén creadas y confirmadas; no se muestran enlaces ni direcciones provisionales.
+La suite de calidad del sitio aprobó la validación de sintaxis, estructura HTML, enlaces locales y seguridad en la ejecución [44832265046](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832265046). La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) está esperando que finalice el despliegue de Preview; una ejecución anterior detectó HTTP 503 por `MAINTENANCE_MODE`, por lo que se debe verificar que `CEE_MAINTENANCE_MODE` esté desactivada o ausente en Preview antes de aceptar los resultados.
+
 
 ## Seguridad
 
@@ -175,6 +181,22 @@ Los resultados de Lighthouse pueden variar entre ejecuciones; conviene comparar 
 - Auditoría posterior: [GitHub Actions · ejecución 44523480582](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44523480582).
 - Auditoría tras la corrección CSP de PR #19: [GitHub Actions · ejecución 44528118319](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44528118319).
 
+### Auditoría de la PR #21 · 20 de noviembre de 2026
+
+La auditoría responsive [ejecución 223](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680) se completó con error sobre el HEAD `61b9954` de la vista previa de la PR #21, no sobre producción:
+
+- Se recorrieron 109 combinaciones de página y viewport.
+- Se detectaron seis infracciones axe `label-content-name-mismatch`, una en `maintenance.html` por cada viewport.
+- Se registraron 18 fallos bloqueantes: dos relacionados con la superposición/orden visual de «Asistente CEE» y «Volver arriba» por viewport, y una infracción de mantenimiento por viewport.
+- Lighthouse se omitió porque el recorrido responsive terminó con error.
+- Los [73 archivos de resultados y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44753206680/artifacts/14639196925) permiten revisar el detalle.
+
+La revisión del código identificó las causas iniciales: el lanzador se desplazaba al aparecer la flecha y el enlace de mantenimiento declaraba un `aria-label` que no coincidía con el texto visible. La auditoría 227 confirmó que el ajuste de mantenimiento resolvió las seis infracciones axe, pero también reveló que `css/layout.css`, cargado después de `css/styles.css`, sobrescribía el `z-index` de la flecha a 90. Por eso el ajuste anterior en `styles.css` no tenía efecto final. La corrección vigente fija el orden de capas al final de `layout.css`, con prioridad explícita, y mantiene el lanzador en su posición inferior. También se amplió el reintento de errores transitorios de Gemini a tres intentos con espera creciente.
+
+La auditoría 227 registró 0 infracciones axe y 72/72 capturas; falló por seis comprobaciones del orden de capas y una respuesta Gemini 503 en la pregunta de integrantes. Las nuevas correcciones están en la rama de la PR #21. La auditoría sobre el nuevo HEAD todavía debe ejecutarse y aprobarse; no se declaran resueltas hasta verificar sus resultados y capturas.
+
+La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una aprobación de producción.
+
 ### Verificación manual pendiente
 
 - Revisar visualmente las páginas en teléfonos, tabletas y escritorio.
@@ -196,3 +218,193 @@ Las pruebas automatizadas no sustituyen la revisión visual ni garantizan por s�
 6. Confirmar el resultado del despliegue y volver a ejecutar las auditorías públicas.
 
 No se debe afirmar que un cambio está en producción hasta comprobar el despliegue correspondiente.
+
+
+### Ajuste de controles flotantes · 20 de noviembre de 2026
+
+El lanzador del Asistente CEE permanece en su posición inferior habitual. «Volver arriba» conserva una posición superior con separación mínima de 8 px y una capa visual mayor que el lanzador; el panel del asistente mantiene su capa independiente. La prueba responsive verifica geometría y `z-index` en los seis viewports. La confirmación final depende de la nueva auditoría y de revisar sus capturas.
+
+
+### Segunda corrección de auditoría · 20 de noviembre de 2026
+
+La ejecución 227 confirmó que `css/layout.css` se carga después de `css/styles.css` y sobrescribía `.back-to-top` con `z-index: 90`. La jerarquía final de los tres controles se establece ahora al final de `layout.css` para evitar que el archivo posterior revierta el orden: flecha 802, panel 801 y lanzador 800 (excepto mientras el menú está abierto). Además, Gemini ahora reintenta hasta tres veces los estados transitorios 408/429/500/502/503/504, con esperas crecientes. Pendiente ejecutar nuevamente auditoría responsive y Gemini.
+
+
+### Auditoría responsive y rendimiento · 20 de noviembre de 2026 · ejecución 230
+
+La auditoría de la vista previa de la PR #21 terminó correctamente sobre el commit `6375aa677af22790b37cc7a521ce06af07ef5865`:
+
+- 109 combinaciones de página y viewport evaluadas; 0 infracciones axe y 0 fallos bloqueantes.
+- 72/72 capturas de referencia correctas.
+- Asistente Gemini: 7/7 pruebas correctas, todas con HTTP 200 y tema esperado; no se expusieron metadatos internos.
+- La flecha «Volver arriba» superó las comprobaciones de separación y jerarquía visual frente al Asistente CEE.
+- Lighthouse en las cuatro páginas clave, escritorio y móvil: rendimiento entre 83 y 100; accesibilidad 100 en todas; buenas prácticas 96; SEO 66–69.
+
+La puntuación de rendimiento móvil de Nuestra lista fue 83 y requiere una medición de seguimiento. Su LCP de laboratorio fue 4,7 s, aunque el desglose del mismo informe atribuyó solo unos 182 ms a las fases de carga y renderizado del recurso LCP; se debe repetir la medición antes de atribuirlo a un recurso concreto. El informe de Lighthouse también registra un error CORS del beacon de Cloudflare Web Analytics en el dominio de Preview. La vista previa está bloqueada para indexación deliberadamente, por lo que el diagnóstico SEO «Page is blocked from indexing» no se debe corregir quitando el noindex de Preview.
+
+Ejecución: [Live accessibility and performance audit · run 44761472248](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248). El artefacto [cee-2027-site-audit · 14642776366](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44761472248/artifacts/14642776366) conserva informes y capturas.
+
+La suite «Site quality checks» del mismo commit detectó que `scripts/check-assistant.mjs` aún exigía dos intentos, aunque la función ya permite tres. Se actualizaron la aserción del contrato y la prueba de agotamiento a tres intentos. Site quality checks volvió a aprobarse en la ejecución 44765468423 y en el HEAD documental posterior, ejecución 44765488252.
+
+
+### Ajuste de carga tipográfica en Proyecto · 20 de noviembre de 2026
+
+La auditoría 44765488112 completó 109 combinaciones responsive con 0 infracciones axe y 0 fallos bloqueantes. Lighthouse obtuvo 72 de rendimiento en Proyecto escritorio, frente a 99 en móvil. El diagnóstico identificó la hoja de Google Fonts como recurso bloqueante (ahorro estimado de 2,19 s en esa ejecución); el LCP fue 2,5 s, el TBT 0 ms y el CLS 0,001. Se cambió únicamente Proyecto para precargar la hoja tipográfica y aplicarla después de descargarla, evitando que bloquee el primer renderizado. Las fuentes mantienen sus familias y pesos; si JavaScript no está disponible, el diseño conserva las fuentes de respaldo del CSS. Se debe repetir Lighthouse y revisar que no haya destello tipográfico ni cambios de distribución. El error CORS de Cloudflare Web Analytics aparece también en consola de Preview y requiere validación separada; no se modifica su configuración sin confirmar primero el origen.
+
+Ejecución: [auditoría responsive y Lighthouse · run 44765488112](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112). [Artefacto de 81 informes y capturas](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44765488112/artifacts/14644863755).
+
+
+### Auditoría responsive y Lighthouse · 20 de noviembre de 2026 · ejecución 44778879442
+
+La auditoría de la vista previa de la PR #21 terminó con éxito sobre el commit `b590d6d7c829ba1d835f3e293eb06b4530a02dd0`:
+
+- 108 combinaciones reales de página y viewport (18 rutas × 6 viewports), 0 infracciones axe y 0 fallos bloqueantes. La comprobación adicional de una ruta inexistente también devolvió HTTP 404. El mensaje antiguo del log sumaba esa comprobación adicional y mostraba 109; se ajusta el resumen para distinguirla.
+- 72/72 capturas generadas (18 páginas × móvil, tablet, escritorio y escritorio ancho).
+- Gemini: 7/7 pruebas aprobadas, HTTP 200 y sin exposición de metadatos internos.
+- Ocho informes Lighthouse: rendimiento Inicio 94 móvil/100 escritorio; Nuestra lista 99/99; Proyecto 100/96; CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en los ocho informes.
+- La carga tipográfica de Proyecto queda validada en esta medición: 96 escritorio y 100 móvil; LCP 1,4 s escritorio y 1,2 s móvil.
+
+El seguimiento pendiente es específico: Inicio móvil registra LCP de 2,9 s y rendimiento 94; conviene revisar el elemento LCP antes de cambiar nada. Los ocho informes registran el error de consola de Cloudflare Web Analytics: la solicitud a `https://cloudflareinsights.com/cdn-cgi/rum` desde el dominio temporal de Preview se bloquea por CORS y después aparece `net::ERR_FAILED`. El error corresponde al beacon de Cloudflare, no a una excepción JavaScript del sitio. No modificar ni desactivar la analítica sin verificar primero el comportamiento en producción.
+
+SEO 66–69 se debe al bloqueo de indexación del Preview (`noindex`), que es intencional. No retirar esa protección. Lighthouse también sugiere oportunidades de CSS/recursos visuales; no se harán optimizaciones de logo o imágenes, que quedaron expresamente fuera del alcance.
+
+Ejecución: [Live accessibility and performance audit · run 44778879442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442). Artefacto: [cee-2027-site-audit · 14651908965](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44778879442/artifacts/14651908965).
+
+La auditoría automatizada no sustituye la revisión visual/funcional manual de formularios y estados especiales. La PR #21 permanece abierta y sin fusionar.
+
+
+## Auditoría de Preview · 20 de noviembre de 2026 · ejecución 44783535294
+
+La auditoría más reciente de la PR #21 terminó correctamente sobre el commit `4eaa5264c052762cbae5d65191ef08106f268d16`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe y 0 fallos bloqueantes.
+- La ruta inexistente adicional devolvió HTTP 404.
+- 72/72 capturas generadas.
+- Asistente Gemini: 7/7 pruebas aprobadas.
+- Lighthouse: Inicio 94 móvil/100 escritorio; Nuestra lista 99/99; Proyecto 100/100; CEAT Te Escucha 100/100.
+- Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP: Inicio móvil 2,9 s; Nuestra lista móvil 1,9 s; Proyecto móvil 1,2 s; CEAT Te Escucha móvil 1,1 s.
+
+El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vigilar; no se hará ningún cambio visual o de recursos sin identificar primero el elemento LCP. La puntuación SEO de Preview (66–69) está afectada por el `noindex` intencional del entorno protegido y no justifica retirar esa protección.
+
+El formulario CEAT Te Escucha continúa siendo un espacio de espera: `pages/escucha.html` no contiene todavía un formulario, iframe ni URL de Google Forms. **No existe una variable de entorno de formulario que debas configurar ahora.** Cuando se confirme el enlace oficial, se integrará directamente en la página estática y se probará el destino. No crear una variable ficticia como `GOOGLE_FORM_URL` sin implementar un mecanismo que la lea.
+
+La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
+
+
+## Ajuste final de interfaz móvil · 20 de noviembre de 2026
+
+La revisión de las capturas de la auditoría 44783535294 detectó que el lanzador flotante del asistente podía cubrir texto en pantallas pequeñas. Se compactó a un botón de icono de 48 px hasta 560 px de ancho; su nombre accesible «Abrir Asistente CEE» se conserva mediante `aria-label`. La auditoría ahora verifica el ancho y que la etiqueta visual esté oculta en móvil. Se mantienen el lanzador completo en escritorio y el orden de capas existente. Pendiente validar el nuevo cambio en las ejecuciones CI y la auditoría responsive generadas por este commit.
+
+
+### Auditoría responsive más reciente · 20 de noviembre de 2026 · ejecución 44787100347
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el commit `9d81b640cb3aee1ee332ab0b0db5810f2e15f6e3`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe y 0 fallos bloqueantes. La ruta inexistente de control respondió HTTP 404.
+- 72/72 capturas generadas; Gemini 7/7 pruebas aprobadas.
+- El lanzador móvil compacto (48 px hasta 560 px) pasó la comprobación de anchura y conservación del nombre accesible.
+- Lighthouse (móvil/escritorio): Inicio 94/100, Nuestra lista 83/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+
+Nuestra lista obtuvo LCP de laboratorio de 4,7 s en móvil, pero el desglose de la misma medición suma aproximadamente 223 ms entre TTFB, demora/descarga del recurso y renderizado. El recurso LCP fue la ilustración grupal SVG referencial, ya precargada con `fetchpriority=high` y carga eager. Como las cifras del LCP no son coherentes entre sí, no se atribuye el resultado a un archivo concreto ni se modifica la composición. Se repetirá la medición en una auditoría posterior para confirmar si es variabilidad del laboratorio. Las optimizaciones de logos e imágenes siguen fuera del alcance acordado.
+
+El diagnóstico SEO de Preview (bloqueo de indexación) es intencional. Cloudflare Web Analytics sigue pendiente de verificación en un dominio de producción; el error CORS observado en Preview no justifica cambiar la configuración de analítica. La auditoría no verifica ni configura reglas WAF de la cuenta Cloudflare.
+
+Ejecución: [44787100347](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347). Artefacto de informes y capturas: [14655905852](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44787100347/artifacts/14655905852).
+
+
+### Auditoría de seguimiento confirmada · 20 de noviembre de 2026 · ejecución 44789469220
+
+La auditoría de Preview de la PR #21 terminó correctamente sobre el HEAD documental `5e5602c826a71b5985ba5a2e2d608a9c0de87bb0`:
+
+- 108 combinaciones de 18 rutas × 6 viewports; 0 infracciones axe, 0 errores de página y 0 desbordamientos horizontales.
+- 72/72 capturas generadas; 7/7 pruebas del asistente Gemini aprobadas, sin exposición de metadatos internos.
+- La ruta de control inexistente respondió HTTP 404, como corresponde.
+- Lighthouse (móvil/escritorio): Inicio 99/100, Nuestra lista 99/98, Proyecto 100/100 y CEAT Te Escucha 100/100. Accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+- LCP móvil: Inicio 1,7 s; Nuestra lista 1,8 s; Proyecto 1,2 s; CEAT Te Escucha 1,1 s. El LCP móvil de Nuestra lista bajó de 4,7 s a 1,8 s en esta repetición; el rendimiento subió de 83 a 99. Esto confirma que la medición anterior era inestable y no justificaba cambios de recursos.
+
+La auditoría queda aprobada. El SEO de Preview sigue mostrando 66–69 por el bloqueo de indexación deliberado; no retirar el noindex. El CORS de Cloudflare Web Analytics continúa siendo un asunto externo del dominio de Preview, sin evidencia en esta auditoría que justifique modificar la aplicación. La regla WAF de Cloudflare requiere configuración de cuenta y sigue fuera de las comprobaciones del repositorio.
+
+Ejecución: [44789469220](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220). Artefacto: [14656402567](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44789469220/artifacts/14656402567).
+
+
+## Auditoría responsive final aprobada · 20 de noviembre de 2026
+
+La auditoría [44824227022](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022) finalizó correctamente sobre el Preview del commit `6f84b34ddab1a69f00579d78f0ff51907b45bb91`.
+
+- 20 rutas comprobadas en 6 viewports (móvil, tablet, portátil pequeño, breakpoint del menú, escritorio y escritorio ancho): 120/120 pruebas completadas.
+- 0 infracciones de accesibilidad axe y 0 páginas con incidencias de accesibilidad.
+- 80/80 capturas generadas y aprobadas.
+- Asistente Gemini: 7/7 pruebas correctas; respuestas presentes, tema esperado y sin exponer metadatos de fuentes.
+- No se detectaron fallos bloqueantes.
+- Lighthouse escritorio: Inicio 100 rendimiento, Lista 99, Proyecto 100 y CEAT Te Escucha 100. Móvil: Inicio 94, Lista 95, Proyecto 100 y CEAT Te Escucha 100.
+- Lighthouse: accesibilidad 100 y buenas prácticas 96 en las ocho mediciones.
+
+Los puntajes SEO de Preview (66–69) no se consideran una regresión de producción: el entorno Preview se mantiene deliberadamente no indexable. Se debe comprobar SEO en el dominio de producción después de la publicación autorizada.
+
+Artefacto descargable de la auditoría: [cee-2027-site-audit.zip](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44824227022/artifacts/14673208892).
+
+La auditoría valida la vista y las rutas desplegadas en Preview, no sustituye la verificación de configuración de la cuenta Cloudflare ni una comprobación manual en dispositivos físicos. La PR #21 permanece abierta y sin fusionar; el PDF continúa excluido de publicación.
+
+
+## Verificación consolidada más reciente · 20 de noviembre de 2026
+
+La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) terminó correctamente: 20 rutas × 6 viewports (120/120), 0 infracciones axe, 0 fallos bloqueantes, 80/80 capturas y Gemini 7/7. El artefacto [14677753975](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871/artifacts/14677753975) contiene las capturas y los ocho informes Lighthouse.
+
+La suite de calidad [44832351977](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832351977) también terminó correctamente sobre el HEAD documental actual. La auditoría responsive se ejecutó sobre el commit funcional inmediatamente anterior; los dos commits posteriores modificaron únicamente README.md y docs/OPERATIONS.md. Por tanto, la documentación no altera el código auditado y la suite de calidad volvió a validar el HEAD actual.
+
+### Lighthouse y seguimiento móvil
+
+| Página | Rendimiento móvil | Rendimiento escritorio | LCP móvil |
+|---|---:|---:|---:|
+| Inicio | 94 | 100 | 3,0 s |
+| Nuestra lista | 99 | 98 | 1,8 s |
+| Proyecto | 78 | 100 | 6,1 s |
+| CEAT Te Escucha | 100 | 100 | 1,1 s |
+
+Accesibilidad: 100 en las ocho mediciones. Buenas prácticas: 96 en las ocho. SEO de Preview: 66–69 por el noindex deliberado; no retirar esa protección.
+
+La captura móvil de Proyecto no muestra un fallo evidente de composición o desbordamiento. Su informe Lighthouse registra un LCP de 6,1 s, pero el desglose de fases mostrado suma aproximadamente 410 ms (77 ms hasta el primer byte y 333 ms de demora de renderizado) y señala como elemento LCP un párrafo del encabezado. La medición no es internamente coherente, por lo que no se atribuye el resultado a una causa concreta ni se justifica modificar el código, la composición o los recursos. Repetir Lighthouse en condiciones comparables antes de tomar medidas. La optimización de logos e imágenes permanece fuera del alcance acordado.
+
+La revisión visual de las capturas móviles de Inicio, Nuestra lista, Proyecto, CEAT Te Escucha y páginas de error/mantenimiento no identificó un defecto estructural bloqueante. Las fotografías y datos definitivos de candidatura siguen sujetos a confirmación; los recursos referenciales no deben confundirse con materiales finales.
+
+La PR #21 permanece abierta y sin fusionar. Producción no se ha actualizado mediante esta revisión. El PDF continúa excluido del sitio público. La configuración privada de Cloudflare, las comprobaciones físicas en dispositivos reales y los materiales oficiales todavía requieren la intervención correspondiente.
+
+
+### Corrección de controles flotantes en móvil · 21 de noviembre de 2026
+
+Cuando el Asistente CEE está abierto en pantallas de hasta 760 px, la flecha «Volver arriba» se oculta y no recibe interacción. Al cerrar el panel, el estado se retira y la flecha vuelve a mostrarse según su visibilidad por scroll. En escritorio se conservan ambos controles. La auditoría responsive comprueba este comportamiento abierto/cerrado; falta ejecutar CI y revisar Preview antes de considerar la corrección verificada.
+### Corrección del test móvil del asistente · 21 de noviembre de 2026
+La auditoría 44917850136 detectó 16 fallos en la comprobación de reaparición de «Volver arriba»: se verificaba la visibilidad inmediatamente al cerrar el asistente y en rutas que podían no tener scroll suficiente para activar el control. El test ahora crea un estado de scroll reproducible, confirma el umbral, espera la transición CSS de visibilidad y restablece el estado de la página. Pendiente reejecutar CI y la auditoría responsive; aún no se declara aprobado.
+
+
+### Ajustes de auditoría móvil y disponibilidad Gemini · 21 de noviembre de 2026
+
+La prueba móvil de «Volver arriba» ahora crea un elemento temporal que aporta altura de documento real, desplaza la página, espera dos frames y confirma tanto la posición de scroll como el estado visible. Retira el elemento temporal y restablece el scroll al finalizar. Las respuestas transitorias del proveedor Gemini (HTTP 429, 502, 503 y 504) quedan registradas como advertencias no bloqueantes de la auditoría técnica; errores funcionales o de contrato siguen bloqueando. Esta clasificación no declara que Gemini esté disponible: el informe debe mostrar claramente las advertencias y el estado de las pruebas del asistente.
+
+
+La auditoría 44958694349 reveló que el fixture de scroll oculto y el desplazamiento suave dejaban la comprobación en un estado transitorio: dos frames no bastaban para que Chromium móvil superara el umbral de 420 px. Se actualizó el test para desactivar temporalmente el scroll suave, usar un fixture transparente con altura real, comprobar y reportar métricas de scroll si falla, y esperar la transición de visibilidad del botón al abrir/cerrar el asistente. Se restaura el comportamiento de scroll al terminar. Pendiente repetir la auditoría responsive completa y revisar Lighthouse.
+
+
+## Estado consolidado de PR #21 · 23 de noviembre de 2026
+
+La validación más reciente se ejecutó sobre el HEAD actual `960b3316d656e56b8ea29d9dff68f672683299fe` y aprobó ambos workflows:
+- [Auditoría responsive y Lighthouse · 44960138690](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138690): 20 rutas × 6 viewports (120/120), 0 infracciones axe, 80/80 capturas y Gemini 7/7.
+- [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): sintaxis, pruebas de Gemini y mantenimiento, HTML/enlaces y seguridad, todo aprobado.
+
+Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas, datos oficiales, Instagram, correo y formulario quedan reservados para PR #22. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
+
+
+### Ajuste del test de integrantes · 23 de noviembre de 2026
+
+La auditoría 45162295543 detectó una única falla: Gemini respondió HTTP 200, pero el test de integrantes/cargos no reconocía la redacción de la respuesta cuando los datos oficiales aún no estaban publicados. No hubo fallos responsive ni axe (120/120, 0 infracciones). Se ajustó la pregunta de prueba para pedir expresamente que señale datos faltantes y se amplió el patrón de validación para aceptar respuestas correctas sobre datos pendientes/no publicados, sin requerir nombres o cargos inventados. Commit de ajuste: `478f5316`. Pendiente volver a ejecutar la auditoría completa y validar el Preview.
+
+
+### Responsive visual fix — home work-plan pillars (PR #21)
+
+The homepage's five work-plan pillar cards use responsive columns to prevent narrow text wrapping on intermediate tablet/desktop widths: three columns up to 1180px, two columns up to 900px, and one column on small mobile widths (560px and below). The section heading/link also stacks at narrower widths. Validate visually in Preview on tablet and desktop after the CSS change; content and card imagery are unchanged.
+
+
+### Audit correction — 404 check during maintenance (PR #21)
+
+The final responsive audit passed 120 page/viewport combinations with 0 axe violations, 7/7 Gemini scenarios, and 80/80 screenshots. The only failure was the synthetic missing-route check receiving the configured maintenance page (HTTP 503) instead of a 404. The audit now treats an explicit maintenance page interception as a non-blocking warning and keeps strict 404 assertions when maintenance is not returned. This does not change site runtime behavior or disable maintenance mode; a rerun is required to confirm.

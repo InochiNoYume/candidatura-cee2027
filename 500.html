@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#3e0e14">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Se produjo un error temporal al cargar el sitio CEE 2027.">
+  <title>Error del servidor | CEE 2027 · CEAT</title>
+  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <style>
+    .error-page{min-height:100svh;display:grid;place-items:center;padding:32px 20px;background:linear-gradient(145deg,#fffaf8,#f4ecea)}
+    .error-card{width:min(100%,720px);padding:clamp(30px,6vw,62px);border:1px solid #eadbd9;border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(48,18,20,.09);text-align:center}
+    .error-code{margin:0 0 12px;color:#9b4548;font:800 clamp(54px,12vw,100px)/1 Manrope,system-ui,sans-serif;letter-spacing:-.07em}
+    .error-card h1{margin:0;color:#321116;font:800 clamp(28px,5vw,42px)/1.15 Manrope,system-ui,sans-serif}
+    .error-card p:not(.error-code){max-width:520px;margin:18px auto 28px;color:#6a5e5f;line-height:1.8}
+    .error-actions{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap}
+    @media(max-width:520px){.error-card{padding:30px 22px}.error-actions .button{width:100%}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <main id="contenido" class="error-page">
+    <section class="error-card" aria-labelledby="error-title">
+      <p class="error-code" aria-hidden="true">500</p>
+      <h1 id="error-title">Algo salió mal.</h1>
+      <p>El sitio encontró un problema temporal al procesar tu solicitud. Inténtalo nuevamente en unos momentos.</p>
+      <div class="error-actions">
+        <a class="button button-primary" href="/">Volver al inicio</a>
+        <a class="arrow-link" href="/pages/contacto.html">Ir a contacto <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

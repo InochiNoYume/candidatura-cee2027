@@ -4,6 +4,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -20,10 +21,13 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check js/main.js
+          node --check scripts/audit-live-site.mjs
           node --check js/search.js
           node --check functions/api/asistente.js
+          node --check functions/_middleware.js
           node scripts/check-assistant.mjs
           node scripts/test-assistant-resilience.mjs
+          node scripts/test-maintenance-mode.mjs
           node --check scripts/check-security.mjs
       - name: Validate HTML structure and local links
         run: node scripts/check-site.mjs

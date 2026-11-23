@@ -715,3 +715,61 @@ body {
 @media(min-width:900px){.cee-assistant-panel{width:min(440px,calc(100vw - 48px));max-height:min(680px,calc(100dvh - 128px));right:max(28px,env(safe-area-inset-right));bottom:max(94px,calc(env(safe-area-inset-bottom) + 88px))}.cee-assistant-head{padding:22px 23px 15px}.cee-assistant-intro{padding:0 23px 16px;font-size:12px}.cee-assistant-messages{min-height:210px;max-height:360px;padding:21px 19px}.cee-assistant-message{font-size:13px;line-height:1.6}.cee-assistant-form{padding:15px 18px 10px}.cee-assistant-form textarea{min-height:66px;max-height:140px;font-size:13px}.cee-assistant-form-foot{font-size:11px}.cee-assistant-privacy{padding:0 19px 15px;font-size:10px}}
 @media(max-width:760px){.team-avatar-image{width:54px;height:54px}}
 @media(prefers-reduced-motion:reduce){.team-avatar-image{transition:none}}
+
+
+/* Lista CEE: retratos más visibles y tarjetas con jerarquía editorial */
+.team-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
+.team-card{min-height:100%;padding:28px 26px 25px;background:linear-gradient(155deg,#fff 0%,#faf5f3 100%);border:1px solid #eadfdb;border-top:4px solid var(--red);box-shadow:0 8px 26px rgba(48,18,20,.055)}
+.team-card .team-avatar{width:112px;height:112px;margin:0 0 22px;border-radius:18px 18px 18px 6px;box-shadow:0 12px 26px rgba(80,20,24,.16);object-fit:cover}
+.team-card .role{display:inline-block;font-size:10px;line-height:1.5;letter-spacing:.1em;margin-bottom:7px}
+.team-card h3{font-size:clamp(19px,1.7vw,22px);line-height:1.25;margin:7px 0 8px}
+.team-card p{font-size:13px;line-height:1.65;color:#62595a;min-height:42px}
+.team-card .course{margin-top:16px;border:1px solid #eadcda;border-radius:6px;background:#fff;color:#6e252b;font-size:11px;padding:6px 11px}
+.team-responsibilities{position:relative;z-index:2;margin-top:18px;padding-top:13px;border-top:1px solid #eadfdb}
+.team-responsibilities summary{color:#7d171b;font-size:12px;font-weight:800;cursor:pointer;list-style:none}
+.team-responsibilities summary::-webkit-details-marker{display:none}
+.team-responsibilities summary:after{content:"＋";float:right;font-size:15px;line-height:1}
+.team-responsibilities[open] summary:after{content:"−"}
+.team-responsibilities p{min-height:0;margin-top:12px;font-size:12px;line-height:1.7;color:#655b5b}
+.team-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(48,18,20,.1);border-color:#dfc9c6}
+.team-group-illustration{margin:10px 0 46px;border-radius:18px;box-shadow:0 16px 38px rgba(48,18,20,.07)}
+.team-group-illustration img{max-height:430px;object-fit:contain;background:#fbf5f3}
+.team-group-illustration figcaption{padding:12px 18px;font-size:12px}
+.team-section .lead-copy{max-width:900px;padding:22px 25px;border-left:4px solid var(--red);border-radius:0 10px 10px 0;background:#faf5f3;color:#554b4c}
+.team-section .subheading{display:flex;align-items:center;gap:14px;margin:54px 0 22px;font-size:clamp(23px,2.2vw,29px)}
+.team-section .subheading:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#dfc9c6,transparent)}
+@media(max-width:1000px){.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.team-card .team-avatar{width:104px;height:104px}}
+@media(max-width:760px){.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.team-card{padding:22px 19px}.team-card .team-avatar{width:96px;height:96px}.team-section .lead-copy{padding:18px 19px}}
+@media(max-width:520px){.team-grid{grid-template-columns:1fr;gap:14px}.team-card{padding:22px}.team-card .team-avatar{width:104px;height:104px}.team-card p{min-height:0}.team-group-illustration{margin-bottom:34px}}
+@media(prefers-reduced-motion:reduce){.team-card,.team-card .team-avatar{transition:none!important}}
+
+
+/* Capas de controles flotantes: la flecha debe quedar sobre el lanzador del asistente. */
+.back-to-top { z-index: 802; }
+.cee-assistant-launcher { z-index: 800; }
+.cee-assistant-panel { z-index: 801; }
+
+
+/* En móvil, el lanzador compacto reduce la superposición sobre el contenido.
+   El nombre accesible se conserva en aria-label del botón. */
+@media (max-width: 560px) {
+  .cee-assistant-launcher {
+    width: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+  .cee-assistant-launcher > span:not(.cee-assistant-launcher-icon) {
+    display: none;
+  }
+  .cee-assistant-launcher-icon {
+    margin: 0;
+  }
+}
+
+/* Evita que el control de volver arriba invada el asistente abierto en teléfonos. */
+@media(max-width:760px){
+  body.assistant-open .back-to-top{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+}

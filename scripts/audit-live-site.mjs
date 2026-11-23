@@ -8,7 +8,7 @@ const routes = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "404.html"
+  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "403.html", "404.html", "500.html", "maintenance.html"
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
@@ -21,6 +21,7 @@ const viewports = [
 const browser = await chromium.launch({ headless: true });
 const results = [];
 const failures = [];
+const warnings = [];
 const assistantResults = [];
 const screenshotResults = [];
 
@@ -158,8 +159,9 @@ try {
         });
         for (const error of navigationErrors) failures.push(`${viewport.name} ${route}: navegación: ${error}`);
 
+        if (!["403.html", "404.html", "500.html", "maintenance.html"].includes(route)) {
         // Comprueba la presencia y accesibilidad básica del asistente global y del canvas de partículas.
-        const assistantChecks = await page.evaluate(() => {
+        const assistantChecks = await page.evaluate(async () => {
           const errors = [];
           const launcher = document.querySelector(".cee-assistant-launcher");
           const panel = document.querySelector("#cee-assistant-panel");
@@ -170,22 +172,71 @@ try {
           if (!reduceMotion && !trail) errors.push("no aparece el canvas de partículas aunque el movimiento está permitido");
           if (reduceMotion && trail && getComputedStyle(trail).display !== "none") errors.push("el rastro de partículas no respeta prefers-reduced-motion");
           if (launcher && !/Asistente CEE/.test(launcher.textContent)) errors.push("el botón no muestra el nombre Asistente CEE");
+          if (launcher && window.matchMedia("(max-width: 560px)").matches) {
+            if (launcher.getBoundingClientRect().width > 64) errors.push("el lanzador móvil no está en formato compacto y puede tapar contenido");
+            const label = [...launcher.children].find(child => !child.classList.contains("cee-assistant-launcher-icon"));
+            if (label && getComputedStyle(label).display !== "none") errors.push("el texto del lanzador debería ocultarse en móvil y conservarse como nombre accesible");
+          }
           if (panel && !/Asistente CEE/.test(panel.querySelector("#cee-assistant-title")?.textContent || "")) errors.push("el panel no muestra el título Asistente CEE");
           if (launcher && panel) {
-            window.scrollTo(0, 650);
+            const topButton = document.querySelector(".back-to-top");
+            const isMobile = window.matchMedia("(max-width:760px)").matches;
+            // Prepara un estado de scroll reproducible: algunas páginas no alcanzan 420 px
+            // y la prueba anterior esperaba que el botón estuviera visible en todas.
+            let scrollFixture = null;
+            const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+            if (isMobile && topButton) {
+              // Disable smooth-scroll for the test and use a transparent layout fixture with measurable height.
+              // Otherwise two animation frames can occur before smooth scrolling crosses the threshold.
+              document.documentElement.style.scrollBehavior = "auto";
+              scrollFixture = document.createElement("div");
+              scrollFixture.setAttribute("aria-hidden", "true");
+              scrollFixture.style.cssText = "display:block;position:relative;width:1px;height:2200px;opacity:0;pointer-events:none;overflow:hidden";
+              document.body.appendChild(scrollFixture);
+              window.scrollTo(0, Math.min(650, document.documentElement.scrollHeight - window.innerHeight));
+              window.dispatchEvent(new Event("scroll"));
+              await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              if (window.scrollY <= 420 || !topButton.classList.contains("visible")) {
+                errors.push(`el botón Volver arriba no aparece tras scroll real (scrollY=${window.scrollY}, scrollHeight=${document.documentElement.scrollHeight}, maxScroll=${document.documentElement.scrollHeight-window.innerHeight}, visibleClass=${topButton.classList.contains("visible")})`);
+              }
+            }
             launcher.click();
             if (panel.hidden || launcher.getAttribute("aria-expanded") !== "true") errors.push("el asistente no abre o no actualiza aria-expanded");
+            // The button's visibility transition is 200 ms; wait before checking computed styles.
+            await new Promise(resolve => setTimeout(resolve, 250));
+            if (isMobile && topButton && getComputedStyle(topButton).visibility !== "hidden") {
+              errors.push(`en móvil, Volver arriba debe ocultarse mientras el asistente está abierto (visibility=${getComputedStyle(topButton).visibility}, assistantOpen=${document.body.classList.contains("assistant-open")})`);
+            }
+            if (isMobile && !document.body.classList.contains("assistant-open")) {
+              errors.push("el estado assistant-open no se activa al abrir el panel");
+            }
             const input = panel.querySelector("#cee-assistant-input");
             if (!input || Number(input.getAttribute("maxlength")) !== 500) errors.push("el campo del asistente no limita la pregunta a 500 caracteres");
             panel.querySelector(".cee-assistant-close")?.click();
             if (!panel.hidden || launcher.getAttribute("aria-expanded") !== "false") errors.push("el asistente no cierra correctamente");
-            const topButton = document.querySelector(".back-to-top");
-            if (topButton && getComputedStyle(topButton).visibility === "visible") {
+            // Espera la transición CSS de visibility/opacity antes de leer estilos computados.
+            await new Promise(resolve => setTimeout(resolve, 250));
+            if (!isMobile && topButton && getComputedStyle(topButton).visibility === "visible") {
               const a = launcher.getBoundingClientRect(), b = topButton.getBoundingClientRect();
               if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
                 errors.push("el botón Asistente CEE se superpone con Volver arriba");
               }
-              if (b.bottom > a.top) errors.push("Volver arriba no está visualmente encima del Asistente CEE");
+              if (a.top - b.bottom < 8) errors.push("Volver arriba no mantiene 8 px de separación sobre el Asistente CEE");
+              if (Number(getComputedStyle(topButton).zIndex) <= Number(getComputedStyle(launcher).zIndex)) {
+                errors.push("Volver arriba no tiene una capa visual superior al Asistente CEE");
+              }
+            }
+            if (isMobile && topButton && getComputedStyle(topButton).visibility !== "visible") {
+              errors.push(`en móvil, Volver arriba debe volver a mostrarse al cerrar el asistente (visibility=${getComputedStyle(topButton).visibility})`);
+            }
+            if (isMobile && document.body.classList.contains("assistant-open")) {
+              errors.push("assistant-open debe retirarse al cerrar el panel");
+            }
+            if (isMobile) {
+              scrollFixture?.remove();
+              document.documentElement.style.scrollBehavior = originalScrollBehavior;
+              window.scrollTo(0, 0);
+              window.dispatchEvent(new Event("scroll"));
             }
             if (!launcher.querySelector(".cee-assistant-launcher-icon svg")) errors.push("falta la mascota gatito del Asistente CEE");
             if (launcher.querySelector(".cee-assistant-launcher-icon svg") &&
@@ -197,6 +248,7 @@ try {
           return errors;
         });
         for (const error of assistantChecks) failures.push(`${viewport.name} ${route}: asistente/efectos: ${error}`);
+        }
 
         // Comprueba que el buscador devuelve páginas reales y gestiona búsquedas sin resultados.
         if (route === "pages/buscar.html") {
@@ -226,9 +278,13 @@ try {
           }
         };
         results.push(item);
-        const expectedStatus = 200;
+        const expectedStatus = ({ "403.html": 403, "404.html": 404, "500.html": 500 })[route] ?? 200;
         if (response?.status() !== expectedStatus) failures.push(`${viewport.name} ${route}: expected HTTP ${expectedStatus}, got ${response?.status()}`);
+        if (route === "403.html" && !/Acceso no autorizado/i.test(layout.title)) failures.push(`${viewport.name} 403.html: el título no identifica el acceso restringido`);
         if (route === "404.html" && !/Página no encontrada/i.test(layout.title)) failures.push(`${viewport.name} 404.html: el título no identifica la página no encontrada`);
+        if (route === "500.html" && !/Error del servidor/i.test(layout.title)) failures.push(`${viewport.name} 500.html: el título no identifica el error del servidor`);
+        if (["403.html", "404.html", "500.html"].includes(route) && !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex")) failures.push(`${viewport.name} ${route}: falta la directiva noindex`);
+        if (route === "maintenance.html" && (!/mantenimiento/i.test(layout.title) || !(await page.locator('meta[name="robots"]').getAttribute("content"))?.includes("noindex"))) failures.push(`${viewport.name} maintenance.html: falta el título o la directiva noindex`);
         if (layout.documentWidth > layout.viewportWidth + 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${layout.documentWidth}px > ${layout.viewportWidth}px`);
         if (layout.mainCount !== 1) failures.push(`${viewport.name} ${route}: expected one main landmark, found ${layout.mainCount}`);
         if (pageErrors.length) failures.push(`${viewport.name} ${route}: JavaScript page errors: ${pageErrors.join("; ")}`);
@@ -249,8 +305,9 @@ try {
     },
     {
       name: "team-members-and-roles",
-      question: "¿Quiénes integran la lista y qué cargos ocupa cada persona?",
-      expectedTopic: /lista|integrantes|cargo|publicad|información/i
+      question: "¿Qué información está publicada sobre los integrantes de la lista y sus cargos? Si faltan datos oficiales, indícalo.",
+      // Permite respuestas fieles a páginas incompletas que expliquen que los nombres/cargos no están publicados aún.
+      expectedTopic: /lista|integrantes|cargo|publicad|información|equipo|personas|miembro|confirmad|pendiente|no hay|no se|faltan datos/i
     },
     {
       name: "agenda-and-dates",
@@ -292,9 +349,16 @@ try {
         answerLength: answer.length, sourceMetadataExposed: Object.hasOwn(payload || {}, "sources"),
         code: payload?.code || null, passed: valid
       });
-      if (!valid) failures.push("Gemini Preview " + test.name + ": HTTP " + response.status +
-        ", provider " + (payload?.provider || "none") + ", topicMatch " + answerMatchesExpectedTopic +
-        ", code " + (payload?.code || "none"));
+      if (!valid) {
+        const message = "Gemini Preview " + test.name + ": HTTP " + response.status +
+          ", provider " + (payload?.provider || "none") + ", topicMatch " + answerMatchesExpectedTopic +
+          ", code " + (payload?.code || "none");
+        if ([429, 502, 503, 504].includes(response.status)) {
+          warnings.push(message + " (respuesta transitoria del proveedor; no bloquea las pruebas técnicas)");
+        } else {
+          failures.push(message);
+        }
+      }
     } catch (error) {
       assistantResults.push({ name: test.name, passed: false, error: error.message });
       failures.push("Gemini Preview " + test.name + ": " + error.message);
@@ -302,7 +366,28 @@ try {
   }
 
   // Capturas para revisión visual manual de las cuatro páginas principales en móvil, tablet y escritorio.
-  const screenshotRoutes = [{ name: "home", route: "" }, { name: "lista", route: "pages/lista.html" }, { name: "proyecto", route: "pages/proyecto.html" }, { name: "escucha", route: "pages/escucha.html" }];
+  const screenshotRoutes = [
+    { name: "home", route: "" },
+    { name: "lista", route: "pages/lista.html" },
+    { name: "proyecto", route: "pages/proyecto.html" },
+    { name: "agenda", route: "pages/agenda.html" },
+    { name: "transparencia", route: "pages/transparencia.html" },
+    { name: "noticias", route: "pages/noticias.html" },
+    { name: "galeria", route: "pages/galeria.html" },
+    { name: "escucha", route: "pages/escucha.html" },
+    { name: "preguntas", route: "pages/preguntas.html" },
+    { name: "contacto", route: "pages/contacto.html" },
+    { name: "actas", route: "pages/actas.html" },
+    { name: "informes", route: "pages/informes.html" },
+    { name: "comunidad-tp", route: "pages/comunidad-tp.html" },
+    { name: "memoria", route: "pages/memoria.html" },
+    { name: "privacidad", route: "pages/privacidad.html" },
+    { name: "buscar", route: "pages/buscar.html" },
+    { name: "403", route: "403.html" },
+    { name: "404", route: "404.html" },
+    { name: "500", route: "500.html" },
+    { name: "maintenance", route: "maintenance.html" }
+  ];
   const screenshotViewports = [
     { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
     { name: "tablet", width: 768, height: 900, isMobile: false, hasTouch: false },
@@ -337,8 +422,12 @@ try {
   const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
   const missingTitle = await missingPage.title();
   const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
-  if (missingResponse?.status() !== 404) failures.push(`Ruta inexistente: se esperaba HTTP 404 y se recibió ${missingResponse?.status()}`);
-  if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: Cloudflare Pages no mostró la página 404 personalizada");
+  if (missingResponse?.status() === 503 && /Estamos en mantenimiento/i.test(missingTitle)) {
+    warnings.push("Ruta inexistente: la página de mantenimiento (HTTP 503) interceptó la comprobación; se omite la validación 404 en este estado.");
+  } else {
+    if (missingResponse?.status() !== 404) failures.push("Ruta inexistente: se esperaba HTTP 404 y se recibió " + missingResponse?.status());
+    if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: Cloudflare Pages no mostró la página 404 personalizada");
+  }
   results.push({ route: "__cee_audit_missing_route__", viewport: "desktop", status: missingResponse?.status() ?? null, title: missingTitle, heading: missingHeading });
   await missingPage.close();
 } finally {
@@ -355,6 +444,7 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
     pagesWithAccessibilityIssues: results.filter(item => (item.accessibility?.violations || 0) > 0).length,
     geminiTestsPassed: assistantResults.filter(item => item.passed).length,
     geminiTestsTotal: assistantResults.length,
+    warnings,
     screenshotsPassed: screenshotResults.filter(item => item.passed).length,
     screenshotsTotal: screenshotResults.length,
     failures
@@ -363,7 +453,7 @@ fs.writeFileSync("audit-results/accessibility-responsive.json", JSON.stringify({
   screenshotResults,
   results
 }, null, 2));
-console.log(`Responsive audit: ${results.length} page/viewport combinations; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
+console.log(`Responsive audit: ${results.length - 1} page/viewport combinations across ${routes.length} routes and ${viewports.length} viewports; missing-route check HTTP ${results.find(item => item.route === "__cee_audit_missing_route__")?.status ?? "unknown"}; ${results.reduce((sum, item) => sum + (item.accessibility?.violations || 0), 0)} axe violations; ${failures.length} blocking failures.`);
 if (failures.length) {
   for (const failure of failures) console.error(" - " + failure);
   process.exitCode = 1;

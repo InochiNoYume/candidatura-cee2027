@@ -87,13 +87,13 @@ function selectSources(question) {
 
   if (!scored.length) return [...FALLBACK_SOURCE_PAGES];
 
-  // Solo se consultan las secciones más relacionadas con la pregunta.
-  // Los empates permiten consultas que combinan varios temas.
-  const maxScore = Math.max(...scored.map(group => group.score));
+  // Recupera todos los temas claramente presentes, no solo el grupo ganador.
+  // Se limita el número de secciones para controlar latencia y contexto enviado a Gemini.
+  const ranked = [...scored].sort((a, b) => b.score - a.score);
+  const maxScore = ranked[0].score;
+  const relevant = ranked.filter(group => group.score >= Math.max(1, maxScore * 0.2)).slice(0, 5);
   const selected = new Set();
-  for (const group of scored) {
-    if (group.score === maxScore) group.paths.forEach(path => selected.add(path));
-  }
+  for (const group of relevant) group.paths.forEach(path => selected.add(path));
   return [...selected];
 }
 
@@ -193,7 +193,7 @@ function getRetrievedSources(candidate, selectedPaths, siteOrigin) {
 
 const TRANSIENT_GEMINI_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 const GEMINI_TIMEOUT_MS = 20000;
-const PROVIDER_ATTEMPTS = 2;
+const PROVIDER_ATTEMPTS = 3;
 
 async function fetchGeminiWithRetry(url, options) {
   let lastError;
@@ -206,7 +206,8 @@ async function fetchGeminiWithRetry(url, options) {
       lastError = error;
       if (attempt === PROVIDER_ATTEMPTS - 1) throw error;
     }
-    await new Promise(resolve => setTimeout(resolve, 450 * (attempt + 1) + Math.floor(Math.random() * 200)));
+    // Los errores 503/UNAVAILABLE de Gemini pueden ser transitorios; usar espera creciente.
+    await new Promise(resolve => setTimeout(resolve, 900 * (attempt + 1)));
   }
   throw lastError || new Error("GEMINI_REQUEST_FAILED");
 }
@@ -250,14 +251,31 @@ export async function onRequestPost({ request, env }) {
   if (!question || question.length > 500) return json({ error: "La pregunta debe tener entre 1 y 500 caracteres." }, 400);
 
   const now = Date.now();
-  for (const [key, state] of requestWindows) if (now - state.startedAt > WINDOW_MS) requestWindows.delete(key);
   const address = request.headers.get("CF-Connecting-IP") || "unknown";
-  const state = requestWindows.get(address) || { startedAt: now, count: 0 };
-  if (state.count >= MAX_REQUESTS_PER_INSTANCE && now - state.startedAt < WINDOW_MS) return json({ error: "Límite temporal alcanzado." }, 429);
-  if (now - state.startedAt >= WINDOW_MS) { state.startedAt = now; state.count = 0; }
-  state.count += 1;
-  requestWindows.set(address, state);
-  while (requestWindows.size > 1000) requestWindows.delete(requestWindows.keys().next().value);
+  const rateLimitKey = address.slice(0, 128);
+
+  // Compatibilidad opcional con un binding RateLimit inyectado por el entorno.
+  // En Pages Functions debe confirmarse su soporte; el Rate Limiting API de Workers
+  // sincroniza contadores de forma aproximada por ubicación, no como límite mundial estricto.
+  if (env.CEE_RATE_LIMITER && typeof env.CEE_RATE_LIMITER.limit === "function") {
+    try {
+      const decision = await env.CEE_RATE_LIMITER.limit({ key: rateLimitKey });
+      if (!decision?.success) return json({ error: "Límite temporal alcanzado." }, 429);
+    } catch (error) {
+      console.error("CEE rate limiter binding failed", { errorName: error?.name || "Error" });
+      return json({ error: "El control de solicitudes no está disponible temporalmente. Inténtalo más tarde." }, 503);
+    }
+  } else {
+    // Respaldo temporal por isolate; configurar CEE_RATE_LIMITER en Cloudflare
+    // para obtener aplicación consistente del límite entre instancias.
+    for (const [key, state] of requestWindows) if (now - state.startedAt > WINDOW_MS) requestWindows.delete(key);
+    const state = requestWindows.get(rateLimitKey) || { startedAt: now, count: 0 };
+    if (state.count >= MAX_REQUESTS_PER_INSTANCE && now - state.startedAt < WINDOW_MS) return json({ error: "Límite temporal alcanzado." }, 429);
+    if (now - state.startedAt >= WINDOW_MS) { state.startedAt = now; state.count = 0; }
+    state.count += 1;
+    requestWindows.set(rateLimitKey, state);
+    while (requestWindows.size > 1000) requestWindows.delete(requestWindows.keys().next().value);
+  }
 
   const requestStartedAt = Date.now();
   const selectedPaths = selectSources(question);
