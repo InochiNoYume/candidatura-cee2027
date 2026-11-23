@@ -422,8 +422,12 @@ try {
   const missingResponse = await missingPage.goto(new URL("__cee_audit_missing_route__", base).href, { waitUntil: "domcontentloaded", timeout: 45000 });
   const missingTitle = await missingPage.title();
   const missingHeading = await missingPage.locator("h1").first().textContent().catch(() => "");
-  if (missingResponse?.status() !== 404) failures.push(`Ruta inexistente: se esperaba HTTP 404 y se recibió ${missingResponse?.status()}`);
-  if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: Cloudflare Pages no mostró la página 404 personalizada");
+  if (missingResponse?.status() === 503 && /Estamos en mantenimiento/i.test(missingTitle)) {
+    warnings.push("Ruta inexistente: la página de mantenimiento (HTTP 503) interceptó la comprobación; se omite la validación 404 en este estado.");
+  } else {
+    if (missingResponse?.status() !== 404) failures.push("Ruta inexistente: se esperaba HTTP 404 y se recibió " + missingResponse?.status());
+    if (!/Página no encontrada/i.test(missingTitle) || !/no está disponible/i.test(missingHeading || "")) failures.push("Ruta inexistente: Cloudflare Pages no mostró la página 404 personalizada");
+  }
   results.push({ route: "__cee_audit_missing_route__", viewport: "desktop", status: missingResponse?.status() ?? null, title: missingTitle, heading: missingHeading });
   await missingPage.close();
 } finally {
