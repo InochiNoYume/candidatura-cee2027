@@ -90,3 +90,8 @@ El middleware global `functions/_middleware.js` gestiona los errores HTML con do
 Las páginas de error están marcadas `noindex,nofollow`, no se almacenan en caché y añaden `X-Content-Type-Options: nosniff`. Las reglas WAF o los errores de infraestructura que se produzcan antes de que la solicitud llegue a Pages Functions permanecen bajo el control de Cloudflare.
 
 `scripts/test-maintenance-mode.mjs` ahora comprueba 403, 404, 500, excepciones HTML, cabeceras y conservación del tipo JSON en la API. `scripts/audit-live-site.mjs` incluye las páginas de error en las comprobaciones responsive y en las capturas.
+
+
+## Alcance confirmado de seguridad · PR #21
+
+El límite local por isolate se documenta como protección básica, no como límite global. La configuración de Rate Limiting global y WAF de Cloudflare queda **excluida** de esta PR por decisión del proyecto; no se configura ni se presenta como implementada. Si se necesita más adelante, deberá planificarse por separado y revisarse según las capacidades del plan de Cloudflare.
