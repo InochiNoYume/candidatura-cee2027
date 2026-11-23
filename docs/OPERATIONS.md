@@ -225,3 +225,8 @@ Los resultados de auditoría previos a este apartado son registros históricos; 
 **Pendiente de intervención externa/manual:** revisar el Preview en dispositivos físicos; verificar Analytics y variables/secrets en la cuenta Cloudflare (sin cambiar Production); probar HTTP 403/404/500 y modo mantenimiento de forma manual en Preview; y probar el formulario cuando se disponga de su enlace oficial. Las fotos autorizadas de integrantes, datos de asesores, Instagram/correo oficiales y formulario se reservan para PR #22.
 
 PR #21 permanece abierta y sin fusionar. Producción no debe actualizarse mediante esta PR sin autorización explícita.
+
+
+### Ajuste del test de integrantes · 23 de noviembre de 2026
+
+La auditoría 45162295543 detectó una única falla: Gemini respondió HTTP 200, pero el test de integrantes/cargos no reconocía la redacción de la respuesta cuando los datos oficiales aún no estaban publicados. No hubo fallos responsive ni axe (120/120, 0 infracciones). Se ajustó la pregunta de prueba para pedir expresamente que señale datos faltantes y se amplió el patrón de validación para aceptar respuestas correctas sobre datos pendientes/no publicados, sin requerir nombres o cargos inventados. Commit de ajuste: `478f5316`. Pendiente volver a ejecutar la auditoría completa y validar el Preview.
