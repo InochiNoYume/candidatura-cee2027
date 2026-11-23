@@ -305,8 +305,9 @@ try {
     },
     {
       name: "team-members-and-roles",
-      question: "¿Quiénes integran la lista y qué cargos ocupa cada persona?",
-      expectedTopic: /lista|integrantes|cargo|publicad|información/i
+      question: "¿Qué información está publicada sobre los integrantes de la lista y sus cargos? Si faltan datos oficiales, indícalo.",
+      // Permite respuestas fieles a páginas incompletas que expliquen que los nombres/cargos no están publicados aún.
+      expectedTopic: /lista|integrantes|cargo|publicad|información|equipo|personas|miembro|confirmad|pendiente|no hay|no se|faltan datos/i
     },
     {
       name: "agenda-and-dates",
