@@ -212,3 +212,16 @@ La comprobación de la flecha móvil usa un elemento temporal con altura real en
 ### Auditoría responsive · sincronización real de scroll móvil · 21/11/2026
 
 La ejecución 44958694349 confirmó que la prueba de «Volver arriba» aún fallaba en 15 páginas móviles: el fixture oculto y el desplazamiento suave no garantizaban que el scroll superara 420 px antes de dos frames. Se cambió el fixture a un bloque temporal transparente con altura real, se desactiva scroll suave solo durante el test, se verifica el scroll efectivo y se incluyen métricas diagnósticas en el error. También se espera la transición de visibilidad al abrir/cerrar el asistente, evitando leer un estado CSS transitorio. Se restaura el comportamiento de scroll y se elimina el fixture. Pendiente ejecutar la auditoría completa y confirmar Lighthouse; no declarar aprobación hasta que el nuevo run finalice.
+
+
+## Estado consolidado de PR #21 · 23 de noviembre de 2026
+
+Los resultados de auditoría previos a este apartado son registros históricos; las notas antiguas que indiquen que faltaba repetir CI/auditoría quedan superadas por las ejecuciones actuales sobre HEAD `960b3316d656e56b8ea29d9dff68f672683299fe`:
+- [Auditoría responsive y Lighthouse · 44960138690](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138690): 120/120 páginas/viewport, 0 infracciones axe, 80/80 capturas, Gemini 7/7.
+- [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): workflow aprobado, incluidas sintaxis, suites del asistente y mantenimiento, HTML/enlaces y seguridad.
+
+**No se considera bloqueante para PR #21:** configurar Rate Limiting global o WAF en Cloudflare; queda explícitamente excluido por decisión del proyecto. Tampoco se optimizan logos ni imágenes.
+
+**Pendiente de intervención externa/manual:** revisar el Preview en dispositivos físicos; verificar Analytics y variables/secrets en la cuenta Cloudflare (sin cambiar Production); probar HTTP 403/404/500 y modo mantenimiento de forma manual en Preview; y probar el formulario cuando se disponga de su enlace oficial. Las fotos autorizadas de integrantes, datos de asesores, Instagram/correo oficiales y formulario se reservan para PR #22.
+
+PR #21 permanece abierta y sin fusionar. Producción no debe actualizarse mediante esta PR sin autorización explícita.
