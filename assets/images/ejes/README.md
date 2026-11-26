@@ -1,6 +1,6 @@
 # Fotografías y recursos visuales de los ejes
 
-Esta carpeta conserva cinco JPEG que anteriormente se usaban como imágenes referenciales. Debido a que su procedencia y permisos no están confirmados, se retiraron de la visualización pública en PR22. Inicio y Proyecto muestran ilustraciones SVG locales de `../illustrations/` hasta recibir fotografías oficiales autorizadas.
+Esta carpeta contiene los cinco JPEG integrados en la página `pages/proyecto.html` como imágenes referenciales. Cada imagen tiene un aviso visible de que fue localizada mediante Google Imágenes y que se actualizará próximamente. Las ilustraciones SVG de `../illustrations/` permanecen como respaldo dentro de los elementos `<picture>`.
 
 ## Archivos existentes
 
