@@ -408,3 +408,8 @@ The homepage's five work-plan pillar cards use responsive columns to prevent nar
 ### Audit correction — 404 check during maintenance (PR #21)
 
 The final responsive audit passed 120 page/viewport combinations with 0 axe violations, 7/7 Gemini scenarios, and 80/80 screenshots. The only failure was the synthetic missing-route check receiving the configured maintenance page (HTTP 503) instead of a 404. The audit now treats an explicit maintenance page interception as a non-blocking warning and keeps strict 404 assertions when maintenance is not returned. This does not change site runtime behavior or disable maintenance mode; a rerun is required to confirm.
+
+
+### Post-merge CI audit behavior during maintenance
+
+The production live audit failed after PR #21 was merged because Cloudflare maintenance mode returned HTTP 503 across audited routes; this made page, assistant, and error-page checks fail on the maintenance response rather than the underlying site. The live-site audit workflow now performs a preflight against its target: when it detects the explicit maintenance page (HTTP 503 with maintenance text), it emits a warning and skips browser checks and Lighthouse; healthy HTTP 200 targets proceed with the full audit, while other HTTP statuses remain hard failures. A skipped audit is not counted as a successful full audit and should be rerun when maintenance is off or against a healthy Preview.
