@@ -1,6 +1,6 @@
 # Imágenes de la página de inicio
 
-Las cinco tarjetas del bloque «Plan de trabajo» de Inicio utilizan **las mismas fotografías referenciales que la página Proyecto**, para mantener una identidad visual coherente entre ambas páginas.
+Las cinco tarjetas del bloque «Plan de trabajo» de Inicio utilizan **ilustraciones SVG referenciales**, compartidas con la página Proyecto, para mantener una identidad visual coherente mientras se esperan los materiales oficiales autorizados.
 
 ## Fotografías compartidas por Inicio y Proyecto
 
@@ -12,9 +12,9 @@ Las cinco tarjetas del bloque «Plan de trabajo» de Inicio utilizan **las misma
 | `eje-04-identidad-vinculacion-tp.jpeg` | Identidad y vinculación técnico-profesional. |
 | `eje-05-bienestar-participacion.jpeg` | Bienestar y participación estudiantil. |
 
-En Inicio y Proyecto se muestra el aviso: «Imagen referencial · localizada mediante Google Imágenes · se actualizará próximamente».
+En Inicio y Proyecto se muestra el aviso: «Ilustración referencial · pendiente de material oficial autorizado».
 
-**Importante:** Google Imágenes es un buscador, no el autor ni una licencia de reutilización. Antes de la publicación definitiva, se debe confirmar la procedencia y los permisos o sustituir estas imágenes por fotografías propias autorizadas del establecimiento.
+**Importante:** las fotografías JPEG anteriores se mantienen en `assets/images/ejes/` para revisión de procedencia y permisos, pero no se utilizan públicamente. No incorporar fotografías sin autorización.
 
 ## Fotografías adicionales pendientes
 
