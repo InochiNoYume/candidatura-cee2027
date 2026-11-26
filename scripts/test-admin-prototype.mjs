@@ -11,6 +11,6 @@ const checks=[
  ["all content sections have labels",["noticias","lista","ejes","agenda","transparencia","galeria","memoria","comunidad","contacto","ajustes"].every(x=>js.includes(x))],
  ["the complementary fifth axis is represented in demo",js.includes("length:5")&&js.includes("eje-")&&js.includes("complementario")],
  ["demo explicitly warns about temporary non-persistence",html.includes("no se guardan al recargar")&&js.includes("no se publican")],
- ["D1 schema defines CMS user, session, entries, versions and audit",["admin_users","admin_sessions","cms_entries","cms_versions","cms_audit_log"].every(x=>sql.includes("CREATE TABLE IF NOT EXISTS "+x)))];
+ ["D1 schema defines CMS user, session, entries, versions and audit",["admin_users","admin_sessions","cms_entries","cms_versions","cms_audit_log"].every(x=>sql.includes("CREATE TABLE IF NOT EXISTS "+x))];
 for(const [label,ok] of checks){console.log((ok?"PASS":"FAIL")+" "+label);if(!ok)process.exitCode=1;}
 if(!process.exitCode)console.log("ADMIN PROTOTYPE SMOKE TESTS PASSED");
