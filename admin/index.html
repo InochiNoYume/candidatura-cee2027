@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Panel de administración · CEE 2027</title>
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+  <div class="demo-banner"><strong>Prototipo visual</strong><span>Datos de ejemplo · La autenticación y la base de datos aún no están conectadas.</span></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">CEE</span><div><strong>CEE 2027</strong><small>Panel de gestión</small></div></div>
+      <nav aria-label="Administración">
+        <button class="nav-item active" data-section="dashboard"><span>▦</span> Resumen</button>
+        <p class="nav-label">CONTENIDO</p>
+        <button class="nav-item" data-section="noticias"><span>▤</span> Noticias</button>
+        <button class="nav-item" data-section="lista"><span>♙</span> Nuestra lista</button>
+        <button class="nav-item" data-section="ejes"><span>◇</span> Ejes programáticos</button>
+        <button class="nav-item" data-section="agenda"><span>▦</span> Agenda</button>
+        <button class="nav-item" data-section="transparencia"><span>▧</span> Transparencia</button>
+        <button class="nav-item" data-section="galeria"><span>▣</span> Galería</button>
+        <button class="nav-item" data-section="memoria"><span>▥</span> Memoria</button>
+        <button class="nav-item" data-section="comunidad"><span>♧</span> Comunidad TP</button>
+        <p class="nav-label">CONFIGURACIÓN</p>
+        <button class="nav-item" data-section="contacto"><span>✉</span> Contacto y enlaces</button>
+        <button class="nav-item" data-section="ajustes"><span>⚙</span> Ajustes del sitio</button>
+      </nav>
+      <div class="sidebar-footer"><span class="status-dot"></span> Sitio público <strong>estable</strong><small>CEE 2027 · CEAT</small></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button><div class="crumb">Administración <span>/</span> <strong id="crumb">Resumen</strong></div><a class="view-site" href="https://candidatura-cee2027.pages.dev/" target="_blank" rel="noopener">Ver sitio ↗</a></header>
+      <div class="content">
+        <section class="welcome"><div><p class="eyebrow">CENTRO DE GESTIÓN</p><h1 id="pageTitle">Resumen</h1><p id="pageDescription">Una visión general del contenido de tu candidatura.</p></div><div class="welcome-chip">✦ Compromiso, Gestión y Acción Estudiantil</div></section>
+        <section id="dashboardSection">
+          <div class="stats-grid">
+            <article class="stat-card"><span class="stat-icon purple">▤</span><small>Noticias</small><strong>4</strong><span class="stat-note">Ejemplos de contenido</span></article>
+            <article class="stat-card"><span class="stat-icon blue">♙</span><small>Integrantes</small><strong>8</strong><span class="stat-note">Equipo de candidatura</span></article>
+            <article class="stat-card"><span class="stat-icon green">◇</span><small>Ejes programáticos</small><strong>5</strong><span class="stat-note">Todos conservados</span></article>
+            <article class="stat-card"><span class="stat-icon orange">▦</span><small>Próximas actividades</small><strong>3</strong><span class="stat-note">Datos demostrativos</span></article>
+          </div>
+          <div class="section-grid">
+            <article class="panel"><div class="panel-heading"><div><h2>Contenido reciente</h2><p>Vista previa de elementos del sitio</p></div><button class="soft-button" data-section="noticias">Ver noticias →</button></div><div class="recent-list"><div class="recent-item"><span class="recent-bullet purple-bg"></span><div><strong>Actualización del proyecto</strong><small>Noticias · Ejemplo</small></div><span class="tag draft">Borrador</span></div><div class="recent-item"><span class="recent-bullet blue-bg"></span><div><strong>Agenda estudiantil</strong><small>Agenda · Ejemplo</small></div><span class="tag published">Publicado</span></div><div class="recent-item"><span class="recent-bullet green-bg"></span><div><strong>Transparencia y gestión</strong><small>Transparencia · Ejemplo</small></div><span class="tag published">Publicado</span></div></div></article>
+            <article class="panel"><div class="panel-heading"><div><h2>Accesos rápidos</h2><p>Ir directamente a una sección</p></div></div><div class="quick-grid"><button data-section="noticias"><span>＋</span><strong>Nueva noticia</strong></button><button data-section="lista"><span>♙</span><strong>Editar integrantes</strong></button><button data-section="agenda"><span>▦</span><strong>Actualizar agenda</strong></button><button data-section="contacto"><span>✉</span><strong>Datos de contacto</strong></button></div></article>
+          </div>
+          <article class="panel checklist"><div class="panel-heading"><div><h2>Preparación del CMS</h2><p>Etapas para habilitar edición real</p></div><span class="tag draft">En desarrollo</span></div><div class="check-row"><span class="check-icon">✓</span><div><strong>Diseño del panel y navegación</strong><small>Prototipo inicial</small></div><span class="tag published">Preparado</span></div><div class="check-row"><span class="check-icon">◷</span><div><strong>Crear y vincular base D1</strong><small>Schema y entorno por configurar</small></div><span class="tag pending">Pendiente</span></div><div class="check-row"><span class="check-icon">◷</span><div><strong>Autenticación segura y permisos</strong><small>Backend, sesiones y pruebas</small></div><span class="tag pending">Pendiente</span></div><div class="check-row"><span class="check-icon">◷</span><div><strong>Edición, publicación e historial</strong><small>Conectar contenido de la web</small></div><span class="tag pending">Pendiente</span></div></article>
+        </section>
+        <section id="moduleSection" hidden><article class="panel module-panel"><div class="module-icon">✦</div><h2 id="moduleTitle">Sección</h2><p id="moduleDescription">Esta sección está prevista para integrarse con el CMS.</p><div class="module-callout"><strong>Esta vista es una demostración.</strong><p>Las acciones de edición y guardado se habilitarán cuando se conecten la API, la base de datos y la autenticación. No se modifican datos reales desde este prototipo.</p></div><button class="soft-button" data-section="dashboard">← Volver al resumen</button></article></section>
+        <footer>CEE 2027 · Panel de gestión <span>Prototipo de interfaz · No conectado</span></footer>
+      </div>
+    </main>
+  </div>
+  <script src="./js/admin.js" defer></script>
+</body>
+</html>
