@@ -3,16 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Panel privado de gestión de contenidos de la candidatura CEE 2027. Prototipo no conectado.">
   <meta name="theme-color" content="#111827">
   <title>Panel de administración · CEE 2027</title>
   <link rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
   <div class="demo-banner"><strong>Prototipo visual</strong><span>Datos de ejemplo · La autenticación y la base de datos aún no están conectadas.</span></div>
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand"><span class="brand-mark">CEE</span><div><strong>CEE 2027</strong><small>Panel de gestión</small></div></div>
-      <nav aria-label="Administración">
+      <nav id="site-nav" aria-label="Administración">
         <button class="nav-item active" data-section="dashboard"><span>▦</span> Resumen</button>
         <p class="nav-label">CONTENIDO</p>
         <button class="nav-item" data-section="noticias"><span>▤</span> Noticias</button>
@@ -29,8 +31,8 @@
       </nav>
       <div class="sidebar-footer"><span class="status-dot"></span> Sitio público <strong>estable</strong><small>CEE 2027 · CEAT</small></div>
     </aside>
-    <main class="main">
-      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button><div class="crumb">Administración <span>/</span> <strong id="crumb">Resumen</strong></div><a class="view-site" href="https://candidatura-cee2027.pages.dev/" target="_blank" rel="noopener">Ver sitio ↗</a></header>
+    <main class="main" id="main-content">
+      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="site-nav">☰</button><div class="crumb">Administración <span>/</span> <strong id="crumb">Resumen</strong></div><a class="view-site" href="https://candidatura-cee2027.pages.dev/" target="_blank" rel="noopener">Ver sitio ↗</a></header>
       <div class="content">
         <section class="welcome"><div><p class="eyebrow">CENTRO DE GESTIÓN</p><h1 id="pageTitle">Resumen</h1><p id="pageDescription">Una visión general del contenido de tu candidatura.</p></div><div class="welcome-chip">✦ Compromiso, Gestión y Acción Estudiantil</div></section>
         <section id="dashboardSection">
