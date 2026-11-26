@@ -3,19 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Panel de administración del sitio CEE 2027. Interfaz de prototipo no conectada a producción.">
   <meta name="description" content="Panel privado de gestión de contenidos de la candidatura CEE 2027. Prototipo no conectado.">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#801515">
   <title>Panel de administración · CEE 2027</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
   <div class="demo-banner"><strong>Prototipo visual</strong><span>Datos de ejemplo · La autenticación y la base de datos aún no están conectadas.</span></div>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
-  <a class="skip-link" href="#main-content">Saltar al contenido</a>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
-      <div class="brand"><span class="brand-mark">CEE</span><div><strong>CEE 2027</strong><small>Panel de gestión</small></div></div>
+      <div class="brand"><span class="brand-mark">CEE</span><div><strong>CEE 2027</strong><small>CEAT · Gestión Estudiantil</small></div></div>
       <nav id="site-nav" aria-label="Administración">
         <button class="nav-item active" data-section="dashboard"><span>▦</span> Resumen</button>
         <p class="nav-label">CONTENIDO</p>
@@ -36,7 +37,7 @@
     <main class="main" id="contenido">
       <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="site-nav">☰</button><div class="crumb">Administración <span>/</span> <strong id="crumb">Resumen</strong></div><a class="view-site" href="https://candidatura-cee2027.pages.dev/" target="_blank" rel="noopener">Ver sitio ↗</a></header>
       <div class="content">
-        <section class="welcome"><div><p class="eyebrow">CENTRO DE GESTIÓN</p><h1 id="pageTitle">Resumen</h1><p id="pageDescription">Una visión general del contenido de tu candidatura.</p></div><div class="welcome-chip">✦ Compromiso, Gestión y Acción Estudiantil</div></section>
+        <section class="welcome"><div><p class="eyebrow">CENTRO DE GESTIÓN</p><h1 id="pageTitle">Resumen</h1><p id="pageDescription">Una visión general del contenido de tu candidatura.</p></div><div class="welcome-chip">Compromiso, Gestión y Acción Estudiantil</div></section>
         <section id="dashboardSection">
           <div class="stats-grid">
             <article class="stat-card"><span class="stat-icon purple">▤</span><small>Noticias</small><strong>4</strong><span class="stat-note">Ejemplos de contenido</span></article>
@@ -55,7 +56,6 @@
       </div>
     </main>
   </div>
-  <script src="../js/main.js" defer></script>
   <script src="./js/admin.js" defer></script>
 </body>
 </html>
