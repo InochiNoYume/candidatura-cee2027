@@ -2,8 +2,12 @@ import fs from "node:fs";
 const html=fs.readFileSync("admin/index.html","utf8");
 const js=fs.readFileSync("admin/js/admin.js","utf8");
 const sql=fs.readFileSync("database/schema.sql","utf8");
+const css=fs.readFileSync("admin/css/admin.css","utf8");
+const styleLinks=["/css/styles.css","/css/layout.css","/admin/css/admin.css"];
 const checks=[
  ["admin page has responsive viewport and disclaimer",html.includes('name="viewport"')&&html.includes("prototipo")],
+ ["admin loads official styles before admin overrides",styleLinks.every(x=>html.includes(x))&&html.indexOf(styleLinks[0])<html.indexOf(styleLinks[1])&&html.indexOf(styleLinks[1])<html.indexOf(styleLinks[2])],
+ ["admin stylesheet braces are balanced and starts cleanly",css.startsWith("/*")&&([...css.matchAll(/\{/g)].length===[...css.matchAll(/\}/g)].length)&&!css.trimStart().startsWith(";")],
  ["dashboard and CRUD form controls are present",["recordList","recordForm","recordTitle","recordSlug","recordContent","recordState"].every(x=>html.includes(x))],
  ["CRUD actions are implemented",["newEntry","data-edit","data-delete","form.addEventListener(\"submit\""].every(x=>js.includes(x))],
  ["content is escaped before insertion",js.includes("function escapeHtml")&&js.includes("escapeHtml(r.title)")],
