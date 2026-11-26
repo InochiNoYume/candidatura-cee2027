@@ -5,6 +5,8 @@
     "/assets/*",
     "/css/*",
     "/js/*",
+    "/admin/css/*",
+    "/admin/js/*",
     "/robots.txt",
     "/sitemap.xml"
   ]
