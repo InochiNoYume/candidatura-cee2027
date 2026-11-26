@@ -29,6 +29,8 @@ jobs:
           node scripts/test-assistant-resilience.mjs
           node scripts/test-maintenance-mode.mjs
           node --check scripts/check-security.mjs
+          node --check admin/js/admin.js
+          node scripts/test-admin-prototype.mjs
       - name: Validate HTML structure and local links
         run: node scripts/check-site.mjs
       - name: Check XSS and repository security hygiene
