@@ -1,7 +1,7 @@
 # Panel de administración — CEE 2027
 
 ## Estado
-Prototipo de interfaz (sin autenticación ni persistencia). Todo el contenido visible es demostrativo.
+Prototipo de interfaz con CRUD demostrativo en memoria (crear, editar y eliminar). Sin autenticación ni persistencia. Los cambios desaparecen al recargar y nunca se publican.
 
 ## Abrir localmente
 Abrir `admin/index.html` en un navegador. No requiere build ni dependencias.
