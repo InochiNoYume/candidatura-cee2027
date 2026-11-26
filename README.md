@@ -90,7 +90,7 @@ Las fechas y los contenidos deben mantenerse alineados con la documentación ofi
 
 ## Fotografías e identidad visual
 
-Las cinco imágenes JPEG de los ejes están integradas en `pages/proyecto.html` como material estrictamente referencial y llevan un aviso visible que indica que fueron localizadas mediante Google Imágenes y que se actualizarán próximamente. Google Imágenes es un buscador, no el autor ni una licencia de uso: antes de mantener estas imágenes en producción se deben verificar sus fuentes y permisos, o reemplazarlas por fotografías propias autorizadas del CEAT. Las ilustraciones SVG de `assets/images/illustrations/` se conservan como respaldo dentro de cada elemento `<picture>`. La portada y el bloque «Tu voz también construye» siguen pendientes de fotografías reales autorizadas.
+Los cinco JPEG de los ejes se conservan en `assets/images/ejes/` como recursos pendientes de revisión de procedencia y permisos, pero ya no se muestran en el sitio público. Inicio y Proyecto utilizan las ilustraciones SVG locales de `assets/images/illustrations/` como imágenes referenciales hasta que se incorporen fotografías oficiales autorizadas. La portada y el bloque «Tu voz también construye» siguen pendientes de fotografías reales autorizadas.
 
 ### Carpetas y nombres para las próximas imágenes
 
@@ -102,7 +102,7 @@ Cada carpeta contiene un `README.md` con instrucciones y nombres exactos. Resume
 | Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Recomendada; reemplazará la ilustración actual de participación. |
 | Nuestra lista · retratos | `assets/images/integrantes/` | Nombre por cargo, detallado en su README | Solo si hay retratos autorizados. |
 | Nuestra lista · foto grupal | `assets/images/grupo/` | `lista-cee-2027-completa-01.jpg` | Opcional, con autorización de todas las personas identificables. |
-| Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Cinco JPEG ya subidos: nombres exactos en su README | Pendiente revisión visual e integración; las ilustraciones siguen como respaldo. |
+| Proyecto · ejes 1 al 5 | `assets/images/illustrations/` | Cinco SVG referenciales actualmente visibles en Inicio y Proyecto. | Fotografías definitivas autorizadas pendientes; JPEG antiguos quedan fuera de la visualización pública hasta revisar su procedencia y permisos. |
 | Noticias | `assets/images/noticias/` | `AAAA-MM-DD-titulo-noticia.webp` | Opcional por noticia. |
 | Galería y Memoria | `assets/images/actividades/` | `AAAA-MM-DD-nombre-de-actividad-01.webp` | Solo para registros reales autorizados. |
 | Comunidad TP | `assets/images/comunidad-tp/` | Nombres por proyecto o especialidad, detallados en su README | Opcional, cuando existan proyectos o experiencias reales. |
