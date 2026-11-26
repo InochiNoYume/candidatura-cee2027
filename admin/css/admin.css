@@ -126,8 +126,8 @@ footer { display:flex; justify-content:space-between; gap:12px; padding:25px 4px
  .app-shell { display:block; }
  .sidebar { position:fixed; z-index:100; inset:40px auto 0 0; width:270px; flex-basis:270px; transform:translateX(-105%); transition:transform .2s ease; box-shadow:8px 0 30px rgba(38,10,13,.25); }
  .sidebar.open { transform:translateX(0); }
- .topbar { height:58px; padding:0 15px; }\n .topbar .topbar .menu-toggle { display:inline-flex; }
- .menu-toggle { display:inline-flex; }
+ .topbar { height:58px; padding:0 15px; }
+ .topbar .menu-toggle { display:inline-flex; }
  .crumb { flex:1; margin-left:10px; font-size:12px; }
  .content { padding:20px 14px; }
  .welcome h1 { font-size:26px; }
