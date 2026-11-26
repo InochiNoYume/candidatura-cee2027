@@ -36,7 +36,7 @@ jobs:
       - name: Detect maintenance mode before live audit
         id: preflight
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && '${{ github.event.pull_request.head.ref }}.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: |
           BASE_URL="${CEE_AUDIT_BASE_URL%/}"
           STATUS="$(curl -sS -o /tmp/cee-audit-home.html -w '%{http_code}' "$BASE_URL/")"
@@ -57,12 +57,12 @@ jobs:
       - name: Test every page on mobile, tablet and desktop
         if: steps.preflight.outputs.audit_ready == 'true'
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && '${{ github.event.pull_request.head.ref }}.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: node scripts/audit-live-site.mjs
       - name: Run Lighthouse on key pages for mobile and desktop
         if: steps.preflight.outputs.audit_ready == 'true'
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && '${{ github.event.pull_request.head.ref }}.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: |
           mkdir -p audit-results/lighthouse
           export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
