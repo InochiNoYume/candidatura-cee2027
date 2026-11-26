@@ -33,10 +33,22 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Resolve Cloudflare preview URL
+        id: preview
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            # Cloudflare Pages branch-preview hostnames truncate branch slugs to 28 characters.
+            BRANCH_SLUG="${BRANCH_NAME:0:28}"
+            echo "base_url=https://${BRANCH_SLUG}.candidatura-cee2027.pages.dev/" >> "$GITHUB_OUTPUT"
+          else
+            echo "base_url=${{ inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}" >> "$GITHUB_OUTPUT"
+          fi
       - name: Detect maintenance mode before live audit
         id: preflight
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ steps.preview.outputs.base_url }}
         run: |
           BASE_URL="${CEE_AUDIT_BASE_URL%/}"
           STATUS="$(curl -sS -o /tmp/cee-audit-home.html -w '%{http_code}' "$BASE_URL/")"
@@ -57,12 +69,12 @@ jobs:
       - name: Test every page on mobile, tablet and desktop
         if: steps.preflight.outputs.audit_ready == 'true'
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ steps.preview.outputs.base_url }}
         run: node scripts/audit-live-site.mjs
       - name: Run Lighthouse on key pages for mobile and desktop
         if: steps.preflight.outputs.audit_ready == 'true'
         env:
-          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && format('https://{0}.candidatura-cee2027.pages.dev/', github.event.pull_request.head.ref) || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+          CEE_AUDIT_BASE_URL: ${{ steps.preview.outputs.base_url }}
         run: |
           mkdir -p audit-results/lighthouse
           export CHROME_PATH="$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')"
