@@ -74,6 +74,8 @@ for (const file of htmlFiles) {
     if (file.replaceAll("\\", "/") === "admin/index.html") {
       if (!/<script(?=[^>]*src=["'][^"']*admin[.]js["'])(?=[^>]*defer)[^>]*>/i.test(html)) failures.push(file + ": admin.js debe cargarse con defer");
     } else if (!/<script(?=[^>]*src=["'][^"']*main[.]js["'])(?=[^>]*defer)[^>]*>/i.test(html)) failures.push(file + ": main.js debe cargarse con defer");
+      if (!/<script(?=[^>]*src=["'][^"']*admin[.]js["'])(?=[^>]*defer)[^>]*>/i.test(html)) failures.push(file + ": admin.js debe cargarse con defer");
+    } else if (!/<script(?=[^>]*src=["'][^"']*main[.]js["'])(?=[^>]*defer)[^>]*>/i.test(html)) failures.push(file + ": main.js debe cargarse con defer");
   }
   const tagStack = [];
   for (const match of html.matchAll(/<!--[\s\S]*?-->|<![^>]*>|<\/?([a-z][\w:-]*)\b[^>]*>/gi)) {
