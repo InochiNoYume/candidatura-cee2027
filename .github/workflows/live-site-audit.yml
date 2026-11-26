@@ -33,15 +33,34 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Detect maintenance mode before live audit
+        id: preflight
+        env:
+          CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://fix-assistant-audit-and-list.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
+        run: |
+          BASE_URL="${CEE_AUDIT_BASE_URL%/}"
+          STATUS="$(curl -sS -o /tmp/cee-audit-home.html -w '%{http_code}' "$BASE_URL/")"
+          if [ "$STATUS" = "503" ] && grep -Eiq 'Estamos en mantenimiento|maintenance' /tmp/cee-audit-home.html; then
+            echo "audit_ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Live audit skipped: the target is explicitly in maintenance mode (HTTP 503)."
+          elif [ "$STATUS" = "200" ]; then
+            echo "audit_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Preflight failed: target returned HTTP $STATUS (not an explicit maintenance page or healthy 200)."
+            exit 1
+          fi
       - name: Install browser audit tools
+        if: steps.preflight.outputs.audit_ready == 'true'
         run: |
           npm install --no-save playwright @axe-core/playwright lighthouse
           npx playwright install --with-deps chromium
       - name: Test every page on mobile, tablet and desktop
+        if: steps.preflight.outputs.audit_ready == 'true'
         env:
           CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://fix-assistant-audit-and-list.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: node scripts/audit-live-site.mjs
       - name: Run Lighthouse on key pages for mobile and desktop
+        if: steps.preflight.outputs.audit_ready == 'true'
         env:
           CEE_AUDIT_BASE_URL: ${{ github.event_name == 'pull_request' && 'https://fix-assistant-audit-and-list.candidatura-cee2027.pages.dev/' || inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}
         run: |
