@@ -42,7 +42,7 @@ jobs:
           set -e
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
             # Cloudflare Pages branch-preview hostnames truncate branch slugs to 28 characters.
-            BRANCH_SLUG="${BRANCH_NAME:0:28}"
+            BRANCH_SLUG="$(printf \"%s\" \"${BRANCH_NAME}\" | tr \"[:upper:] /_\" \"[:lower:]---\" | tr -cd \"[:lower:]0-9-\" | sed \"s/--*/-/g; s/^-//; s/-$//\" | cut -c1-28)"
             CANDIDATE_URL="https://${BRANCH_SLUG}.candidatura-cee2027.pages.dev/"
           else
             CANDIDATE_URL="${INPUT_BASE_URL:-https://candidatura-cee2027.pages.dev/}"
@@ -113,7 +113,7 @@ jobs:
               DEVICE_FLAGS=(--preset=desktop)
             fi
 
-            for page in "" "pages/lista" "pages/proyecto" "pages/escucha"; do
+            for page in "" "pages/lista.html" "pages/proyecto.html" "pages/escucha.html"; do
               name=$(printf '%s-%s' "$device" "${page:-home}" | tr '/.' '--')
               npx lighthouse "${BASE_URL}/${page}" \
                 "${DEVICE_FLAGS[@]}" \
