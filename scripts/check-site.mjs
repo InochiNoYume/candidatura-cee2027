@@ -142,6 +142,8 @@ if (/return\s+\[\.\.\.selected\]\.slice\(0,\s*10\)/.test(assistantSource))
 const sourceInventory = assistantSource.match(/const SOURCE_PAGES = \[([\s\S]*?)\];/);
 if (!sourceInventory || (sourceInventory[1].match(/\.html/g) || []).length !== 16)
   failures.push("Asistente Gemini: el inventario de fuentes debe contener las 16 páginas públicas.");
+if (!sourceInventory?.[1].includes("pages/terminos-privacidad.html") || sourceInventory?.[1].includes("pages/privacidad.html"))
+  failures.push("Asistente Gemini: debe usar la página canónica de términos y privacidad, no la ruta antigua.");
 if (!/toda la web|resumen general|que ofrece esta web/.test(assistantSource))
   failures.push("Asistente Gemini: falta reconocer consultas generales sobre toda la web.");
 if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read("404.html")))
