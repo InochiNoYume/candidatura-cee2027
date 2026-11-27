@@ -8,7 +8,7 @@ const routes = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html", "403.html", "404.html", "500.html", "maintenance.html"
+  "pages/memoria.html", "pages/terminos-privacidad.html", "pages/buscar.html", "403.html", "404.html", "500.html", "maintenance.html"
 ];
 const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
@@ -381,7 +381,7 @@ try {
     { name: "informes", route: "pages/informes.html" },
     { name: "comunidad-tp", route: "pages/comunidad-tp.html" },
     { name: "memoria", route: "pages/memoria.html" },
-    { name: "privacidad", route: "pages/privacidad.html" },
+    { name: "privacidad", route: "pages/terminos-privacidad.html" },
     { name: "buscar", route: "pages/buscar.html" },
     { name: "403", route: "403.html" },
     { name: "404", route: "404.html" },
