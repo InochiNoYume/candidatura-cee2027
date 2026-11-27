@@ -64,7 +64,7 @@ const PAGE_TITLES = {
   "pages/preguntas.html": "Preguntas frecuentes", "pages/contacto.html": "Contacto",
   "pages/actas.html": "Actas y acuerdos", "pages/informes.html": "Informes de gestión",
   "pages/comunidad-tp.html": "Comunidad TP", "pages/memoria.html": "Memoria de actividades",
-  "pages/terminos-privacidad.html": "Privacidad", "pages/buscar.html": "Buscar en el sitio"
+  "pages/terminos-privacidad.html": "Términos y privacidad", "pages/buscar.html": "Buscar en el sitio"
 };
 
 function normalize(value) {
