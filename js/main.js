@@ -304,15 +304,16 @@
     const ctx = canvas.getContext("2d");
     if (ctx) {
       let width=0,height=0,frame=0,particles=[],heroVisible=true;
-      const isSmallScreen=window.matchMedia("(max-width: 760px)").matches;
-      const particleLimit=isSmallScreen?20:38;
-      const makeParticles=()=>Array.from({length:Math.min(particleLimit,Math.max(isSmallScreen?12:18,Math.round(width/(isSmallScreen?42:32))))},()=>({
+      const smallScreenQuery=window.matchMedia("(max-width: 760px)");
+      const isSmallScreen=()=>smallScreenQuery.matches;
+      const particleLimit=()=>isSmallScreen()?20:38;
+      const makeParticles=()=>Array.from({length:Math.min(particleLimit(),Math.max(isSmallScreen()?12:18,Math.round(width/(isSmallScreen()?42:32))))},()=>({
         x:Math.random()*width,y:Math.random()*height,
         r:.7+Math.random()*1.8,vx:(Math.random()-.5)*.16,vy:-.12-Math.random()*.28,
         a:.12+Math.random()*.34,phase:Math.random()*Math.PI*2
       }));
       const resize=()=>{
-        const rect=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,isSmallScreen?1:1.35);
+        const rect=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,isSmallScreen()?1:1.35);
         width=rect.width;height=rect.height;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
         canvas.style.width=width+"px";canvas.style.height=height+"px";ctx.setTransform(dpr,0,0,dpr,0,0);
         particles=makeParticles();
