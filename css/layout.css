@@ -2486,3 +2486,36 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
     right: 2.5% !important;
   }
 }
+
+/* CEAT Te Escucha banner artwork · responsive presentation */
+.listen-banner-visual {
+  aspect-ratio: 2 / 1 !important;
+  background: #fff !important;
+}
+.listen-banner-visual img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+.escucha-banner-section { padding-block: clamp(24px, 4vw, 48px); }
+.escucha-banner-frame {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  border-radius: clamp(12px, 2vw, 22px);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+}
+.escucha-banner-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+  object-position: center;
+}
+.escucha-banner-frame figcaption {
+  padding: 12px 16px;
+  color: var(--text-muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border-soft);
+}
