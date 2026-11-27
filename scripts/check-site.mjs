@@ -151,12 +151,13 @@ const maintenancePage = read("maintenance.html");
 if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
     !maintenancePage.includes('name="robots" content="noindex,nofollow"') ||
     !maintenancePage.includes("¿Crees que esto es un error?") ||
-    !maintenancePage.includes("Instagram de la candidatura") ||
-    !maintenancePage.includes("Correo de la candidatura") ||
-    !maintenancePage.includes("Próximamente") ||
+    !maintenancePage.includes("Instagram oficial de la candidatura") ||
+    !maintenancePage.includes("https://www.instagram.com/candidatura_cee2027.ceat/") ||
+    maintenancePage.includes("Correo de la candidatura") ||
+    maintenancePage.includes("Próximamente") ||
     maintenancePage.includes("ceat.liceomh") ||
     maintenancePage.includes("mailto:")) {
-  failures.push("Mantenimiento: falta el mensaje principal, noindex o los canales provisionales propios de la candidatura.");
+  failures.push("Mantenimiento: falta el mensaje principal, noindex o el canal oficial actualizado de la candidatura.");
 }
 
 const listPage = read("pages/lista.html");
