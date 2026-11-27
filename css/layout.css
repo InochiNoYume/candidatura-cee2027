@@ -2346,3 +2346,68 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   .team-group-illustration img{width:100%;height:auto!important;aspect-ratio:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;background:#fbf5f3}
   .team-rank-stars{white-space:nowrap;letter-spacing:.07em;font-size:clamp(15px,4.2vw,18px)!important}
 }
+
+
+/* PR23 · Corrección definitiva de portada móvil: foto debajo del contenido */
+@media (max-width: 760px) {
+  .hero {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    min-height: 0 !important;
+    padding: 26px 0 22px !important;
+  }
+  .hero-content {
+    order: 1 !important;
+    max-width: none !important;
+    width: min(100% - 36px, var(--max)) !important;
+    margin: 0 auto !important;
+    padding: 28px 0 0 !important;
+  }
+  .hero-visual-group-photo {
+    order: 2 !important;
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    width: min(100% - 36px, var(--max)) !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    margin: 26px auto 12px !important;
+    border-radius: 16px !important;
+    opacity: 1 !important;
+    background: rgba(255,255,255,.08) !important;
+  }
+  .hero-visual-group-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+  .hero-emblem {
+    order: 3 !important;
+    position: absolute !important;
+    right: 18px !important;
+    bottom: 18px !important;
+    top: auto !important;
+    width: 68px !important;
+    height: 68px !important;
+  }
+  .hero-note {
+    max-width: none !important;
+    margin-top: 32px !important;
+  }
+  .hero-actions {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+}
+@media (max-width: 420px) {
+  .hero-content { padding-top: 22px !important; }
+  .hero-visual-group-photo {
+    width: calc(100% - 28px) !important;
+    margin-top: 22px !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+  .hero-emblem { right: 14px !important; bottom: 14px !important; width: 58px !important; height: 58px !important; }
+}
