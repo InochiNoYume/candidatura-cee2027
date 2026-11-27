@@ -39,6 +39,7 @@ jobs:
           BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
           INPUT_BASE_URL: ${{ inputs.base_url }}
         run: |
+          set -e
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
             # Cloudflare Pages branch-preview hostnames truncate branch slugs to 28 characters.
             BRANCH_SLUG="${BRANCH_NAME:0:28}"
