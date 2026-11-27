@@ -2442,3 +2442,39 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
     height: auto !important;
   }
 }
+
+
+/* PR23 · Botón secundario de portada: tamaño y presencia táctil equilibrados */
+.hero-actions .text-link.light-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 18px 26px;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 8px;
+  background: rgba(255,255,255,.075);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.hero-actions .text-link.light-link:hover {
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.72);
+  transform: translateY(-2px);
+}
+.hero-actions .text-link.light-link:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .hero-actions .text-link.light-link {
+    min-height: 60px;
+    padding: 17px 24px;
+    font-size: 16px;
+  }
+}
