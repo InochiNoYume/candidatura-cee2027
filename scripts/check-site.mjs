@@ -94,7 +94,16 @@ for (const file of htmlFiles) {
   }
   for (const match of html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)) {
     const raw = match[1].trim();
-    if (!raw || /^(?:https?:|mailto:|tel:|#|data:|javascript:)/i.test(raw)) continue;
+    if (!raw) continue;
+    if (raw.startsWith("#")) {
+      let fragment;
+      try { fragment = decodeURIComponent(raw.slice(1)); }
+      catch { failures.push(`${file}: ancla local mal codificada: ${raw}`); continue; }
+      if (fragment && !idsByFile.get(path.resolve(file)).has(fragment))
+        failures.push(`${file}: ancla local inexistente: ${raw}`);
+      continue;
+    }
+    if (/^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(raw)) continue;
     const [pathname, fragment] = raw.split("#", 2);
     let clean;
     try { clean = decodeURIComponent((pathname || "").split("?")[0]); }
