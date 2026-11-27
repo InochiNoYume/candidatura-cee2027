@@ -2552,3 +2552,39 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   }
   .hero-visual-group-photo img { max-height: 66vh !important; }
 }
+
+
+
+/* PR23 · Fotografías completas en tablet y escritorio (Inicio + Nuestra lista) */
+@media (min-width: 761px) {
+  .hero-visual-group-photo {
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    overflow: visible !important;
+  }
+  .hero-visual-group-photo img {
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+  .team-group-illustration img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero-visual-group-photo { width: min(42%, 480px) !important; }
+  .team-group-illustration { width: 100% !important; }
+}
+@media (min-width: 1101px) {
+  .hero-visual-group-photo { width: min(43%, 560px) !important; }
+  .team-group-illustration { width: 100% !important; }
+}
