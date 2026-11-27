@@ -58,7 +58,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - Informes de gestión: `/pages/informes`
 - Comunidad TP: `/pages/comunidad-tp`
 - Memoria de actividades: `/pages/memoria`
-- Privacidad: `/pages/privacidad`
+- Términos y privacidad: `/pages/terminos-privacidad.html` (la ruta anterior `/pages/privacidad.html` redirige)
 - Búsqueda: `/pages/buscar`
 - Página no encontrada: `/404.html`
 
@@ -99,7 +99,7 @@ Cada carpeta contiene un `README.md` con instrucciones y nombres exactos. Resume
 | Sección / uso | Carpeta | Nombre previsto | Necesidad |
 | --- | --- | --- | --- |
 | Inicio · imagen principal | `assets/images/inicio/` | `portada-inicio.webp` | Recomendada; reemplazará la ilustración de portada. |
-| Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Recomendada; reemplazará la ilustración actual de participación. |
+| Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Imagen existente conservada; no se reemplaza en esta etapa. |
 | Nuestra lista · retratos | `assets/images/integrantes/` | Nombre por cargo, detallado en su README | Solo si hay retratos autorizados. |
 | Nuestra lista · foto grupal | `assets/images/grupo/` | `lista-cee-2027-completa-01.jpg` | Opcional, con autorización de todas las personas identificables. |
 | Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Cinco JPEG ya subidos: nombres exactos en su README | Pendiente revisión visual e integración; las ilustraciones siguen como respaldo. |
@@ -127,13 +127,13 @@ El asistente de la web utiliza **únicamente Google Gemini** desde `functions/ap
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
 - Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
-No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
+No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Términos y privacidad](pages/terminos-privacidad.html).
 
 Más detalles: [functions/README.md](functions/README.md).
 
 ## Modo mantenimiento
 
-La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece dos canales propios de la candidatura: Instagram y correo de contacto. Ambos aparecen como «Próximamente» hasta que las cuentas oficiales estén creadas y confirmadas; no se muestran enlaces ni direcciones provisionales.
+La página `maintenance.html` muestra el aviso de mantenimiento y permite volver a intentar el acceso. El contacto oficial disponible es el Instagram de la candidatura: https://www.instagram.com/candidatura_cee2027.ceat/. No se publica correo de candidatura porque no existe.
 La suite de calidad del sitio aprobó la validación de sintaxis, estructura HTML, enlaces locales y seguridad en la ejecución [44832265046](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832265046). La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) está esperando que finalice el despliegue de Preview; una ejecución anterior detectó HTTP 503 por `MAINTENANCE_MODE`, por lo que se debe verificar que `CEE_MAINTENANCE_MODE` esté desactivada o ausente en Preview antes de aceptar los resultados.
 
 
@@ -202,8 +202,9 @@ La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una apr
 - Revisar visualmente las páginas en teléfonos, tabletas y escritorio.
 - Repetir Lighthouse después de los cambios y comparar varias ejecuciones.
 - Probar el asistente en producción con preguntas normales y errores controlados, sin exponer secretos ni generar solicitudes innecesarias.
-- Confirmar los enlaces definitivos y el Instagram de la candidatura.
-- Revisar el formulario externo antes de publicarlo.
+- Instagram oficial confirmado e integrado: https://www.instagram.com/candidatura_cee2027.ceat/.
+- CEAT Te Escucha integrado con el formulario oficial: https://forms.gle/98kiwQV8nJ6j6F3B6. Falta probar el envío real.
+- No existe correo de candidatura; se retiró del sitio.
 - Incorporar las fotografías reales autorizadas y repetir la auditoría final.
 
 Las pruebas automatizadas no sustituyen la revisión visual ni garantizan por sí solas el comportamiento de servicios externos como Gemini.
@@ -287,9 +288,9 @@ La auditoría más reciente de la PR #21 terminó correctamente sobre el commit 
 
 El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vigilar; no se hará ningún cambio visual o de recursos sin identificar primero el elemento LCP. La puntuación SEO de Preview (66–69) está afectada por el `noindex` intencional del entorno protegido y no justifica retirar esa protección.
 
-El formulario CEAT Te Escucha continúa siendo un espacio de espera: `pages/escucha.html` no contiene todavía un formulario, iframe ni URL de Google Forms. **No existe una variable de entorno de formulario que debas configurar ahora.** Cuando se confirme el enlace oficial, se integrará directamente en la página estática y se probará el destino. No crear una variable ficticia como `GOOGLE_FORM_URL` sin implementar un mecanismo que la lea.
+CEAT Te Escucha está enlazado al formulario oficial de Google Forms en `pages/escucha.html`: https://forms.gle/98kiwQV8nJ6j6F3B6. El sitio abre el formulario externo; la prueba real de envío sigue pendiente. No se necesita variable de entorno.
 
-La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
+La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final consiste en abrir el formulario oficial y verificar su envío/recepción.
 
 
 ## Ajuste final de interfaz móvil · 20 de noviembre de 2026
@@ -392,7 +393,7 @@ La validación más reciente se ejecutó sobre el HEAD actual `960b3316d656e56b8
 - [Auditoría responsive y Lighthouse · 44960138690](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138690): 20 rutas × 6 viewports (120/120), 0 infracciones axe, 80/80 capturas y Gemini 7/7.
 - [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): sintaxis, pruebas de Gemini y mantenimiento, HTML/enlaces y seguridad, todo aprobado.
 
-Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas, datos oficiales, Instagram, correo y formulario quedan reservados para PR #22. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
+Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas y confirmación de asesores quedan reservadas para PR #23. Instagram y formulario oficial ya están confirmados e integrados; no existe correo de candidatura. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
 
 
 ### Ajuste del test de integrantes · 23 de noviembre de 2026
@@ -413,3 +414,43 @@ The final responsive audit passed 120 page/viewport combinations with 0 axe viol
 ### Post-merge CI audit behavior during maintenance
 
 The production live audit failed after PR #21 was merged because Cloudflare maintenance mode returned HTTP 503 across audited routes; this made page, assistant, and error-page checks fail on the maintenance response rather than the underlying site. The live-site audit workflow now performs a preflight against its target: when it detects the explicit maintenance page (HTTP 503 with maintenance text), it emits a warning and skips browser checks and Lighthouse; healthy HTTP 200 targets proceed with the full audit, while other HTTP statuses remain hard failures. A skipped audit is not counted as a successful full audit and should be rerun when maintenance is off or against a healthy Preview.
+
+## Cierre técnico de PR #22 · 27 de noviembre de 2026
+
+La PR #22 está en la rama `pr22-official-content-foundation`, commit `178ab0c3d0681e69f0317a7fb485fb90d0b96f9a`. El Preview de Cloudflare Pages se desplegó correctamente. La revisión automatizada se ejecutó sobre este HEAD.
+
+### Resultados finales
+
+- **20 rutas × 6 viewports = 120/120** combinaciones responsive.
+- **0 infracciones axe**, 0 páginas con incidencias de accesibilidad.
+- **0 fallos bloqueantes** y **80/80 capturas** generadas.
+- **Asistente Gemini: 7/7** pruebas aprobadas, sin exposición de metadatos internos.
+- Ruta inexistente de control: **HTTP 404**, correcto.
+- Site quality checks: **aprobado**.
+- Live accessibility and performance audit: **aprobado**.
+
+### Lighthouse · Preview (móvil/escritorio)
+
+| Página | Rendimiento móvil | Rendimiento escritorio | Accesibilidad | Buenas prácticas | SEO Preview |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Inicio | 99 | 100 | 100 | 96 | 69 |
+| Nuestra lista | 82 | 99 | 100 | 96 | 69 |
+| Proyecto | 100 | 100 | 100 | 96 | 69 |
+| CEAT Te Escucha | 100 | 100 | 100 | 96 | 66 |
+
+**Incidencias identificadas y contextualizadas (no bloqueantes):**
+- SEO 66–69: Lighthouse ve `x-robots-tag: noindex` en el dominio de Preview. Es una protección intencional; no quitar el noindex para mejorar el puntaje del Preview.
+- Buenas prácticas 96: el error de consola proviene del beacon de Cloudflare Web Analytics, bloqueado por CORS en el hostname temporal de Preview. No hay evidencia de una excepción del código de la candidatura; no se cambia la analítica sin comprobar producción.
+- Nuestra lista, móvil, rendimiento 82 y LCP 4,8 s: el desglose del mismo reporte muestra aproximadamente 270 ms entre TTFB, carga y renderizado del recurso LCP, por lo que las cifras no son consistentes. No se atribuye el problema a un archivo ni se cambia el diseño o los recursos. La medición se debe repetir en una futura revisión de rendimiento; la optimización de logos e imágenes sigue expresamente fuera del alcance de PR22.
+
+### Inspección visual de capturas
+
+Se revisaron las capturas mobile de Inicio y Nuestra lista del artefacto de auditoría. No se observó un defecto estructural evidente, ni desbordamiento o problema de composición que justifique cambiar el diseño. El resto de las capturas (80) quedó generado y disponible en el artefacto de la ejecución. No equivale a una prueba física en dispositivos reales.
+
+Artefacto de resultados: [cee-2027-site-audit · run 46035940442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/46035940442/artifacts/15217992228).
+
+### Estado de cierre
+
+El alcance técnico y las auditorías automáticas de PR22 están completados. No se introducen nuevas funcionalidades, ni se cambia el contenido o las imágenes aprobadas. Los materiales definitivos, fotografías autorizadas, confirmación de asesores y contenido de noticias/avances se reservan para PR23. La prueba de envío real de CEAT Te Escucha y la comprobación física de dispositivos son validaciones externas, no bloqueos del código de PR22.
+
+**PR22 queda lista para revisión/merge.** Sigue sin fusionar hasta autorización expresa.

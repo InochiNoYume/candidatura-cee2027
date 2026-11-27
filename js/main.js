@@ -47,7 +47,7 @@
       item("preguntas.html","Preguntas frecuentes","Respuestas a dudas habituales.","14"),
       item("buscar.html","Buscar en el sitio","Encuentra páginas y contenidos.","15"),
       item("contacto.html","Contacto","Canales institucionales de comunicación.","16"),
-      item("privacidad.html","Privacidad y participación","Información sobre el uso de opiniones.","17")
+      item("terminos-privacidad.html","Términos y privacidad","Uso del sitio, servicios externos y privacidad.","17")
     ]}
   ];
   const makeLink = (entry,extraClass="") =>

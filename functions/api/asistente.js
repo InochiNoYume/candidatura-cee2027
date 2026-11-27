@@ -24,7 +24,7 @@ const SOURCE_PAGES = [
   "pages/transparencia.html", "pages/noticias.html", "pages/galeria.html",
   "pages/escucha.html", "pages/preguntas.html", "pages/contacto.html",
   "pages/actas.html", "pages/informes.html", "pages/comunidad-tp.html",
-  "pages/memoria.html", "pages/privacidad.html", "pages/buscar.html"
+  "pages/memoria.html", "pages/terminos-privacidad.html", "pages/buscar.html"
 ];
 
 const SOURCE_GROUPS = [
@@ -34,7 +34,7 @@ const SOURCE_GROUPS = [
   { paths: ["pages/transparencia.html", "pages/actas.html", "pages/informes.html", "pages/memoria.html"], terms: ["transparencia", "avance", "avances", "gestion", "resultado", "resultados", "acta", "actas", "acuerdo", "acuerdos", "informe", "informes", "memoria", "rendicion", "registro", "documento", "documentos"] },
   { paths: ["pages/noticias.html"], terms: ["noticia", "noticias", "novedad", "novedades", "comunicado", "comunicados", "publicacion", "publicaciones"] },
   { paths: ["pages/galeria.html"], terms: ["galeria", "foto", "fotos", "fotografia", "fotografias", "imagen", "imagenes", "actividad", "actividades"] },
-  { paths: ["pages/escucha.html", "pages/privacidad.html"], terms: ["escucha", "formulario", "opinion", "opiniones", "sugerencia", "sugerencias", "inquietud", "inquietudes", "participar", "participacion", "privacidad", "datos", "confidencialidad"] },
+  { paths: ["pages/escucha.html", "pages/terminos-privacidad.html"], terms: ["escucha", "formulario", "opinion", "opiniones", "sugerencia", "sugerencias", "inquietud", "inquietudes", "participar", "participacion", "privacidad", "datos", "confidencialidad"] },
   { paths: ["pages/preguntas.html"], terms: ["pregunta", "preguntas", "frecuente", "frecuentes", "duda", "dudas", "faq"] },
   { paths: ["pages/contacto.html"], terms: ["contacto", "instagram", "correo", "redes", "red social", "ceat.cl"] },
   { paths: ["pages/comunidad-tp.html"], terms: ["comunidad tp", "especialidad", "especialidades", "tecnico profesional", "tp", "vinculacion", "practica", "practicas"] },
@@ -64,7 +64,7 @@ const PAGE_TITLES = {
   "pages/preguntas.html": "Preguntas frecuentes", "pages/contacto.html": "Contacto",
   "pages/actas.html": "Actas y acuerdos", "pages/informes.html": "Informes de gestión",
   "pages/comunidad-tp.html": "Comunidad TP", "pages/memoria.html": "Memoria de actividades",
-  "pages/privacidad.html": "Privacidad", "pages/buscar.html": "Buscar en el sitio"
+  "pages/terminos-privacidad.html": "Términos y privacidad", "pages/buscar.html": "Buscar en el sitio"
 };
 
 function normalize(value) {

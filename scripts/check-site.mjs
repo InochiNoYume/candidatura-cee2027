@@ -94,7 +94,16 @@ for (const file of htmlFiles) {
   }
   for (const match of html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)) {
     const raw = match[1].trim();
-    if (!raw || /^(?:https?:|mailto:|tel:|#|data:|javascript:)/i.test(raw)) continue;
+    if (!raw) continue;
+    if (raw.startsWith("#")) {
+      let fragment;
+      try { fragment = decodeURIComponent(raw.slice(1)); }
+      catch { failures.push(`${file}: ancla local mal codificada: ${raw}`); continue; }
+      if (fragment && !idsByFile.get(path.resolve(file)).has(fragment))
+        failures.push(`${file}: ancla local inexistente: ${raw}`);
+      continue;
+    }
+    if (/^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(raw)) continue;
     const [pathname, fragment] = raw.split("#", 2);
     let clean;
     try { clean = decodeURIComponent((pathname || "").split("?")[0]); }
@@ -106,7 +115,10 @@ for (const file of htmlFiles) {
     }
     if (fragment && fs.statSync(target).isFile() && target.endsWith(".html")) {
       const targetIds = idsByFile.get(target) || new Set([...read(target).matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]));
-      if (!targetIds.has(decodeURIComponent(fragment))) failures.push(`${file}: ancla inexistente: ${raw}`);
+      let decodedFragment;
+      try { decodedFragment = decodeURIComponent(fragment); }
+      catch { failures.push(`${file}: ancla mal codificada: ${raw}`); continue; }
+      if (!targetIds.has(decodedFragment)) failures.push(`${file}: ancla inexistente: ${raw}`);
     }
   }
 }
@@ -116,7 +128,7 @@ const requiredPages = [
   "pages/transparencia.html","pages/noticias.html","pages/galeria.html",
   "pages/escucha.html","pages/preguntas.html","pages/contacto.html",
   "pages/actas.html","pages/informes.html","pages/comunidad-tp.html",
-  "pages/memoria.html","pages/privacidad.html","pages/buscar.html","404.html"
+  "pages/memoria.html","pages/terminos-privacidad.html","pages/buscar.html","404.html"
 ];
 for (const file of requiredPages) if (!fs.existsSync(file)) failures.push(`Falta página requerida: ${file}`);
 
@@ -130,6 +142,8 @@ if (/return\s+\[\.\.\.selected\]\.slice\(0,\s*10\)/.test(assistantSource))
 const sourceInventory = assistantSource.match(/const SOURCE_PAGES = \[([\s\S]*?)\];/);
 if (!sourceInventory || (sourceInventory[1].match(/\.html/g) || []).length !== 16)
   failures.push("Asistente Gemini: el inventario de fuentes debe contener las 16 páginas públicas.");
+if (!sourceInventory?.[1].includes("pages/terminos-privacidad.html") || sourceInventory?.[1].includes("pages/privacidad.html"))
+  failures.push("Asistente Gemini: debe usar la página canónica de términos y privacidad, no la ruta antigua.");
 if (!/toda la web|resumen general|que ofrece esta web/.test(assistantSource))
   failures.push("Asistente Gemini: falta reconocer consultas generales sobre toda la web.");
 if (!/<script\b(?=[^>]*src=["']js\/main\.js["'])(?=[^>]*defer)[^>]*>/i.test(read("404.html")))
@@ -151,20 +165,31 @@ const maintenancePage = read("maintenance.html");
 if (!maintenancePage.includes("Estamos trabajando para volver pronto.") ||
     !maintenancePage.includes('name="robots" content="noindex,nofollow"') ||
     !maintenancePage.includes("¿Crees que esto es un error?") ||
-    !maintenancePage.includes("Instagram de la candidatura") ||
-    !maintenancePage.includes("Correo de la candidatura") ||
-    !maintenancePage.includes("Próximamente") ||
+    !maintenancePage.includes("Instagram oficial de la candidatura") ||
+    !maintenancePage.includes("https://www.instagram.com/candidatura_cee2027.ceat/") ||
+    maintenancePage.includes("Correo de la candidatura") ||
+    maintenancePage.includes("Próximamente") ||
     maintenancePage.includes("ceat.liceomh") ||
     maintenancePage.includes("mailto:")) {
-  failures.push("Mantenimiento: falta el mensaje principal, noindex o los canales provisionales propios de la candidatura.");
+  failures.push("Mantenimiento: falta el mensaje principal, noindex o el canal oficial actualizado de la candidatura.");
 }
 
 const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
 const faqPage = read("pages/preguntas.html");
 const homePage = read("index.html");
+const contactPage = read("pages/contacto.html");
+const escuchaPage = read("pages/escucha.html");
+const officialInstagram = "https://www.instagram.com/candidatura_cee2027.ceat/";
+const officialForm = "https://forms.gle/98kiwQV8nJ6j6F3B6";
+if (!contactPage.includes(officialInstagram) || contactPage.includes("Enlace pendiente de confirmación") || contactPage.includes("mailto:") || contactPage.includes("Correo de la candidatura"))
+  failures.push("Contacto: Instagram oficial debe estar publicado y no debe aparecer un correo de candidatura.");
+if (!escuchaPage.includes(officialForm) || !escuchaPage.includes("Formulario oficial disponible") || escuchaPage.includes("Formulario externo pendiente de enlace"))
+  failures.push("CEAT Te Escucha: debe enlazar el formulario oficial confirmado.");
+if (!read("404.html").includes("pages/contacto.html"))
+  failures.push("404: debe ofrecer acceso a la página de contacto.");
 if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Almirón") || !listPage.includes('presidencia-referencial.svg') || !listPage.includes('<span class="role">Presidenta</span><h3>Agustina Pérez</h3>'))
-  failures.push("La tarjeta pública debe respetar el nombre preferido de la presidenta (Agustina Pérez).");
+  failures.push("La tarjeta pública debe respetar el nombre confirmado de la presidenta (Agustina Pérez).");
 if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
   failures.push("Proyecto: el eje 5 debe estar identificado como complementario y separado de los cuatro ejes oficiales.");
 if (!faqPage.includes("cuatro ejes") || !faqPage.includes("quinto eje complementario"))
@@ -178,7 +203,7 @@ if (!navigationSource.includes("split(/" + String.fromCharCode(92) + "s+/)"))
 const requiredNavigationPages = [
   "lista.html","proyecto.html","agenda.html","transparencia.html","actas.html",
   "informes.html","memoria.html","comunidad-tp.html","noticias.html","galeria.html",
-  "preguntas.html","buscar.html","contacto.html","privacidad.html","escucha.html"
+  "preguntas.html","buscar.html","contacto.html","terminos-privacidad.html","escucha.html"
 ];
 for (const file of requiredNavigationPages) {
   if (!fs.existsSync(path.join("pages",file))) failures.push(`Menú: destino inexistente pages/${file}`);

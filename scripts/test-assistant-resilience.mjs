@@ -98,7 +98,7 @@ try {
     listPrompt = sent.contents[0].parts[0].text;
     assert.ok(listPrompt.includes("https://cee.test/pages/lista"));
     assert.match(listPrompt, /ÍNDICE COMPLETO DE PÁGINAS OFICIALES/);
-    assert.ok(listPrompt.includes("https://cee.test/pages/privacidad"));
+    assert.ok(listPrompt.includes("https://cee.test/pages/terminos-privacidad"));
     return providerJson(listPayload);
   }, undefined, "¿Quiénes integran la lista del CEE 2027?");
   assert.equal(Object.hasOwn(listResult, "sources"), false, "The public response must not expose a sources section");
