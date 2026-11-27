@@ -2520,3 +2520,35 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   .team-grid { grid-template-columns: minmax(0, 1fr) !important; }
   .team-card { width: 100%; }
 }
+
+
+/* PR23 · Encuadre sin recorte para la foto de portada en tablet y escritorio */
+@media (min-width: 761px) {
+  .hero-visual-group-photo {
+    width: min(44%, 560px) !important;
+    height: auto !important;
+    max-height: 72vh !important;
+    aspect-ratio: auto !important;
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+    overflow: hidden !important;
+    background: rgba(255,255,255,.04) !important;
+  }
+  .hero-visual-group-photo img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 72vh !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero-visual-group-photo {
+    width: min(41%, 460px) !important;
+    max-height: 66vh !important;
+    right: 3.5% !important;
+  }
+  .hero-visual-group-photo img { max-height: 66vh !important; }
+}
