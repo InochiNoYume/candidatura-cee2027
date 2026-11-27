@@ -2478,3 +2478,45 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
     font-size: 16px;
   }
 }
+
+
+/* PR23 · Ajuste tablet/escritorio y tarjetas independientes en Nuestra lista */
+.team-grid { align-items: start !important; }
+.team-card { align-self: start !important; height: auto !important; min-height: 0 !important; }
+.team-responsibilities[open] { height: auto; }
+.team-responsibilities > p { overflow-wrap: anywhere; }
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero { min-height: 660px !important; }
+  .hero-content { max-width: 55% !important; padding: 84px 0 110px !important; }
+  .hero h1 { font-size: clamp(46px, 5.5vw, 66px) !important; max-width: 650px; }
+  .hero-lead { max-width: 480px !important; font-size: clamp(15px, 1.65vw, 17px) !important; line-height: 1.75; }
+  .hero-visual-group-photo { width: min(39%, 440px) !important; right: 3.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; aspect-ratio: 1.28 !important; height: auto !important; }
+  .hero-visual-group-photo img { width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center 42% !important; }
+  .hero-actions { gap: 16px !important; }
+  .hero-actions .button-light { padding: 16px 20px !important; font-size: 14px !important; }
+  .hero-actions .text-link.light-link { min-height: 54px; padding: 15px 19px; font-size: 14px; }
+  .hero-note { margin-top: 40px !important; }
+}
+@media (min-width: 1101px) {
+  .hero { min-height: 720px; }
+  .hero-content { max-width: 54%; padding: 100px 0 115px; }
+  .hero h1 { font-size: clamp(66px, 6.2vw, 90px); max-width: 800px; }
+  .hero-visual-group-photo { width: min(43%, 560px); right: 4.5%; aspect-ratio: 1.38; }
+  .hero-visual-group-photo img { object-fit: cover; object-position: center 42%; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px !important; }
+  .team-card { padding: 24px !important; }
+  .team-card h3 { font-size: 18px !important; }
+  .team-card p { font-size: 15px !important; line-height: 1.65 !important; }
+  .team-rank-stars { font-size: 18px !important; }
+  .team-responsibilities summary { min-height: 46px; font-size: 13px !important; }
+}
+@media (min-width: 901px) and (max-width: 1200px) {
+  .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 16px !important; }
+  .team-card { padding: 23px !important; }
+}
+@media (max-width: 560px) {
+  .team-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .team-card { width: 100%; }
+}
