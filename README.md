@@ -58,7 +58,7 @@ Sitio informativo de la candidatura al Centro de Estudiantes del Liceo Mauricio 
 - Informes de gestión: `/pages/informes`
 - Comunidad TP: `/pages/comunidad-tp`
 - Memoria de actividades: `/pages/memoria`
-- Privacidad: `/pages/privacidad`
+- Términos y privacidad: `/pages/terminos-privacidad.html` (la ruta anterior `/pages/privacidad.html` redirige)
 - Búsqueda: `/pages/buscar`
 - Página no encontrada: `/404.html`
 
@@ -99,7 +99,7 @@ Cada carpeta contiene un `README.md` con instrucciones y nombres exactos. Resume
 | Sección / uso | Carpeta | Nombre previsto | Necesidad |
 | --- | --- | --- | --- |
 | Inicio · imagen principal | `assets/images/inicio/` | `portada-inicio.webp` | Recomendada; reemplazará la ilustración de portada. |
-| Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Recomendada; reemplazará la ilustración actual de participación. |
+| Inicio · «Tu voz también construye» | `assets/images/inicio/` | `tu-voz-tambien-construye.webp` | Imagen existente conservada; no se reemplaza en esta etapa. |
 | Nuestra lista · retratos | `assets/images/integrantes/` | Nombre por cargo, detallado en su README | Solo si hay retratos autorizados. |
 | Nuestra lista · foto grupal | `assets/images/grupo/` | `lista-cee-2027-completa-01.jpg` | Opcional, con autorización de todas las personas identificables. |
 | Proyecto · ejes 1 al 5 | `assets/images/ejes/` | Cinco JPEG ya subidos: nombres exactos en su README | Pendiente revisión visual e integración; las ilustraciones siguen como respaldo. |
@@ -127,7 +127,7 @@ El asistente de la web utiliza **únicamente Google Gemini** desde `functions/ap
 - El límite básico de diez consultas por hora se mantiene en memoria por instancia de Function; no equivale a un límite global.
 - Si Gemini falla, el asistente informa el problema de forma segura; no utiliza otro proveedor.
 
-No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Privacidad](pages/privacidad.html).
+No incluir la clave API en el código del navegador, archivos versionados, commits, registros ni documentación. No enviar datos personales, sensibles, privados o académicos al asistente. El tratamiento de las consultas y las condiciones de Gemini se explican en [Términos y privacidad](pages/terminos-privacidad.html).
 
 Más detalles: [functions/README.md](functions/README.md).
 
@@ -393,7 +393,7 @@ La validación más reciente se ejecutó sobre el HEAD actual `960b3316d656e56b8
 - [Auditoría responsive y Lighthouse · 44960138690](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138690): 20 rutas × 6 viewports (120/120), 0 infracciones axe, 80/80 capturas y Gemini 7/7.
 - [Site quality checks · 44960138701](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44960138701): sintaxis, pruebas de Gemini y mantenimiento, HTML/enlaces y seguridad, todo aprobado.
 
-Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas y confirmación de asesores siguen pendientes en PR #22. Instagram y formulario oficial ya están confirmados e integrados; no existe correo de candidatura. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
+Estos resultados reemplazan las notas anteriores que indicaban que la auditoría estaba pendiente. La revisión visual manual en dispositivos físicos, la comprobación privada de Analytics/variables de Cloudflare y la prueba real de un envío del formulario siguen siendo tareas externas no verificables desde CI. Rate Limiting global y WAF quedan expresamente fuera del alcance de PR #21; no se configurarán. Las fotografías autorizadas y confirmación de asesores quedan reservadas para PR #23. Instagram y formulario oficial ya están confirmados e integrados; no existe correo de candidatura. No optimizar logos/imágenes, no fusionar y no desplegar a producción sin autorización.
 
 
 ### Ajuste del test de integrantes · 23 de noviembre de 2026
