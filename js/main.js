@@ -278,10 +278,18 @@
     header?.classList.toggle("is-scrolled",window.scrollY > 12);
     backToTop.classList.toggle("visible",window.scrollY > 420);
   };
-  window.addEventListener("scroll",updateScrollUI,{passive:true});
+  let scrollUiFrame=0;
+  const scheduleScrollUI=()=>{
+    if(scrollUiFrame)return;
+    scrollUiFrame=requestAnimationFrame(()=>{
+      scrollUiFrame=0;
+      updateScrollUI();
+    });
+  };
+  window.addEventListener("scroll",scheduleScrollUI,{passive:true});
   window.addEventListener("resize",() => {
     if (window.innerWidth > 1240) closeMenu();
-    updateScrollUI();
+    scheduleScrollUI();
   },{passive:true});
   backToTop.addEventListener("click",() => window.scrollTo({top:0,behavior:reduceMotion ? "auto" : "smooth"}));
   updateScrollUI();
@@ -295,21 +303,23 @@
     hero.prepend(canvas);
     const ctx = canvas.getContext("2d");
     if (ctx) {
-      let width=0,height=0,frame=0,particles=[];
-      const makeParticles=()=>Array.from({length:Math.min(58,Math.max(24,Math.round(width/24)))},()=>({
+      let width=0,height=0,frame=0,particles=[],heroVisible=true;
+      const isSmallScreen=window.matchMedia("(max-width: 760px)").matches;
+      const particleLimit=isSmallScreen?20:38;
+      const makeParticles=()=>Array.from({length:Math.min(particleLimit,Math.max(isSmallScreen?12:18,Math.round(width/(isSmallScreen?42:32))))},()=>({
         x:Math.random()*width,y:Math.random()*height,
         r:.7+Math.random()*1.8,vx:(Math.random()-.5)*.16,vy:-.12-Math.random()*.28,
         a:.12+Math.random()*.34,phase:Math.random()*Math.PI*2
       }));
       const resize=()=>{
-        const rect=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.5);
+        const rect=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,isSmallScreen?1:1.35);
         width=rect.width;height=rect.height;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
         canvas.style.width=width+"px";canvas.style.height=height+"px";ctx.setTransform(dpr,0,0,dpr,0,0);
         particles=makeParticles();
       };
       let animationRunning=false;
       const draw=()=>{
-        if(document.hidden){frame=0;animationRunning=false;return}
+        if(document.hidden||!heroVisible){frame=0;animationRunning=false;return}
         ctx.clearRect(0,0,width,height);
         particles.forEach(p=>{
           p.x+=p.vx;p.y+=p.vy;p.phase+=.008;
@@ -321,7 +331,7 @@
         frame=requestAnimationFrame(draw);
       };
       const startAnimation=()=>{
-        if(animationRunning||document.hidden)return;
+        if(animationRunning||document.hidden||!heroVisible)return;
         animationRunning=true;
         frame=requestAnimationFrame(draw);
       };
@@ -330,7 +340,15 @@
         frame=0;
         animationRunning=false;
       };
-      resize();startAnimation();
+      resize();
+      if("IntersectionObserver" in window){
+        const heroObserver=new IntersectionObserver(entries=>{
+          heroVisible=entries.some(entry=>entry.isIntersecting);
+          if(heroVisible)startAnimation();
+          else stopAnimation();
+        },{threshold:0});
+        heroObserver.observe(hero);
+      }else startAnimation();
       window.addEventListener("resize",resize,{passive:true});
       document.addEventListener("visibilitychange",()=>{
         if(document.hidden)stopAnimation();
