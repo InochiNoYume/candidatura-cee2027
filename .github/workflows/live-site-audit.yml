@@ -33,18 +33,37 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Resolve Cloudflare preview URL
+      - name: Resolve and validate audit target URL
         id: preview
         env:
           BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+          INPUT_BASE_URL: ${{ inputs.base_url }}
         run: |
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
             # Cloudflare Pages branch-preview hostnames truncate branch slugs to 28 characters.
             BRANCH_SLUG="${BRANCH_NAME:0:28}"
-            echo "base_url=https://${BRANCH_SLUG}.candidatura-cee2027.pages.dev/" >> "$GITHUB_OUTPUT"
+            CANDIDATE_URL="https://${BRANCH_SLUG}.candidatura-cee2027.pages.dev/"
           else
-            echo "base_url=${{ inputs.base_url || 'https://candidatura-cee2027.pages.dev/' }}" >> "$GITHUB_OUTPUT"
+            CANDIDATE_URL="${INPUT_BASE_URL:-https://candidatura-cee2027.pages.dev/}"
           fi
+
+          # Validate in Node without interpolating user input into shell commands.
+          VALIDATED_URL="$(CANDIDATE_URL="${CANDIDATE_URL}" node --input-type=module <<'NODE'
+          const raw = process.env.CANDIDATE_URL;
+          let url;
+          try { url = new URL(raw); } catch { console.error('Invalid audit URL.'); process.exit(1); }
+          const allowedHost = url.hostname === 'candidatura-cee2027.pages.dev'
+            || (url.hostname.endsWith('.candidatura-cee2027.pages.dev')
+                && url.hostname.length > '.candidatura-cee2027.pages.dev'.length);
+          if (url.protocol !== 'https:' || !allowedHost || url.username || url.password
+              || url.port || url.pathname !== '/' || url.search || url.hash) {
+            console.error('Audit URL must be HTTPS on the official Pages domain, without credentials, port, path, query or fragment.');
+            process.exit(1);
+          }
+          process.stdout.write(url.origin + '/');
+          NODE
+          )"
+          echo "base_url=${VALIDATED_URL}" >> "$GITHUB_OUTPUT"
       - name: Detect maintenance mode before live audit
         id: preflight
         env:
