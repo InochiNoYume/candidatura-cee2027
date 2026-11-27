@@ -2477,3 +2477,12 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   .team-grid { grid-template-columns: minmax(0,1fr) !important; }
   .team-card { width: 100%; padding: 21px !important; }
 }
+
+/* PR24 final · Tablet: ampliar la fotografía grupal de Inicio y equilibrar el hero. */
+@media (min-width:761px) and (max-width:1100px) {
+  .hero-visual-group-photo {
+    width: min(46%, 520px) !important;
+    max-width: 48% !important;
+    right: 2.5% !important;
+  }
+}
