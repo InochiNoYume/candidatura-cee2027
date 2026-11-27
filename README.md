@@ -415,7 +415,42 @@ The final responsive audit passed 120 page/viewport combinations with 0 axe viol
 
 The production live audit failed after PR #21 was merged because Cloudflare maintenance mode returned HTTP 503 across audited routes; this made page, assistant, and error-page checks fail on the maintenance response rather than the underlying site. The live-site audit workflow now performs a preflight against its target: when it detects the explicit maintenance page (HTTP 503 with maintenance text), it emits a warning and skips browser checks and Lighthouse; healthy HTTP 200 targets proceed with the full audit, while other HTTP statuses remain hard failures. A skipped audit is not counted as a successful full audit and should be rerun when maintenance is off or against a healthy Preview.
 
-## Estado vigente de PR #22 · 27 de noviembre de 2026
+## Cierre técnico de PR #22 · 27 de noviembre de 2026
 
-PR #22 está abierta como Draft y su HEAD es `3f609cf98a0ed80421850fe9cae16306f7bef22d`. La CI de calidad reportada para ese HEAD está aprobada. La auditoría responsive/Lighthouse más reciente que se encontró corresponde a PR #21 y no valida por sí sola este HEAD; el despliegue de Preview de PR #22 figura como exitoso, pero la inspección visual directa de Preview no estuvo disponible en esta revisión. Por tanto, antes de declarar PR #22 lista para fusionar, se requiere ejecutar/confirmar una auditoría actual sobre su Preview y revisar los resultados de Lighthouse y capturas. No se fusiona sin autorización.
+La PR #22 está en la rama `pr22-official-content-foundation`, commit `178ab0c3d0681e69f0317a7fb485fb90d0b96f9a`. El Preview de Cloudflare Pages se desplegó correctamente. La revisión automatizada se ejecutó sobre este HEAD.
 
+### Resultados finales
+
+- **20 rutas × 6 viewports = 120/120** combinaciones responsive.
+- **0 infracciones axe**, 0 páginas con incidencias de accesibilidad.
+- **0 fallos bloqueantes** y **80/80 capturas** generadas.
+- **Asistente Gemini: 7/7** pruebas aprobadas, sin exposición de metadatos internos.
+- Ruta inexistente de control: **HTTP 404**, correcto.
+- Site quality checks: **aprobado**.
+- Live accessibility and performance audit: **aprobado**.
+
+### Lighthouse · Preview (móvil/escritorio)
+
+| Página | Rendimiento móvil | Rendimiento escritorio | Accesibilidad | Buenas prácticas | SEO Preview |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Inicio | 99 | 100 | 100 | 96 | 69 |
+| Nuestra lista | 82 | 99 | 100 | 96 | 69 |
+| Proyecto | 100 | 100 | 100 | 96 | 69 |
+| CEAT Te Escucha | 100 | 100 | 100 | 96 | 66 |
+
+**Incidencias identificadas y contextualizadas (no bloqueantes):**
+- SEO 66–69: Lighthouse ve `x-robots-tag: noindex` en el dominio de Preview. Es una protección intencional; no quitar el noindex para mejorar el puntaje del Preview.
+- Buenas prácticas 96: el error de consola proviene del beacon de Cloudflare Web Analytics, bloqueado por CORS en el hostname temporal de Preview. No hay evidencia de una excepción del código de la candidatura; no se cambia la analítica sin comprobar producción.
+- Nuestra lista, móvil, rendimiento 82 y LCP 4,8 s: el desglose del mismo reporte muestra aproximadamente 270 ms entre TTFB, carga y renderizado del recurso LCP, por lo que las cifras no son consistentes. No se atribuye el problema a un archivo ni se cambia el diseño o los recursos. La medición se debe repetir en una futura revisión de rendimiento; la optimización de logos e imágenes sigue expresamente fuera del alcance de PR22.
+
+### Inspección visual de capturas
+
+Se revisaron las capturas mobile de Inicio y Nuestra lista del artefacto de auditoría. No se observó un defecto estructural evidente, ni desbordamiento o problema de composición que justifique cambiar el diseño. El resto de las capturas (80) quedó generado y disponible en el artefacto de la ejecución. No equivale a una prueba física en dispositivos reales.
+
+Artefacto de resultados: [cee-2027-site-audit · run 46035940442](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/46035940442/artifacts/15217992228).
+
+### Estado de cierre
+
+El alcance técnico y las auditorías automáticas de PR22 están completados. No se introducen nuevas funcionalidades, ni se cambia el contenido o las imágenes aprobadas. Los materiales definitivos, fotografías autorizadas, confirmación de asesores y contenido de noticias/avances se reservan para PR23. La prueba de envío real de CEAT Te Escucha y la comprobación física de dispositivos son validaciones externas, no bloqueos del código de PR22.
+
+**PR22 queda lista para revisión/merge.** Sigue sin fusionar hasta autorización expresa.
