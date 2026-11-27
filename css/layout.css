@@ -2319,132 +2319,59 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   .pillars-section .pillar-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 }
 
-/* PR23 · Fotografía grupal compartida y jerarquía visual con estrellas */
-.hero-visual-group-photo{overflow:hidden;background:#22090e!important}
-.hero-visual-group-photo img{object-fit:cover!important;object-position:center 42%!important;filter:saturate(.94) contrast(1.02)}
-.team-group-illustration{margin:clamp(24px,4vw,48px) 0;overflow:hidden;border-radius:clamp(12px,2vw,22px);border:1px solid var(--border-soft);background:#f5eeeb;box-shadow:0 16px 42px rgba(35,18,18,.09)}
-.team-group-illustration img{display:block;width:100%;height:auto;max-height:720px;aspect-ratio:16/9;object-fit:cover;object-position:center}
-.team-group-illustration figcaption{padding:12px 16px;color:var(--text-muted);font-size:12px;background:linear-gradient(180deg,#fff,#f8f5f3)}
-.team-rank-stars{display:flex;align-items:center;justify-content:flex-start;min-height:52px;margin:0 0 14px;color:#b98c2d;font-size:clamp(16px,1.4vw,22px);line-height:1.2;letter-spacing:.13em;overflow-wrap:anywhere}
-.team-rank-stars span{text-shadow:0 1px 0 rgba(120,21,29,.12)}
-.team-card .team-rank-stars[aria-label="Rango 8 de 8"]{color:#8a5a16}
-@media(max-width:560px){.team-group-illustration img{aspect-ratio:4/3;max-height:none;object-position:center}.team-rank-stars{min-height:42px;font-size:17px;letter-spacing:.09em}}
-
-
-/* PR23 · Refinamiento móvil: evitar texto e imágenes recortados */
-@media(max-width:760px){
-  .hero-content{padding-top:132px!important;padding-bottom:210px!important}
-  .hero-visual-group-photo{width:min(62%,440px)!important;right:16px!important;bottom:26px!important;top:auto!important;transform:none!important;aspect-ratio:1.25!important;height:auto!important}
-  .hero-visual-group-photo img{object-fit:contain!important;object-position:center!important}
-  .hero-visual-group-photo{background:#fbf5f3!important}
-  .page-hero{padding-top:128px!important;padding-bottom:62px!important}
+/* PR24 · Fotografía grupal y responsive consolidado (tablet/escritorio/móvil) */
+.hero-visual-group-photo {
+  overflow: hidden;
+  border-radius: 22px;
+  background: rgba(255,255,255,.06);
 }
-@media(max-width:560px){
-  .hero-content{padding-top:138px!important;padding-bottom:190px!important}
-  .hero-visual-group-photo{width:58%!important;aspect-ratio:1.28!important;right:12px!important;bottom:24px!important}
-  .page-hero{padding-top:130px!important;padding-bottom:58px!important}
-  .team-group-illustration img{width:100%;height:auto!important;aspect-ratio:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;background:#fbf5f3}
-  .team-rank-stars{white-space:nowrap;letter-spacing:.07em;font-size:clamp(15px,4.2vw,18px)!important}
+.hero-visual-group-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
-
-
-/* PR23 · Corrección definitiva de portada móvil: foto debajo del contenido */
-@media (max-width: 760px) {
-  .hero {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    min-height: 0 !important;
-    padding: 26px 0 22px !important;
-  }
-  .hero-content {
-    order: 1 !important;
-    max-width: none !important;
-    width: min(100% - 36px, var(--max)) !important;
-    margin: 0 auto !important;
-    padding: 28px 0 0 !important;
-  }
-  .hero-visual-group-photo {
-    order: 2 !important;
-    position: relative !important;
-    inset: auto !important;
-    transform: none !important;
-    width: min(100% - 36px, var(--max)) !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-    margin: 26px auto 12px !important;
-    border-radius: 16px !important;
-    opacity: 1 !important;
-    background: rgba(255,255,255,.08) !important;
-  }
-  .hero-visual-group-photo img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
-  .hero-emblem {
-    order: 3 !important;
-    position: absolute !important;
-    right: 18px !important;
-    bottom: 18px !important;
-    top: auto !important;
-    width: 68px !important;
-    height: 68px !important;
-  }
-  .hero-note {
-    max-width: none !important;
-    margin-top: 32px !important;
-  }
-  .hero-actions {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 16px !important;
-  }
+.team-group-illustration {
+  margin: clamp(24px,4vw,48px) 0;
+  overflow: hidden;
+  border-radius: clamp(12px,2vw,22px);
+  border: 1px solid var(--border-soft);
+  background: #f5eeeb;
+  box-shadow: 0 16px 42px rgba(35,18,18,.09);
 }
-@media (max-width: 420px) {
-  .hero-content { padding-top: 22px !important; }
-  .hero-visual-group-photo {
-    width: calc(100% - 28px) !important;
-    margin-top: 22px !important;
-    aspect-ratio: 16 / 9 !important;
-  }
-  .hero-emblem { right: 14px !important; bottom: 14px !important; width: 58px !important; height: 58px !important; }
+.team-group-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center;
 }
-
-
-/* PR23 · encuadre natural de la foto grupal en portada móvil */
-@media (max-width: 760px) {
-  .hero-visual-group-photo {
-    width: calc(100% - 36px) !important;
-    max-width: var(--max) !important;
-    height: auto !important;
-    aspect-ratio: auto !important;
-    overflow: visible !important;
-    background: transparent !important;
-  }
-  .hero-visual-group-photo img {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
+.team-group-illustration figcaption {
+  padding: 12px 16px;
+  color: var(--text-muted);
+  font-size: 12px;
+  background: linear-gradient(180deg,#fff,#f8f5f3);
 }
-@media (max-width: 420px) {
-  .hero-visual-group-photo {
-    width: calc(100% - 28px) !important;
-    aspect-ratio: auto !important;
-  }
-  .hero-visual-group-photo img {
-    width: 100% !important;
-    height: auto !important;
-  }
+.team-rank-stars {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  margin: 0 0 14px;
+  color: #b98c2d;
+  font-size: clamp(16px,1.4vw,22px);
+  line-height: 1.2;
+  letter-spacing: .13em;
+  overflow-wrap: anywhere;
 }
-
-
-/* PR23 · Botón secundario de portada: tamaño y presencia táctil equilibrados */
+.team-rank-stars span { text-shadow: 0 1px 0 rgba(120,21,29,.12); }
+.team-card .team-rank-stars[aria-label="Rango 8 de 8"] { color: #8a5a16; }
+.team-grid { align-items: start !important; }
+.team-card { align-self: start !important; height: auto !important; min-height: 0 !important; }
+.team-responsibilities[open] { height: auto; }
+.team-responsibilities > p { overflow-wrap: anywhere; }
 .hero-actions .text-link.light-link {
   display: inline-flex;
   align-items: center;
@@ -2460,131 +2387,93 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   font-weight: 800;
   line-height: 1.35;
   text-decoration: none;
-  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+  transition: background .2s ease,border-color .2s ease,transform .2s ease;
 }
 .hero-actions .text-link.light-link:hover {
   background: rgba(255,255,255,.14);
   border-color: rgba(255,255,255,.72);
   transform: translateY(-2px);
 }
-.hero-actions .text-link.light-link:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 4px;
-}
-@media (max-width: 760px) {
-  .hero-actions .text-link.light-link {
-    min-height: 60px;
-    padding: 17px 24px;
-    font-size: 16px;
-  }
-}
+.hero-actions .text-link.light-link:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
 
-
-/* PR23 · Ajuste tablet/escritorio y tarjetas independientes en Nuestra lista */
-.team-grid { align-items: start !important; }
-.team-card { align-self: start !important; height: auto !important; min-height: 0 !important; }
-.team-responsibilities[open] { height: auto; }
-.team-responsibilities > p { overflow-wrap: anywhere; }
+/* Tablet: mantener texto y foto separados, sin deformar ni cortar el grupo. */
 @media (min-width: 761px) and (max-width: 1100px) {
   .hero { min-height: 660px !important; }
-  .hero-content { max-width: 55% !important; padding: 84px 0 110px !important; }
-  .hero h1 { font-size: clamp(46px, 5.5vw, 66px) !important; max-width: 650px; }
-  .hero-lead { max-width: 480px !important; font-size: clamp(15px, 1.65vw, 17px) !important; line-height: 1.75; }
-  .hero-visual-group-photo { width: min(39%, 440px) !important; right: 3.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; aspect-ratio: 1.28 !important; height: auto !important; }
-  .hero-visual-group-photo img { width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: center 42% !important; }
-  .hero-actions { gap: 16px !important; }
-  .hero-actions .button-light { padding: 16px 20px !important; font-size: 14px !important; }
-  .hero-actions .text-link.light-link { min-height: 54px; padding: 15px 19px; font-size: 14px; }
-  .hero-note { margin-top: 40px !important; }
+  .hero-content { width: min(1180px,calc(100% - 48px)) !important; max-width: 53% !important; padding: 78px 0 92px !important; }
+  .hero-content h1 { max-width: 100% !important; font-size: clamp(40px,5vw,58px) !important; }
+  .hero-content .eyebrow { max-width: 100% !important; }
+  .hero-content .hero-lead { max-width: 100% !important; font-size: clamp(14px,1.65vw,17px) !important; }
+  .hero-content .hero-actions,.hero-content .hero-note { max-width: 100% !important; }
+  .hero-visual-group-photo { width: min(41%,460px) !important; max-width: 42% !important; right: 3.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
+  .hero-visual-group-photo img { height: 100% !important; object-fit: contain !important; }
 }
+/* Desktop: hero equilibrado, con fotografía completa y texto legible. */
 @media (min-width: 1101px) {
   .hero { min-height: 720px; }
-  .hero-content { max-width: 54%; padding: 100px 0 115px; }
-  .hero h1 { font-size: clamp(66px, 6.2vw, 90px); max-width: 800px; }
-  .hero-visual-group-photo { width: min(43%, 560px); right: 4.5%; aspect-ratio: 1.38; }
-  .hero-visual-group-photo img { object-fit: cover; object-position: center 42%; }
+  .hero-content { max-width: 52% !important; padding: 100px 0 115px; }
+  .hero-content h1 { max-width: 100% !important; font-size: clamp(62px,5.8vw,86px) !important; }
+  .hero-content .eyebrow,.hero-content .hero-lead,.hero-content .hero-actions,.hero-content .hero-note { max-width: 100% !important; }
+  .hero-visual-group-photo { width: min(43%,560px) !important; max-width: 44% !important; right: 4.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
+  .hero-visual-group-photo img { height: 100% !important; object-fit: contain !important; }
 }
-@media (min-width: 761px) and (max-width: 900px) {
-  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px !important; }
-  .team-card { padding: 24px !important; }
-  .team-card h3 { font-size: 18px !important; }
-  .team-card p { font-size: 15px !important; line-height: 1.65 !important; }
-  .team-rank-stars { font-size: 18px !important; }
-  .team-responsibilities summary { min-height: 46px; font-size: 13px !important; }
-}
-@media (min-width: 901px) and (max-width: 1200px) {
-  .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 16px !important; }
-  .team-card { padding: 23px !important; }
+/* Mobile: la foto se ubica debajo del texto y conserva su proporción natural. */
+@media (max-width: 760px) {
+  .hero {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    min-height: 0 !important;
+    padding: 26px 0 22px !important;
+  }
+  .hero-content {
+    order: 1 !important;
+    max-width: none !important;
+    width: min(100% - 36px,var(--max)) !important;
+    margin: 0 auto !important;
+    padding: 28px 0 0 !important;
+  }
+  .hero-content h1,.hero-content .eyebrow,.hero-content .hero-lead,.hero-content .hero-actions,.hero-content .hero-note { max-width: 100% !important; }
+  .hero-visual-group-photo {
+    order: 2 !important;
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    width: min(100% - 36px,var(--max)) !important;
+    max-width: var(--max) !important;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    margin: 26px auto 12px !important;
+    border-radius: 16px !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+  .hero-visual-group-photo img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+  .hero-emblem {
+    order: 3 !important;
+    position: absolute !important;
+    right: 18px !important;
+    bottom: 18px !important;
+    top: auto !important;
+    width: 68px !important;
+    height: 68px !important;
+  }
+  .hero-note { max-width: none !important; margin-top: 32px !important; }
+  .hero-actions { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .hero-actions .text-link.light-link { min-height: 60px; padding: 17px 24px; font-size: 16px; }
+  .team-group-illustration img { width: 100% !important; height: auto !important; aspect-ratio: auto !important; max-height: none !important; object-fit: contain !important; }
+  .team-rank-stars { min-height: 42px; font-size: 17px; letter-spacing: .09em; white-space: nowrap; }
 }
 @media (max-width: 560px) {
-  .team-grid { grid-template-columns: minmax(0, 1fr) !important; }
-  .team-card { width: 100%; }
-}
-
-
-/* PR23 · Encuadre sin recorte para la foto de portada en tablet y escritorio */
-@media (min-width: 761px) {
-  .hero-visual-group-photo {
-    width: min(44%, 560px) !important;
-    height: auto !important;
-    max-height: 72vh !important;
-    aspect-ratio: auto !important;
-    top: 50% !important;
-    bottom: auto !important;
-    transform: translateY(-50%) !important;
-    overflow: hidden !important;
-    background: rgba(255,255,255,.04) !important;
-  }
-  .hero-visual-group-photo img {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: 72vh !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
-}
-@media (min-width: 761px) and (max-width: 1100px) {
-  .hero-visual-group-photo {
-    width: min(41%, 460px) !important;
-    max-height: 66vh !important;
-    right: 3.5% !important;
-  }
-  .hero-visual-group-photo img { max-height: 66vh !important; }
-}
-
-
-
-/* PR23 · Fotografías completas en tablet y escritorio (Inicio + Nuestra lista) */
-@media (min-width: 761px) {
-  .hero-visual-group-photo {
-    height: auto !important;
-    max-height: none !important;
-    aspect-ratio: auto !important;
-    overflow: visible !important;
-  }
-  .hero-visual-group-photo img {
-    height: auto !important;
-    max-height: none !important;
-    aspect-ratio: auto !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
-  .team-group-illustration img {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    aspect-ratio: auto !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
-}
-@media (min-width: 761px) and (max-width: 1100px) {
-  .hero-visual-group-photo { width: min(42%, 480px) !important; }
-  .team-group-illustration { width: 100% !important; }
-}
-@media (min-width: 1101px) {
-  .hero-visual-group-photo { width: min(43%, 560px) !important; }
-  .team-group-illustration { width: 100% !important; }
+  .hero-content { padding-top: 22px !important; }
+  .hero-visual-group-photo { width: calc(100% - 32px) !important; margin-top: 22px !important; }
+  .hero-emblem { right: 14px !important; bottom: 14px !important; width: 58px !important; height: 58px !important; }
+  .team-grid { grid-template-columns: minmax(0,1fr) !important; }
+  .team-card { width: 100%; padding: 21px !  important; }
 }
