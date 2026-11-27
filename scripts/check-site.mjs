@@ -116,7 +116,7 @@ const requiredPages = [
   "pages/transparencia.html","pages/noticias.html","pages/galeria.html",
   "pages/escucha.html","pages/preguntas.html","pages/contacto.html",
   "pages/actas.html","pages/informes.html","pages/comunidad-tp.html",
-  "pages/memoria.html","pages/privacidad.html","pages/buscar.html","404.html"
+  "pages/memoria.html","pages/terminos-privacidad.html","pages/buscar.html","404.html"
 ];
 for (const file of requiredPages) if (!fs.existsSync(file)) failures.push(`Falta página requerida: ${file}`);
 
@@ -189,7 +189,7 @@ if (!navigationSource.includes("split(/" + String.fromCharCode(92) + "s+/)"))
 const requiredNavigationPages = [
   "lista.html","proyecto.html","agenda.html","transparencia.html","actas.html",
   "informes.html","memoria.html","comunidad-tp.html","noticias.html","galeria.html",
-  "preguntas.html","buscar.html","contacto.html","privacidad.html","escucha.html"
+  "preguntas.html","buscar.html","contacto.html","terminos-privacidad.html","escucha.html"
 ];
 for (const file of requiredNavigationPages) {
   if (!fs.existsSync(path.join("pages",file))) failures.push(`Menú: destino inexistente pages/${file}`);
