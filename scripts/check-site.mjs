@@ -174,8 +174,8 @@ if (!escuchaPage.includes(officialForm) || !escuchaPage.includes("Formulario ofi
   failures.push("CEAT Te Escucha: debe enlazar el formulario oficial confirmado.");
 if (!read("404.html").includes("pages/contacto.html"))
   failures.push("404: debe ofrecer acceso a la página de contacto.");
-if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Almirón") || !listPage.includes('presidencia-referencial.svg') || !listPage.includes('<span class="role">Presidenta</span><h3>Agustina Pérez</h3>'))
-  failures.push("La tarjeta pública debe respetar el nombre preferido de la presidenta (Agustina Pérez).");
+if (!listPage.includes("Agustina Almirón") || listPage.includes("Agustina Pérez") || !listPage.includes('presidencia-referencial.svg') || !listPage.includes('<span class="role">Presidenta</span><h3>Agustina Almirón</h3>'))
+  failures.push("La tarjeta pública debe respetar el nombre oficial de la presidenta (Agustina Almirón).");
 if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
   failures.push("Proyecto: el eje 5 debe estar identificado como complementario y separado de los cuatro ejes oficiales.");
 if (!faqPage.includes("cuatro ejes") || !faqPage.includes("quinto eje complementario"))
