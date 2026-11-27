@@ -2411,3 +2411,34 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   }
   .hero-emblem { right: 14px !important; bottom: 14px !important; width: 58px !important; height: 58px !important; }
 }
+
+
+/* PR23 · encuadre natural de la foto grupal en portada móvil */
+@media (max-width: 760px) {
+  .hero-visual-group-photo {
+    width: calc(100% - 36px) !important;
+    max-width: var(--max) !important;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+  .hero-visual-group-photo img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+}
+@media (max-width: 420px) {
+  .hero-visual-group-photo {
+    width: calc(100% - 28px) !important;
+    aspect-ratio: auto !important;
+  }
+  .hero-visual-group-photo img {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
