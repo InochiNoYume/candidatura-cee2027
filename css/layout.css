@@ -2399,21 +2399,21 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
 /* Tablet: mantener texto y foto separados, sin deformar ni cortar el grupo. */
 @media (min-width: 761px) and (max-width: 1100px) {
   .hero { min-height: 660px !important; }
-  .hero-content { width: min(1180px,calc(100% - 48px)) !important; max-width: 53% !important; padding: 78px 0 92px !important; }
-  .hero-content h1 { max-width: 100% !important; font-size: clamp(40px,5vw,58px) !important; }
+  .hero-content { width: min(1180px,calc(100% - 48px)) !important; max-width: 50% !important; padding: 78px 0 92px !important; }
+  .hero-content h1 { max-width: 100% !important; font-size: clamp(38px,4.6vw,56px) !important; }
   .hero-content .eyebrow { max-width: 100% !important; }
   .hero-content .hero-lead { max-width: 100% !important; font-size: clamp(14px,1.65vw,17px) !important; }
   .hero-content .hero-actions,.hero-content .hero-note { max-width: 100% !important; }
-  .hero-visual-group-photo { width: min(41%,460px) !important; max-width: 42% !important; right: 3.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
+  .hero-visual-group-photo { width: min(38%,400px) !important; max-width: 39% !important; right: 3.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
   .hero-visual-group-photo img { height: 100% !important; object-fit: contain !important; }
 }
 /* Desktop: hero equilibrado, con fotografía completa y texto legible. */
 @media (min-width: 1101px) {
   .hero { min-height: 720px; }
-  .hero-content { max-width: 52% !important; padding: 100px 0 115px; }
+  .hero-content { max-width: 50% !important; padding: 100px 0 115px; }
   .hero-content h1 { max-width: 100% !important; font-size: clamp(62px,5.8vw,86px) !important; }
   .hero-content .eyebrow,.hero-content .hero-lead,.hero-content .hero-actions,.hero-content .hero-note { max-width: 100% !important; }
-  .hero-visual-group-photo { width: min(43%,560px) !important; max-width: 44% !important; right: 4.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
+  .hero-visual-group-photo { width: min(40%,540px) !important; max-width: 41% !important; right: 4.5% !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%) !important; height: auto !important; aspect-ratio: 1400 / 620 !important; }
   .hero-visual-group-photo img { height: 100% !important; object-fit: contain !important; }
 }
 /* Mobile: la foto se ubica debajo del texto y conserva su proporción natural. */
