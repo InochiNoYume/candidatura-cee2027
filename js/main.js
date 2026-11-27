@@ -565,4 +565,15 @@
     } else trailCanvas.remove();
   }
 
+  // Nuestra lista: permitir abrir una sola ficha de funciones a la vez.
+  const teamFunctionPanels = document.querySelectorAll(".team-responsibilities");
+  teamFunctionPanels.forEach((panel) => {
+    panel.addEventListener("toggle", () => {
+      if (!panel.open) return;
+      teamFunctionPanels.forEach((otherPanel) => {
+        if (otherPanel !== panel && otherPanel.open) otherPanel.open = false;
+      });
+    });
+  });
+
 })();
