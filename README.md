@@ -133,7 +133,7 @@ Más detalles: [functions/README.md](functions/README.md).
 
 ## Modo mantenimiento
 
-La página `maintenance.html` muestra el aviso de mantenimiento, permite volver a intentar el acceso y ofrece dos canales propios de la candidatura: Instagram y correo de contacto. Ambos aparecen como «Próximamente» hasta que las cuentas oficiales estén creadas y confirmadas; no se muestran enlaces ni direcciones provisionales.
+La página `maintenance.html` muestra el aviso de mantenimiento y permite volver a intentar el acceso. El contacto oficial disponible es el Instagram de la candidatura: https://www.instagram.com/candidatura_cee2027.ceat/. No se publica correo de candidatura porque no existe.
 La suite de calidad del sitio aprobó la validación de sintaxis, estructura HTML, enlaces locales y seguridad en la ejecución [44832265046](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832265046). La auditoría responsive [44832264871](https://github.com/InochiNoYume/candidatura-cee2027/actions/runs/44832264871) está esperando que finalice el despliegue de Preview; una ejecución anterior detectó HTTP 503 por `MAINTENANCE_MODE`, por lo que se debe verificar que `CEE_MAINTENANCE_MODE` esté desactivada o ausente en Preview antes de aceptar los resultados.
 
 
