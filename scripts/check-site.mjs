@@ -115,7 +115,10 @@ for (const file of htmlFiles) {
     }
     if (fragment && fs.statSync(target).isFile() && target.endsWith(".html")) {
       const targetIds = idsByFile.get(target) || new Set([...read(target).matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]));
-      if (!targetIds.has(decodeURIComponent(fragment))) failures.push(`${file}: ancla inexistente: ${raw}`);
+      let decodedFragment;
+      try { decodedFragment = decodeURIComponent(fragment); }
+      catch { failures.push(`${file}: ancla mal codificada: ${raw}`); continue; }
+      if (!targetIds.has(decodedFragment)) failures.push(`${file}: ancla inexistente: ${raw}`);
     }
   }
 }
