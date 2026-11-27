@@ -414,3 +414,8 @@ The final responsive audit passed 120 page/viewport combinations with 0 axe viol
 ### Post-merge CI audit behavior during maintenance
 
 The production live audit failed after PR #21 was merged because Cloudflare maintenance mode returned HTTP 503 across audited routes; this made page, assistant, and error-page checks fail on the maintenance response rather than the underlying site. The live-site audit workflow now performs a preflight against its target: when it detects the explicit maintenance page (HTTP 503 with maintenance text), it emits a warning and skips browser checks and Lighthouse; healthy HTTP 200 targets proceed with the full audit, while other HTTP statuses remain hard failures. A skipped audit is not counted as a successful full audit and should be rerun when maintenance is off or against a healthy Preview.
+
+## Estado vigente de PR #22 · 27 de noviembre de 2026
+
+PR #22 está abierta como Draft y su HEAD es `3f609cf98a0ed80421850fe9cae16306f7bef22d`. La CI de calidad reportada para ese HEAD está aprobada. La auditoría responsive/Lighthouse más reciente que se encontró corresponde a PR #21 y no valida por sí sola este HEAD; el despliegue de Preview de PR #22 figura como exitoso, pero la inspección visual directa de Preview no estuvo disponible en esta revisión. Por tanto, antes de declarar PR #22 lista para fusionar, se requiere ejecutar/confirmar una auditoría actual sobre su Preview y revisar los resultados de Lighthouse y capturas. No se fusiona sin autorización.
+
