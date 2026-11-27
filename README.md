@@ -290,7 +290,7 @@ El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vig
 
 CEAT Te Escucha está enlazado al formulario oficial de Google Forms en `pages/escucha.html`: https://forms.gle/98kiwQV8nJ6j6F3B6. El sitio abre el formulario externo; la prueba real de envío sigue pendiente. No se necesita variable de entorno.
 
-La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
+La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final consiste en abrir el formulario oficial y verificar su envío/recepción.
 
 
 ## Ajuste final de interfaz móvil · 20 de noviembre de 2026
