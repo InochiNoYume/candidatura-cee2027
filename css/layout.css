@@ -2329,3 +2329,20 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
 .team-rank-stars span{text-shadow:0 1px 0 rgba(120,21,29,.12)}
 .team-card .team-rank-stars[aria-label="Rango 8 de 8"]{color:#8a5a16}
 @media(max-width:560px){.team-group-illustration img{aspect-ratio:4/3;max-height:none;object-position:center}.team-rank-stars{min-height:42px;font-size:17px;letter-spacing:.09em}}
+
+
+/* PR23 · Refinamiento móvil: evitar texto e imágenes recortados */
+@media(max-width:760px){
+  .hero-content{padding-top:132px!important;padding-bottom:210px!important}
+  .hero-visual-group-photo{width:min(62%,440px)!important;right:16px!important;bottom:26px!important;top:auto!important;transform:none!important;aspect-ratio:1.25!important;height:auto!important}
+  .hero-visual-group-photo img{object-fit:contain!important;object-position:center!important}
+  .hero-visual-group-photo{background:#fbf5f3!important}
+  .page-hero{padding-top:128px!important;padding-bottom:62px!important}
+}
+@media(max-width:560px){
+  .hero-content{padding-top:138px!important;padding-bottom:190px!important}
+  .hero-visual-group-photo{width:58%!important;aspect-ratio:1.28!important;right:12px!important;bottom:24px!important}
+  .page-hero{padding-top:130px!important;padding-bottom:58px!important}
+  .team-group-illustration img{width:100%;height:auto!important;aspect-ratio:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;background:#fbf5f3}
+  .team-rank-stars{white-space:nowrap;letter-spacing:.07em;font-size:clamp(15px,4.2vw,18px)!important}
+}
