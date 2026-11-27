@@ -288,7 +288,7 @@ La auditoría más reciente de la PR #21 terminó correctamente sobre el commit 
 
 El LCP de Inicio móvil sigue siendo el principal indicador de rendimiento a vigilar; no se hará ningún cambio visual o de recursos sin identificar primero el elemento LCP. La puntuación SEO de Preview (66–69) está afectada por el `noindex` intencional del entorno protegido y no justifica retirar esa protección.
 
-El formulario CEAT Te Escucha continúa siendo un espacio de espera: `pages/escucha.html` no contiene todavía un formulario, iframe ni URL de Google Forms. **No existe una variable de entorno de formulario que debas configurar ahora.** Cuando se confirme el enlace oficial, se integrará directamente en la página estática y se probará el destino. No crear una variable ficticia como `GOOGLE_FORM_URL` sin implementar un mecanismo que la lea.
+CEAT Te Escucha está enlazado al formulario oficial de Google Forms en `pages/escucha.html`: https://forms.gle/98kiwQV8nJ6j6F3B6. El sitio abre el formulario externo; la prueba real de envío sigue pendiente. No se necesita variable de entorno.
 
 La auditoría automatizada no envía respuestas reales al formulario. La comprobación funcional final queda pendiente hasta integrar el enlace oficial.
 
