@@ -64,9 +64,9 @@ try {
             if (!visual) failures.push("home: no se pudo medir la composición de CEAT Te Escucha");
             else {
               if (!visual.naturalWidth || !visual.naturalHeight) failures.push("home: la fotografía de CEAT Te Escucha no cargó");
-              if (visual.objectFit !== "cover") failures.push("home: la fotografía no llena su marco (object-fit distinto de cover)");
+              if (visual.objectFit !== "contain") failures.push("home: el banner CEAT Te Escucha debe conservarse completo (object-fit distinto de contain)");
               if (visual.image.width + 2 < visual.frame.width) failures.push("home: la fotografía no ocupa el ancho completo del marco");
-              if (Math.abs(visual.frame.width / visual.frame.height - 4 / 3) > 0.08) failures.push("home: el marco de CEAT Te Escucha no conserva la proporción 4:3");
+              if (Math.abs(visual.frame.width / visual.frame.height - 2 / 1) > 0.08) failures.push("home: el marco del banner CEAT Te Escucha no conserva la proporción 2:1");
               if (viewport.width > 760 && visual.frame.left < visual.copy.right - 2) failures.push("home: en escritorio la fotografía no queda a la derecha del texto");
               if (viewport.width <= 760 && (visual.frame.top < visual.copy.bottom - 2 || visual.button.top < visual.frame.bottom - 2)) {
                 failures.push("home: en móvil el texto, la fotografía y el botón no quedan apilados correctamente");
