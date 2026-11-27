@@ -2318,3 +2318,14 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
 @media (max-width: 560px) {
   .pillars-section .pillar-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
 }
+
+/* PR23 · Fotografía grupal compartida y jerarquía visual con estrellas */
+.hero-visual-group-photo{overflow:hidden;background:#22090e!important}
+.hero-visual-group-photo img{object-fit:cover!important;object-position:center 42%!important;filter:saturate(.94) contrast(1.02)}
+.team-group-illustration{margin:clamp(24px,4vw,48px) 0;overflow:hidden;border-radius:clamp(12px,2vw,22px);border:1px solid var(--border-soft);background:#f5eeeb;box-shadow:0 16px 42px rgba(35,18,18,.09)}
+.team-group-illustration img{display:block;width:100%;height:auto;max-height:720px;aspect-ratio:16/9;object-fit:cover;object-position:center}
+.team-group-illustration figcaption{padding:12px 16px;color:var(--text-muted);font-size:12px;background:linear-gradient(180deg,#fff,#f8f5f3)}
+.team-rank-stars{display:flex;align-items:center;justify-content:flex-start;min-height:52px;margin:0 0 14px;color:#b98c2d;font-size:clamp(16px,1.4vw,22px);line-height:1.2;letter-spacing:.13em;overflow-wrap:anywhere}
+.team-rank-stars span{text-shadow:0 1px 0 rgba(120,21,29,.12)}
+.team-card .team-rank-stars[aria-label="Rango 8 de 8"]{color:#8a5a16}
+@media(max-width:560px){.team-group-illustration img{aspect-ratio:4/3;max-height:none;object-position:center}.team-rank-stars{min-height:42px;font-size:17px;letter-spacing:.09em}}
