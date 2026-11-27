@@ -2475,5 +2475,5 @@ body:not(.menu-open) .cee-assistant-launcher { z-index: 800 !important; }
   .hero-visual-group-photo { width: calc(100% - 32px) !important; margin-top: 22px !important; }
   .hero-emblem { right: 14px !important; bottom: 14px !important; width: 58px !important; height: 58px !important; }
   .team-grid { grid-template-columns: minmax(0,1fr) !important; }
-  .team-card { width: 100%; padding: 21px !  important; }
+  .team-card { width: 100%; padding: 21px !important; }
 }
