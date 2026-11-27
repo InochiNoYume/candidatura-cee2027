@@ -202,8 +202,9 @@ La PR #21 permanece abierta y sin fusionar. La vista previa no sustituye una apr
 - Revisar visualmente las páginas en teléfonos, tabletas y escritorio.
 - Repetir Lighthouse después de los cambios y comparar varias ejecuciones.
 - Probar el asistente en producción con preguntas normales y errores controlados, sin exponer secretos ni generar solicitudes innecesarias.
-- Confirmar los enlaces definitivos y el Instagram de la candidatura.
-- Revisar el formulario externo antes de publicarlo.
+- Instagram oficial confirmado e integrado: https://www.instagram.com/candidatura_cee2027.ceat/.
+- CEAT Te Escucha integrado con el formulario oficial: https://forms.gle/98kiwQV8nJ6j6F3B6. Falta probar el envío real.
+- No existe correo de candidatura; se retiró del sitio.
 - Incorporar las fotografías reales autorizadas y repetir la auditoría final.
 
 Las pruebas automatizadas no sustituyen la revisión visual ni garantizan por sí solas el comportamiento de servicios externos como Gemini.
