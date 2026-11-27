@@ -1,24 +1,13 @@
 # Fotografías grupales
 
-Carpeta reservada para fotografías grupales autorizadas de la lista, directiva o actividades de la comunidad educativa.
+**Fotografía grupal oficial incorporada:** `80382.jpg`.
 
-**Recurso incluido:** `equipo-cee-2027-referencial.svg`, ilustración vectorial ficticia para previsualizar la ubicación de la imagen grupal. No es una fotografía ni representa a integrantes reales. Se sustituirá cuando exista una fotografía grupal autorizada.
+La misma imagen se reutiliza en la portada de Inicio y en la sección de fotografía grupal de Nuestra lista. Se mantiene el archivo original; el encuadre se controla mediante CSS en cada contexto.
 
 ## Convención de nombres
-
-Usa `AAAA-MM-descripcion-del-grupo-01.jpg`.
-
-Ejemplos de formato (no representan fotografías existentes):
-- `2027-03-lista-cee-2027-completa-01.jpg`
-- `2027-06-equipo-en-actividad-01.webp`
+Usa nombres descriptivos en minúsculas, sin tildes ni espacios. Conserva la extensión real del archivo.
 
 ## Reglas
-
-- Usa la fecha de la fotografía cuando esté disponible.
-- Minúsculas, sin tildes, espacios ni caracteres especiales; separa palabras con guiones.
-- Numera las tomas relacionadas con dos dígitos: `01`, `02`, etc.
-- Conserva la extensión real: `.jpg`, `.jpeg`, `.png` o `.webp`.
+- Conserva el archivo original y adapta su visualización desde CSS.
 - No uses imágenes de otras personas como sustituto ni inventes fotografías.
 - No publiques fotografías sin las autorizaciones correspondientes.
-
-La ilustración de muestra no acredita reuniones ni actividades realizadas y debe mantenerse identificada como referencial.
