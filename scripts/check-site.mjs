@@ -164,6 +164,16 @@ const listPage = read("pages/lista.html");
 const projectPage = read("pages/proyecto.html");
 const faqPage = read("pages/preguntas.html");
 const homePage = read("index.html");
+const contactPage = read("pages/contacto.html");
+const escuchaPage = read("pages/escucha.html");
+const officialInstagram = "https://www.instagram.com/candidatura_cee2027.ceat/";
+const officialForm = "https://forms.gle/98kiwQV8nJ6j6F3B6";
+if (!contactPage.includes(officialInstagram) || contactPage.includes("Enlace pendiente de confirmación") || contactPage.includes("mailto:") || contactPage.includes("Correo de la candidatura"))
+  failures.push("Contacto: Instagram oficial debe estar publicado y no debe aparecer un correo de candidatura.");
+if (!escuchaPage.includes(officialForm) || !escuchaPage.includes("Formulario oficial disponible") || escuchaPage.includes("Formulario externo pendiente de enlace"))
+  failures.push("CEAT Te Escucha: debe enlazar el formulario oficial confirmado.");
+if (!read("404.html").includes("pages/contacto.html"))
+  failures.push("404: debe ofrecer acceso a la página de contacto.");
 if (!listPage.includes("Agustina Pérez") || listPage.includes("Agustina Almirón") || !listPage.includes('presidencia-referencial.svg') || !listPage.includes('<span class="role">Presidenta</span><h3>Agustina Pérez</h3>'))
   failures.push("La tarjeta pública debe respetar el nombre preferido de la presidenta (Agustina Pérez).");
 if (!projectPage.includes("Eje complementario") || !projectPage.includes("Los ejes 1 al 4 corresponden"))
